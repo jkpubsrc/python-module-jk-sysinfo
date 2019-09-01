@@ -1,0 +1,52 @@
+{
+	"language": "python3",
+	"name": "jk_sysinfo",
+	"version": "0.2019.8.26",
+	"meta": {
+		"description": "This python module provides ways to retrieve and parse technical system data.",
+		"keywords": [
+			"..."
+		],
+		"license": "Apache 2.0",
+		"development_status": "alpha",
+		"authors": [
+			{
+				"name": "Jürgen Knauth",
+				"email": "pubsrc@binary-overflow.de"
+			}
+		],
+		"wiki": {
+			"page": "DevDocs:jk_sysinfo"
+		}
+	},
+	"repositories": [
+		{
+			"type": "github",
+			"user": "jkpubsrc",
+			"project": "........",
+			"devon_publish": false
+		},
+		{
+			"type": "pypy",
+			"devon_publish": false
+		}
+	],
+	"source": {
+		"packages": [
+			"jk_sysinfo"
+		],
+		"extra_data_files": [
+		]
+	},
+	"requirements": {
+		"python_packages": [
+		],
+		"python_packages_dev": [
+		],
+		"system_apt_packages": [
+			"needrestart",
+			"sensors"
+		]
+	}
+}
+
