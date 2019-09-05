@@ -10,7 +10,7 @@ import jk_json
 
 #jk_sysinfo.enableDebugging()
 
-result = jk_sysinfo.get_proc_cpu_info()
+result = jk_sysinfo.get_user_info()
 print()
 jk_json.prettyPrint(result)
 print()

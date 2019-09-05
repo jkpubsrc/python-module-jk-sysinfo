@@ -68,7 +68,7 @@ def run(c, command, failOnNonZeroExitCode:bool = True):
 			raise Exception("Command failed with exit code " + str(r.exited) + ": " + repr(command))
 		return r.stdout, r.stderr, r.exited
 
-	raise Exception("Sorry, I don't know about " + repr(c.__class__) + " objects.")
+	raise Exception("Sorry, I don't know about " + repr(c.__class__) + " objects for parameter c.")
 #
 
 

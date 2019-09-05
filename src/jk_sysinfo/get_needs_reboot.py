@@ -16,9 +16,11 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter=":", valueCanBeWrappedInDouble
 # Returns:
 #
 #	{
-#		"kernelAfterReboot": "4.4.0-159-generic",
-#		"kernelCurrent": "4.4.0-154-generic",
-#		"needsReboot": true
+#		"kernelAfterReboot": "4.15.0-58-generic",
+#		"kernelCurrent": "4.15.0-58-generic",
+#		"needsReboot": true,
+#		"updateKernel": false,
+#		"updateMicroCodeOrABI": true
 #	}
 #
 def parse_needs_reboot(stdout:str, stderr:str, exitcode:int) -> dict:
@@ -42,6 +44,8 @@ def parse_needs_reboot(stdout:str, stderr:str, exitcode:int) -> dict:
 
 	ret = {
 		"needsReboot": int(d["NEEDRESTART-KSTA"]) > 1,
+		"updateMicroCodeOrABI": int(d["NEEDRESTART-KSTA"]) == 2,
+		"updateKernel": int(d["NEEDRESTART-KSTA"]) == 3,
 	}
 
 	if "NEEDRESTART-KCUR" in d:
@@ -61,9 +65,11 @@ def parse_needs_reboot(stdout:str, stderr:str, exitcode:int) -> dict:
 # Returns:
 #
 #	{
-#		"kernelAfterReboot": "4.4.0-159-generic",
-#		"kernelCurrent": "4.4.0-154-generic",
-#		"needsReboot": true
+#		"kernelAfterReboot": "4.15.0-58-generic",
+#		"kernelCurrent": "4.15.0-58-generic",
+#		"needsReboot": true,
+#		"updateKernel": false,
+#		"updateMicroCodeOrABI": true
 #	}
 #
 def get_needs_reboot(c = None) -> dict:

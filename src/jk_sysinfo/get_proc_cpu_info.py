@@ -20,7 +20,7 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter=":", valueCanBeWrappedInDouble
 #		...
 #	]
 #
-def parse_proc_cpuinfo(stdout:str, stderr:str, exitcode:int) -> dict:
+def parse_proc_cpu_info(stdout:str, stderr:str, exitcode:int) -> dict:
 
 	"""
 	processor	: 0
@@ -192,9 +192,9 @@ def parse_proc_cpuinfo(stdout:str, stderr:str, exitcode:int) -> dict:
 #		...
 #	]
 #
-def get_proc_cpuinfo(c = None) -> dict:
+def get_proc_cpu_info(c = None) -> dict:
 	stdout, stderr, exitcode = run(c, "cat /proc/cpuinfo")
-	return parse_proc_cpuinfo(stdout, stderr, exitcode)
+	return parse_proc_cpu_info(stdout, stderr, exitcode)
 #
 
 

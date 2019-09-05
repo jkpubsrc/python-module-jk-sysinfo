@@ -1,8 +1,11 @@
 #!/usr/bin/python3
 
 
+import os
+import sys
 import re
 
+import jk_console
 import jk_sysinfo
 import jk_json
 import jk_flexdata
@@ -17,25 +20,24 @@ from jk_testing import Assert
 
 
 
-result = {
-}
+data_lsb_release_a = jk_flexdata.createFromData(jk_sysinfo.get_lsb_release_a())				# static
+data_lshw = jk_flexdata.createFromData(jk_sysinfo.get_lshw())								# static
+data_mobo = jk_flexdata.createFromData(jk_sysinfo.get_motherboard_info())					# static
+data_bios = jk_flexdata.createFromData(jk_sysinfo.get_bios_info())							# static
+data_proccpu = [ jk_flexdata.createFromData(x) for x in jk_sysinfo.get_proc_cpu_info() ]	# static, (runtime)
+data_cpu = jk_flexdata.createFromData(jk_sysinfo.get_cpu_info())							# static
+data_sensors = jk_flexdata.createFromData(jk_sysinfo.get_sensors())							# runtime
+data_sysload = jk_flexdata.createFromData(jk_sysinfo.get_proc_load_avg())					# runtime
+data_mem = jk_flexdata.createFromData(jk_sysinfo.get_proc_meminfo())						# runtime
+data_lsblk = jk_flexdata.createFromData(jk_sysinfo.get_lsblk())								# runtime
+data_reboot = jk_flexdata.createFromData(jk_sysinfo.get_needs_reboot())						# runtime
+data_mounts = jk_flexdata.createFromData(jk_sysinfo.get_mount())							# runtime
+data_df = jk_flexdata.createFromData(jk_sysinfo.get_df())									# runtime
+data_net_info = jk_flexdata.createFromData(jk_sysinfo.get_net_info())						# runtime
+data_uptime = jk_flexdata.createFromData(jk_sysinfo.get_uptime())							# runtime
 
 
 
-data_lsb_release_a = jk_flexdata.createFromData(jk_sysinfo.get_lsb_release_a())
-data_lshw = jk_flexdata.createFromData(jk_sysinfo.get_lshw())
-data_mobo = jk_flexdata.createFromData(jk_sysinfo.get_motherboard_info())
-data_bios = jk_flexdata.createFromData(jk_sysinfo.get_bios_info())
-data_proccpu = [ jk_flexdata.createFromData(x) for x in jk_sysinfo.get_proc_cpuinfo() ]
-data_cpu = jk_flexdata.createFromData(jk_sysinfo.get_cpu_info())
-data_sensors = jk_flexdata.createFromData(jk_sysinfo.get_sensors())
-data_sysload = jk_flexdata.createFromData(jk_sysinfo.get_proc_load_avg())
-data_mem = jk_flexdata.createFromData(jk_sysinfo.get_proc_meminfo())
-data_lsblk = jk_flexdata.createFromData(jk_sysinfo.get_lsblk())
-data_reboot = jk_flexdata.createFromData(jk_sysinfo.get_needs_reboot())
-data_mounts = jk_flexdata.createFromData(jk_sysinfo.get_mount())
-data_df = jk_flexdata.createFromData(jk_sysinfo.get_df())
-data_ifconfig = jk_flexdata.createFromData(jk_sysinfo.get_ifconfig())
 
 
 
@@ -51,6 +53,18 @@ print("\tis LTS version:", data_lsb_release_a.lts)
 print("runtime")
 print("\tprocesses:", data_sysload.processes_total)
 print("\tsystem load:", data_sysload.load1, "/", data_sysload.load5, "/", data_sysload.load15)
+days, hours, minutes, seconds, milliseconds = jk_sysinfo.convertSecondsToHumanReadableDuration(data_uptime.uptimeInSeconds)
+print("\tuptime:", days, "day(s),", hours, "hour(s),", minutes, "minute(s),", seconds, "second(s)")
+if data_reboot.needsReboot:
+	b = False
+	if data_reboot.updateMicroCodeOrABI:
+		b = True
+		print("\tCPU or ABI update required")
+	if data_reboot.updateKernel:
+		b = True
+		print("\tKernel update required")
+	if not b:
+		raise Exception()
 print("-")
 
 ################################################################
@@ -152,18 +166,8 @@ for network in data_lshw._findAllR(id="network"):
 	if network.capabilities.tp:
 		# regular twisted pair network
 
-		speed = None
-		for key in network.capabilities._keys():
-			m = re.match(r"^(\d+)bt(-fd)?$", key)
-			if m:
-				speed = int(m.groups()[0]) * 1000000
-		if speed is None:
-			if network.size:
-				speed = int(network.size)
-
-		if speed:
-			speed, unit = jk_sysinfo.formatBitsPerSecond(speed)
-			#assert network.units == "bit/s"
+		if network.maxSpeedInBitsPerSecond:
+			speed, unit = jk_sysinfo.formatBitsPerSecond(network.maxSpeedInBitsPerSecond)
 			print("\tspeed maximum:", speed, unit)					# general speed in bits/s
 
 		if network.configuration.speed:
@@ -228,8 +232,36 @@ for data in data_sensors._values():
 ################################################################
 
 print("\n#### network (os) ####\n")
-# TODO: list logical network adapters
-jk_json.prettyPrint(data_ifconfig._toDict())
+print("runtime")
+table = jk_console.SimpleTable()
+table.addRow(
+	"ifname",
+	"loop",
+	"wlan",
+	"mac",
+	"mtu",
+	"rx pkgs",
+	"rx dropped",
+	"rx errors",
+	"tx pkgs",
+	"tx dropped",
+	"tx errors",
+).hlineAfterRow = True
+for networkInterface, networkInterfaceData in data_net_info._items():
+	table.addRow(
+		networkInterface,
+		networkInterfaceData.is_loop,
+		networkInterfaceData.is_wlan,
+		networkInterfaceData.mac_addr,
+		networkInterfaceData.mtu,
+		networkInterfaceData.rx_packets,
+		networkInterfaceData.rx_dropped,
+		networkInterfaceData.rx_errors,
+		networkInterfaceData.tx_packets,
+		networkInterfaceData.tx_dropped,
+		networkInterfaceData.tx_errors,
+	)
+table.print(prefix="\t")
 
 ################################################################
 
@@ -237,32 +269,32 @@ print("\n#### drives ####\n")
 
 print("runtime")
 
-def printDevice(data:jk_flexdata.FlexObject, data_mounts:jk_flexdata.FlexObject, data_df:jk_flexdata.FlexObject, indent:str=""):
-	Assert.isInstance(data, jk_flexdata.FlexObject)
+def printDevice(data_lsblk:jk_flexdata.FlexObject, data_mounts:jk_flexdata.FlexObject, data_df:jk_flexdata.FlexObject, indent:str=""):
+	Assert.isInstance(data_lsblk, jk_flexdata.FlexObject)
 
-	if data.mountpoint and data.mountpoint.startswith("/snap"):
+	if data_lsblk.mountpoint and data_lsblk.mountpoint.startswith("/snap"):
 		return
-	s = indent + data.dev
+	s = indent + data_lsblk.dev
 
-	if data.mountpoint:
+	if data_lsblk.mountpoint:
 		s += " @ "
-		s += data.mountpoint
+		s += data_lsblk.mountpoint
 		sAdd = " :: "
 	else:
 		sAdd = " :: "
 
-	if data.uuid:
-		s += sAdd + repr(data.uuid)
+	if data_lsblk.uuid:
+		s += sAdd + repr(data_lsblk.uuid)
 		sAdd = " ~ "
-	if data.fstype:
-		s += sAdd + data.fstype
+	if data_lsblk.fstype:
+		s += sAdd + data_lsblk.fstype
 		sAdd = " ~ "
 
 	print(s)
 	indent += "\t"
 
-	if data_mounts and data.mountpoint:
-		data_df_2 = data_df._get(data.mountpoint)
+	if data_mounts and data_lsblk.mountpoint:
+		data_df_2 = data_df._get(data_lsblk.mountpoint)
 		#jk_json.prettyPrint(data_mounts._toDict())
 		#jk_json.prettyPrint(data_df._toDict())
 		if data_df_2:
@@ -274,10 +306,10 @@ def printDevice(data:jk_flexdata.FlexObject, data_mounts:jk_flexdata.FlexObject,
 				)
 			#jk_json.prettyPrint(data_df_2._toDict())
 		else:
-			print("Not found: " + data.mountpoint)
+			print("Not found: " + data_lsblk.mountpoint)
 
-	if data.children:
-		for c in data.children:
+	if data_lsblk.children:
+		for c in data_lsblk.children:
 			printDevice(c, data_mounts, data_df, indent)
 #
 

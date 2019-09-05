@@ -216,3 +216,16 @@ def simplifyValueList(valueList:typing.Union[None,list,tuple]) -> typing.Union[N
 #
 
 
+
+def joinDictsByKey(*args):
+	ret = {}
+	for dictionary in args:
+		assert isinstance(dictionary, dict)
+		for key, d in dictionary.items():
+			assert isinstance(d, dict)
+			for key2, value in d.items():
+				if key not in ret:
+					ret[key] = {}
+				ret[key][key2] = value
+	return ret
+#

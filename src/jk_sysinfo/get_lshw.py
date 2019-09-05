@@ -1,11 +1,57 @@
 
 
 import json
+import re
+
+import jk_flexdata
 
 from .parsing_utils import *
 from .invoke_utils import run
 
 
+
+
+
+def _isObj(data, filter:dict) -> bool:
+	assert isinstance(data, dict)
+	assert isinstance(filter, dict)
+
+	for k, v in filter.items():
+		if k in data:
+			# 1st attempt
+			v2 = data[k]
+			if v != v2:
+				return False
+		else:
+			if k.startswith("_"):
+				# 2nd attempt
+				k = k[1:]
+				if k in data:
+					v2 = data[k]
+					if v != v2:
+						return False
+				else:
+					return False
+			else:
+				return False
+	return True
+#
+
+def _findAllR(d, **kwargs):
+	for key, data in d.items():
+		if isinstance(data, (list, tuple)):
+			for e in data:
+				if isinstance(e, dict):
+					if _isObj(e, kwargs):
+						yield e
+			for e in data:
+				if isinstance(e, dict):
+					yield from _findAllR(e, **kwargs)
+		elif isinstance(data, dict):
+			if _isObj(data, kwargs):
+				yield data
+			yield from _findAllR(data, **kwargs)
+#
 
 
 
@@ -326,8 +372,52 @@ from .invoke_utils import run
 #		"width": 64
 #	}
 #
+def parse_lshw2(stdout:str, stderr:str, exitcode:int) -> dict:
+	data = json.loads(stdout)
+
+	data_lshw = jk_flexdata.createFromData(data)
+	for network in data_lshw._findAllR(id="network"):
+		if network.capabilities.tp:
+			# regular twisted pair network
+
+			maxSpeedInBitsPerSecond = None
+			for key in network.capabilities._keys():
+				m = re.match(r"^(\d+)bt(-fd)?$", key)
+				if m:
+					x = int(m.groups()[0]) * 1000000
+					if (maxSpeedInBitsPerSecond is None) or (x > maxSpeedInBitsPerSecond):
+						maxSpeedInBitsPerSecond = x
+			if maxSpeedInBitsPerSecond is None:
+				if network.size:
+					maxSpeedInBitsPerSecond = int(network.size)
+
+			if maxSpeedInBitsPerSecond:
+				network.maxSpeedInBitsPerSecond = maxSpeedInBitsPerSecond
+
+	return data_lshw._toDict()
+#
 def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
-	return json.loads(stdout)
+	data_lshw = json.loads(stdout)
+
+	for network in _findAllR(data_lshw, id="network"):
+		if ("capabilities" in network) and network["capabilities"].get("tp"):
+			# regular twisted pair network
+
+			maxSpeedInBitsPerSecond = None
+			for key in network["capabilities"].keys():
+				m = re.match(r"^(\d+)bt(-fd)?$", key)
+				if m:
+					x = int(m.groups()[0]) * 1000000
+					if (maxSpeedInBitsPerSecond is None) or (x > maxSpeedInBitsPerSecond):
+						maxSpeedInBitsPerSecond = x
+			if maxSpeedInBitsPerSecond is None:
+				if network.get("size"):
+					maxSpeedInBitsPerSecond = int(network["size"])
+
+			if maxSpeedInBitsPerSecond:
+				network["maxSpeedInBitsPerSecond"] = maxSpeedInBitsPerSecond
+
+	return data_lshw
 #
 
 

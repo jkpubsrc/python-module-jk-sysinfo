@@ -10,9 +10,14 @@ import jk_json
 
 #jk_sysinfo.enableDebugging()
 
-result = jk_sysinfo.get_proc_cpu_info()
+print(jk_sysinfo.get_date_as_datetime())
 print()
+result = jk_sysinfo.get_date()
 jk_json.prettyPrint(result)
 print()
+
+
+
+
 
 

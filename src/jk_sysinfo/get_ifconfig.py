@@ -260,8 +260,6 @@ def parse_ifconfig(stdout:str, stderr:str, exitcode:int) -> dict:
 					if m is None:
 						raise Exception("Failed to parse line: " + repr(line))
 					g = m.groups()
-					print(line)
-					print(g)
 					key = g[0]
 					if key == "txqueuelen":
 						key = "tx_queuelen"

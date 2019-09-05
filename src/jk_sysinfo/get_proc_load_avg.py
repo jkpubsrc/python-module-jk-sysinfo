@@ -13,7 +13,7 @@ from .invoke_utils import run
 #		"load15": 0.29,
 #		"load5": 0.3,
 #		"processes_total": 1052,
-#		"proesses_runnable": 1
+#		"processes_runnable": 1
 #	}
 #
 def parse_proc_load_avg(stdout:str, stderr:str, exitcode:int) -> dict:
@@ -45,7 +45,7 @@ def parse_proc_load_avg(stdout:str, stderr:str, exitcode:int) -> dict:
 #		"load15": 0.29,
 #		"load5": 0.3,
 #		"processes_total": 1052,
-#		"proesses_runnable": 1
+#		"processes_runnable": 1
 #	}
 #
 def get_proc_load_avg(c = None) -> dict:

@@ -311,6 +311,27 @@ def formatTemperatureGraphC(value:float, maximum:float = 100, length:int = 40) -
 	return s + " " + firstColor + str(int(orgValue + 0.5)) + "°C" + jk_console.Console.RESET
 #
 
+def convertSecondsToHumanReadableDuration(seconds:float):
+	milliseconds = (seconds - int(seconds)) * 1000
+	seconds = int(seconds)
+
+	minutes = seconds // 60
+	seconds = seconds % 60
+
+	hours = minutes // 60
+	minutes = minutes % 60
+
+	days = hours // 24
+	hours = hours % 24
+
+	return days, hours, minutes, seconds, milliseconds
+#
+
+
+
+
+
+
 
 
 

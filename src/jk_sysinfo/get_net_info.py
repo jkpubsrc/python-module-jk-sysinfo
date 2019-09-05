@@ -98,13 +98,21 @@ def get_net_info(c = None) -> dict:
 			"""
 
 			s = stdout.split("\n")[1].strip()
-			pos = s.find(":")
-			s = s[pos+1:]
-			pos = s.find(" ")
-			data[interface]["bitrate_current"] = {
-				"value": float(s[:pos]),
-				"unit": s[pos+1:].strip(),
-			}
+			if s:
+				assert s.startswith("Current Bit Rate")
+				pos = s.find("=")
+				if pos < 0:
+					pos = s.find(":")
+					if pos < 0:
+						raise Exception("Unexpected data: " + repr(s))
+				s = s[pos+1:]
+				pos = s.find(" ")
+				data[interface]["bitrate_current"] = {
+					"value": float(s[:pos]),
+					"unit": s[pos+1:].strip(),
+				}
+			else:
+				data[interface]["bitrate_current"] = None
 
 	return data
 #
