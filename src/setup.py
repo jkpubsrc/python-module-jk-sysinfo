@@ -12,7 +12,7 @@
 from setuptools import setup
 
 def readme():
-	with open("README.rst", "r", encoding="UTF-8-sig") as f:
+	with open("README.md", "r", encoding="UTF-8-sig") as f:
 		return f.read()
 
 setup(
@@ -24,7 +24,7 @@ setup(
 		"License :: OSI Approved :: Apache Software License",
 	],
 	description = "This python module provides ways to retrieve and parse technical system data.",
-	download_url = "https://github.com/jkpubsrc/......../tarball/0.2019.8.26",
+	download_url = "https://github.com/jkpubsrc/......../tarball/0.2019.9.13",
 	include_package_data = False,
 	install_requires = [
 	],
@@ -37,7 +37,8 @@ setup(
 		"jk_sysinfo",
 	],
 	url = "https://github.com/jkpubsrc/........",
-	version = "0.2019.8.26",
+	version = "0.2019.9.13",
 	zip_safe = False,
 	long_description = readme(),
+	long_description_content_type="text/markdown",
 )

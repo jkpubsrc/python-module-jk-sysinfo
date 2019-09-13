@@ -3,7 +3,7 @@
 import sys
 import re
 
-import jk_json
+#import jk_json
 
 from .parsing_utils import *
 from .invoke_utils import run
@@ -14,7 +14,7 @@ from .get_ifconfig import get_ifconfig
 
 
 def _get_network_file_list(c = None) -> dict:
-	stdout, _, _ = run(c, "ls /sys/class/net/*/")
+	stdout, _, _ = run(c, "/bin/ls /sys/class/net/*/")
 	groupsTemp = [ x.strip().split("\n") for x in stdout.split("\n\n") ]
 	groups = {}
 	for groupItems in groupsTemp:
@@ -65,7 +65,7 @@ def _get_network_file_list(c = None) -> dict:
 def get_net_info(c = None) -> dict:
 	ret = {}
 
-	data = get_ifconfig()
+	data = get_ifconfig(c)
 
 	groups = _get_network_file_list(c)
 	interfaces = list(groups.keys())
@@ -90,7 +90,7 @@ def get_net_info(c = None) -> dict:
 			data[interface][fileName] = int(stdout.strip())
 
 		if bIsWLAN:
-			stdout, _, _ = run(c, "iwlist " + interface + " bitrate")
+			stdout, _, _ = run(c, "/sbin/iwlist " + interface + " bitrate")
 
 			"""
 			wlp2s0		unknown bit-rate information.

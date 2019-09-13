@@ -176,7 +176,7 @@ def parse_df(stdout:str, stderr:str, exitcode:int) -> dict:
 #	}
 #
 def get_df(c = None) -> dict:
-	stdout, stderr, exitcode = run(c, "df -BK")
+	stdout, stderr, exitcode = run(c, "/bin/df -BK")
 	return parse_df(stdout, stderr, exitcode)
 #
 

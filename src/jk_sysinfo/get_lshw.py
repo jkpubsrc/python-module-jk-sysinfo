@@ -3,8 +3,6 @@
 import json
 import re
 
-import jk_flexdata
-
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -372,30 +370,6 @@ def _findAllR(d, **kwargs):
 #		"width": 64
 #	}
 #
-def parse_lshw2(stdout:str, stderr:str, exitcode:int) -> dict:
-	data = json.loads(stdout)
-
-	data_lshw = jk_flexdata.createFromData(data)
-	for network in data_lshw._findAllR(id="network"):
-		if network.capabilities.tp:
-			# regular twisted pair network
-
-			maxSpeedInBitsPerSecond = None
-			for key in network.capabilities._keys():
-				m = re.match(r"^(\d+)bt(-fd)?$", key)
-				if m:
-					x = int(m.groups()[0]) * 1000000
-					if (maxSpeedInBitsPerSecond is None) or (x > maxSpeedInBitsPerSecond):
-						maxSpeedInBitsPerSecond = x
-			if maxSpeedInBitsPerSecond is None:
-				if network.size:
-					maxSpeedInBitsPerSecond = int(network.size)
-
-			if maxSpeedInBitsPerSecond:
-				network.maxSpeedInBitsPerSecond = maxSpeedInBitsPerSecond
-
-	return data_lshw._toDict()
-#
 def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
 	data_lshw = json.loads(stdout)
 
@@ -416,6 +390,13 @@ def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
 
 			if maxSpeedInBitsPerSecond:
 				network["maxSpeedInBitsPerSecond"] = maxSpeedInBitsPerSecond
+
+	for cpu in _findAllR(data_lshw, id="cpu"):
+		if "capabilities" in cpu:
+			cpu["hyperthreading"] = "ht" in cpu["capabilities"]
+			cpu["virtualization"] = "vmx" in cpu["capabilities"]
+			cpu["bitArch"] = 64 if "x86-64" in cpu["capabilities"] else 32
+			cpu["encryption"] = "aes" in cpu["capabilities"]
 
 	return data_lshw
 #
@@ -740,7 +721,7 @@ def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
 #	}
 #
 def get_lshw(c = None) -> dict:
-	stdout, stderr, exitcode = run(c, "lshw -json")
+	stdout, stderr, exitcode = run(c, "/usr/bin/lshw -json")
 	return parse_lshw(stdout, stderr, exitcode)
 #
 

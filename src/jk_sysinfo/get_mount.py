@@ -244,7 +244,7 @@ def parse_mount(stdout:str, stderr:str, exitcode:int) -> dict:
 #	}
 #
 def get_mount(c = None) -> dict:
-	stdout, stderr, exitcode = run(c, "mount")
+	stdout, stderr, exitcode = run(c, "/bin/mount")
 	return parse_mount(stdout, stderr, exitcode)
 #
 

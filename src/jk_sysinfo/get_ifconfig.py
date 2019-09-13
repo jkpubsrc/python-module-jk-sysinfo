@@ -353,7 +353,7 @@ def parse_ifconfig(stdout:str, stderr:str, exitcode:int) -> dict:
 #	}
 #
 def get_ifconfig(c = None) -> dict:
-	stdout, stderr, exitcode = run(c, "ifconfig -a")
+	stdout, stderr, exitcode = run(c, "/sbin/ifconfig -a")
 	return parse_ifconfig(stdout, stderr, exitcode)
 #
 

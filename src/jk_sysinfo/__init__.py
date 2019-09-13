@@ -2,7 +2,7 @@
 
 
 
-from	.invoke_utils			import	enableDebugging
+from	.invoke_utils			import	enableDebugging, run
 from	.value_formatting		import	*
 
 from	.get_accesspoints		import															get_accesspoints
@@ -31,7 +31,6 @@ from	.get_user_info			import	parse_etc_passwd, parse_etc_shadow, parse_etc_group
 
 
 
-__version__ = "0.2019.8.26"
-
+__version__ = "0.2019.9.13"
 
 

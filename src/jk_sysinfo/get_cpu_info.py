@@ -39,7 +39,7 @@ from .invoke_utils import run
 def get_cpu_info(c = None) -> dict:
 	ret = {}
 
-	stdout, _, _ = run(c, "ls /sys/devices/system/cpu/")
+	stdout, _, _ = run(c, "/bin/ls /sys/devices/system/cpu/")
 	cpus = []
 	for x in stdout.strip().split():
 		if x:

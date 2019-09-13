@@ -16,56 +16,42 @@ from jk_testing import Assert
 
 
 
+"""
+from fabric import Connection
+import jk_pwdinput
+
+REMOTE_HOST = "192.168.11.36"
+REMOTE_PORT = 22
+REMOTE_LOGIN = "jknauth"
+REMOTE_PASSWORD = jk_pwdinput.readpwd("Password for " + REMOTE_LOGIN + "@" + REMOTE_HOST + ": ")
+c = Connection(host=REMOTE_HOST, user=REMOTE_LOGIN, port=REMOTE_PORT, connect_kwargs={"password": REMOTE_PASSWORD})
+"""
+c = None
 
 
 
 
-data_lsb_release_a = jk_flexdata.createFromData(jk_sysinfo.get_lsb_release_a())				# static
-data_lshw = jk_flexdata.createFromData(jk_sysinfo.get_lshw())								# static
-data_mobo = jk_flexdata.createFromData(jk_sysinfo.get_motherboard_info())					# static
-data_bios = jk_flexdata.createFromData(jk_sysinfo.get_bios_info())							# static
-data_proccpu = [ jk_flexdata.createFromData(x) for x in jk_sysinfo.get_proc_cpu_info() ]	# static, (runtime)
-data_cpu = jk_flexdata.createFromData(jk_sysinfo.get_cpu_info())							# static
-data_sensors = jk_flexdata.createFromData(jk_sysinfo.get_sensors())							# runtime
-data_sysload = jk_flexdata.createFromData(jk_sysinfo.get_proc_load_avg())					# runtime
-data_mem = jk_flexdata.createFromData(jk_sysinfo.get_proc_meminfo())						# runtime
-data_lsblk = jk_flexdata.createFromData(jk_sysinfo.get_lsblk())								# runtime
-data_reboot = jk_flexdata.createFromData(jk_sysinfo.get_needs_reboot())						# runtime
-data_mounts = jk_flexdata.createFromData(jk_sysinfo.get_mount())							# runtime
-data_df = jk_flexdata.createFromData(jk_sysinfo.get_df())									# runtime
-data_net_info = jk_flexdata.createFromData(jk_sysinfo.get_net_info())						# runtime
-data_uptime = jk_flexdata.createFromData(jk_sysinfo.get_uptime())							# runtime
+data_lsb_release_a = jk_flexdata.createFromData(jk_sysinfo.get_lsb_release_a(c))			# static
+data_lshw = jk_flexdata.createFromData(jk_sysinfo.get_lshw(c))								# static
+data_mobo = jk_flexdata.createFromData(jk_sysinfo.get_motherboard_info(c))					# static
+data_bios = jk_flexdata.createFromData(jk_sysinfo.get_bios_info(c))							# static
+data_proccpu = [ jk_flexdata.createFromData(x) for x in jk_sysinfo.get_proc_cpu_info(c) ]	# static, (runtime)
+data_cpu = jk_flexdata.createFromData(jk_sysinfo.get_cpu_info(c))							# static
+data_sensors = jk_flexdata.createFromData(jk_sysinfo.get_sensors(c))						# runtime
+data_sysload = jk_flexdata.createFromData(jk_sysinfo.get_proc_load_avg(c))					# runtime
+data_mem = jk_flexdata.createFromData(jk_sysinfo.get_proc_meminfo(c))						# runtime
+data_lsblk = jk_flexdata.createFromData(jk_sysinfo.get_lsblk(c))							# runtime
+data_reboot = jk_flexdata.createFromData(jk_sysinfo.get_needs_reboot(c))					# runtime
+data_mounts = jk_flexdata.createFromData(jk_sysinfo.get_mount(c))							# runtime
+data_df = jk_flexdata.createFromData(jk_sysinfo.get_df(c))									# runtime
+data_net_info = jk_flexdata.createFromData(jk_sysinfo.get_net_info(c))						# runtime
+data_uptime = jk_flexdata.createFromData(jk_sysinfo.get_uptime(c))							# runtime
 
 
 
 
 
 
-
-################################################################
-
-print("\n#### system ####\n")
-print("static")
-print("hostname:", data_lshw.id)	# hostname
-print("\tos distribution:", data_lsb_release_a.distribution)
-print("\tos version:", data_lsb_release_a.version)
-print("\tis LTS version:", data_lsb_release_a.lts)
-print("runtime")
-print("\tprocesses:", data_sysload.processes_total)
-print("\tsystem load:", data_sysload.load1, "/", data_sysload.load5, "/", data_sysload.load15)
-days, hours, minutes, seconds, milliseconds = jk_sysinfo.convertSecondsToHumanReadableDuration(data_uptime.uptimeInSeconds)
-print("\tuptime:", days, "day(s),", hours, "hour(s),", minutes, "minute(s),", seconds, "second(s)")
-if data_reboot.needsReboot:
-	b = False
-	if data_reboot.updateMicroCodeOrABI:
-		b = True
-		print("\tCPU or ABI update required")
-	if data_reboot.updateKernel:
-		b = True
-		print("\tKernel update required")
-	if not b:
-		raise Exception()
-print("-")
 
 ################################################################
 
@@ -87,6 +73,45 @@ print("-")
 
 ################################################################
 
+print("\n#### busses and bus devices ####\n")
+print("static")
+
+def printPCIStruct(data:jk_flexdata.FlexObject, indent:str=""):
+	print(indent + data["class"].upper() + " " + data.product + " (" + data.vendor + ")")
+	if data.children:
+		for c in data.children:
+			printPCIStruct(c, indent=indent + "\t")
+#
+
+bridge = data_lshw._findR(_class="bridge")
+printPCIStruct(bridge, indent="\t")
+print("-")
+
+################################################################
+
+print("\n#### system ####\n")
+print("static")
+print("\thostname:", data_lshw.id)	# hostname
+print("\tos distribution:", data_lsb_release_a.distribution)
+print("\tos version:", data_lsb_release_a.version)
+print("\tis LTS version:", data_lsb_release_a.lts)
+print("runtime")
+print("\tprocesses:", data_sysload.processes_total)
+print("\tsystem load:", data_sysload.load1, "/", data_sysload.load5, "/", data_sysload.load15)
+days, hours, minutes, seconds, milliseconds = jk_sysinfo.convertSecondsToHumanReadableDuration(data_uptime.uptimeInSeconds)
+print("\tuptime:", days, "day(s),", hours, "hour(s),", minutes, "minute(s),", seconds, "second(s)")
+if data_reboot.needsReboot:
+	updatesRequired = set()
+	if data_reboot.updateMicroCodeOrABI:
+		updatesRequired.add("CPU or ABI")
+	if data_reboot.updateKernel:
+		updatesRequired.add("kernel")
+	if not updatesRequired:
+		raise Exception()
+	print(jk_console.Console.ForeGround.ORANGE + "\tUpdate required:", ",".join(updatesRequired) + jk_console.Console.RESET)
+print("-")
+
+################################################################
 
 print("\n#### cpu ####\n")
 print("static")
@@ -187,20 +212,6 @@ for network in data_lshw._findAllR(id="network"):
 	print("\tdriver:", network.configuration.driver)
 	print("\tmac_addr:", network.serial)
 	print("-")
-
-print("\n#### buses and bus devices ####\n")
-print("static")
-
-def printPCIStruct(data:jk_flexdata.FlexObject, indent:str=""):
-	print(indent + data["class"].upper() + " " + data.product + " (" + data.vendor + ")")
-	if data.children:
-		for c in data.children:
-			printPCIStruct(c, indent=indent + "\t")
-#
-
-bridge = data_lshw._findR(_class="bridge")
-printPCIStruct(bridge, indent="\t")
-print("-")
 
 ################################################################
 

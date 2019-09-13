@@ -52,7 +52,7 @@ def run(c, command, failOnNonZeroExitCode:bool = True):
 			raise Exception("Command failed with exit code " + str(p.returncode) + ": " + repr(command))
 		return stdOut, stdErr, p.returncode
 
-	if c.__class__.__module__ == "fabric":
+	if (c.__class__.__name__ == "Connection") and (c.__class__.__module__ in [ "fabric", "fabric.connection" ]):
 		if _debuggingEnabled:
 			print("Invoking via fabric: " + repr(command))
 		r = c.run(command, hide=True)

@@ -10,14 +10,13 @@ To achieve this goal this module encapsulates various operating system tools by 
 
 Information about this module can be found here:
 
-
-* `github.org <https://github.com/jkpubsrc/....>`_
-* `pypi.python.org <https://pypi.python.org/pypi/jk_sysinfo>`_
+* [github.org](https://github.com/jkpubsrc/....)
+* [pypi.python.org](https://pypi.python.org/pypi/jk_sysinfo)
 
 Why this module?
 ----------------
 
-If you run Linux you will likely have encountered the command line tool ``inxi``. This tool is capable of retrieving system information and presenting it in a condensed way.
+If you run Linux you will likely have encountered the command line tool `inxi`. This tool is capable of retrieving system information and presenting it in a condensed way.
 
 Unfortunately this tool does not provide the data in a machine readable form. Extending this tool to other output formats than plaintext is not intended by the authors (and would not be easy at all).
 
@@ -33,17 +32,15 @@ Other Linuxes might work well but minor changes to the current implementation mi
 How to use this module
 ----------------------
 
-Import this module
-^^^^^^^^^^^^^^^^^^
+### Import this module
 
 Please include this module into your application using the following code:
 
-.. code-block:: python
-
-   import jk_sysinfo
+```python
+import jk_sysinfo
+```
 
 ...
-
 
 Contact Information
 -------------------
@@ -52,7 +49,6 @@ This is Open Source code. That not only gives you the possibility of freely usin
 allows you to contribute. Feel free to contact the author(s) of this software listed below, either
 for comments, collaboration requests, suggestions for improvement or reporting bugs:
 
-
 * Jürgen Knauth: jknauth@uni-goettingen.de, pubsrc@binary-overflow.de
 
 License
@@ -60,5 +56,7 @@ License
 
 This software is provided under the following license:
 
-
 * Apache Software License 2.0
+
+
+

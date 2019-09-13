@@ -206,7 +206,7 @@ def parse_apt_list(stdout:str, stderr:str, exitcode:int) -> dict:
 #	}
 #
 def get_apt_list(c = None) -> dict:
-	stdout, stderr, exitcode = run(c, "apt-get -s dist-upgrade")
+	stdout, stderr, exitcode = run(c, "/usr/bin/apt-get -s dist-upgrade")
 	return parse_apt_list(stdout, stderr, exitcode)
 #
 

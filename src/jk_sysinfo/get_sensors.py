@@ -212,7 +212,7 @@ def parse_sensors(stdout:str, stderr:str, exitcode:int) -> dict:
 #	}
 #
 def get_sensors(c = None) -> dict:
-	stdout, stderr, exitcode = run(c, "sensors -u")
+	stdout, stderr, exitcode = run(c, "/usr/bin/sensors -u")
 	return parse_sensors(stdout, stderr, exitcode)
 #
 

@@ -216,26 +216,7 @@ def formatPercent(value:float, total:float) -> str:
 	return str(int(value / total * 1000) / 10) + "%"
 #
 
-def formatPercentGraph_OLD(value:float, total:float, length:int = 40, colorize:bool = True) -> str:
-	n = int(value / total * length)
-	if colorize:
-		s = "#" * n
-		bColorAdded = False
-		if value >= 0.8:
-			pos = int(0.8 * length)
-			s = s[:pos] + jk_console.Console.ForeGround.RED + s[pos:]
-			bColorAdded = True
-		if value >= 0.6:
-			pos = int(0.6 * length)
-			s = s[:pos] + jk_console.Console.ForeGround.ORANGE + s[pos:]
-			bColorAdded = True
-		if bColorAdded:
-			s += jk_console.Console.RESET
-		s += ":" * (length - n)
-	else:
-		s = "#" * n + ":" * (length - n)
-	return s
-#
+
 
 def _createColorSpectrum(fromColorR, fromColorG, fromColorB, toColorR, toColorG, toColorB, length):
 	ret = []
@@ -253,9 +234,11 @@ def formatPercentGraphC(value:float, total:float, length:int = 40) -> str:
 	n = int(value / total * length)
 	s = "#" * n
 
-	colorSpectrum1 = _createColorSpectrum(0.7, 0.7, 0.7, 1, 0.5, 0, int(length * 0.2))
-	colorSpectrum2 = _createColorSpectrum(1, 0.5, 0, 1, 0, 0, int(length * 0.2))
-	colorSpectrum = colorSpectrum1 + colorSpectrum2
+	colorSpectrum1 = _createColorSpectrum(0.7, 0.7, 0.7, 0.7, 0.7, 0, int(length * 0.1))
+	colorSpectrum2 = _createColorSpectrum(0.7, 0.7, 0,   1,   0.5, 0, int(length * 0.1))
+	colorSpectrum3 = _createColorSpectrum(1,   0.5, 0,   1,   0,   0, int(length * 0.1))
+	colorSpectrum4 = _createColorSpectrum(1,   0,   0,   1,   0,   0, int(length * 0.05))
+	colorSpectrum = colorSpectrum1 + colorSpectrum2 + colorSpectrum3 + colorSpectrum4
 	posStart = length - len(colorSpectrum)
 
 	bColorAdded = False

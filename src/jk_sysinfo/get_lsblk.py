@@ -160,7 +160,7 @@ def __postproces_lsblk_dev(j, mountPointMap):
 #	}
 #
 def get_lsblk(c = None) -> dict:
-	stdout, stderr, exitcode = run(c, "lsblk -bfJp")
+	stdout, stderr, exitcode = run(c, "/bin/lsblk -bfJp")
 	return parse_lsblk(stdout, stderr, exitcode)
 #
 

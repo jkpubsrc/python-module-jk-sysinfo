@@ -43,7 +43,7 @@ def parse_lsb_release_a(stdout:str, stderr:str, exitcode:int) -> dict:
 #	}
 #
 def get_lsb_release_a(c = None) -> dict:
-	stdout, stderr, exitcode = run(c, "lsb_release -a")
+	stdout, stderr, exitcode = run(c, "/usr/bin/lsb_release -a")
 	return parse_lsb_release_a(stdout, stderr, exitcode)
 #
 

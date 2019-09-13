@@ -3,7 +3,7 @@
 import sys
 import re
 
-import jk_json
+#import jk_json
 
 from .parsing_utils import *
 from .invoke_utils import run
@@ -242,9 +242,9 @@ def __parse_single_wifi_cell(interface:str, radioCellLines:list, radioCellLinesI
 #
 def __get_accesspoints_for_interface(interface:str, c = None, runAsRoot:bool = False) -> list:
 	if runAsRoot:
-		stdout, _, _x = run(c, "sudo -n iwlist " + interface + " scan")
+		stdout, _, _x = run(c, "sudo -n /sbin/iwlist " + interface + " scan")
 	else:
-		stdout, _, _ = run(c, "iwlist " + interface + " scan")
+		stdout, _, _ = run(c, "/sbin/iwlist " + interface + " scan")
 	lines = stdout.strip().split("\n")
 
 	"""
