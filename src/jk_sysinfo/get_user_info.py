@@ -165,7 +165,7 @@ def parse_etc_shadow(stdout:str, stderr:str, exitcode:int) -> dict:
 		ret[userName] = {
 			"user": userName,
 			"isLocked": password.startswith("!"),
-			"hasPassword": password.startswith("$"),
+			"hasPassword": (password.startswith("$") or password.startswith("!$")) and (len(password) > 10),
 		}
 
 	return ret
