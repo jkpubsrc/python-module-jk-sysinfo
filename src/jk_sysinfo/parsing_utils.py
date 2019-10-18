@@ -57,8 +57,34 @@ def isVerticalSpaceColumn(lines:str, pos:int) -> bool:
 		line = lines[i]
 		if pos < len(line):
 			if not line[pos].isspace():
+				#print("@ " + str(pos) + " with " + repr(line[pos]) + " of " + repr(line))
 				return False
+	#print("@ " + str(pos) + " is space")
 	return True
+#
+
+
+
+def splitAtVerticalSpaceColumnsFirstLineIsHeader(lines:str) -> list:
+	headerLine = lines[0]
+	lines = lines[1:]
+
+	positions = []
+	nLastPositionWas = -99999
+	for i in range(0, len(headerLine)):
+		if i == 0:
+			continue
+		b = isVerticalSpaceColumn(lines, i)
+		if b:
+			if i > nLastPositionWas + 1:
+				positions.append(i)
+			nLastPositionWas = i
+
+	lines2 = []
+	for line in lines:
+		lines2.append(lineSplitAt(line, positions))
+
+	return lines2
 #
 
 

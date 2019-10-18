@@ -24,11 +24,17 @@ from	.get_net_info			import															get_net_info
 from	.get_proc_cpu_info		import	parse_proc_cpu_info,									get_proc_cpu_info
 from	.get_proc_load_avg		import	parse_proc_load_avg,									get_proc_load_avg
 from	.get_proc_meminfo		import	parse_proc_meminfo,										get_proc_meminfo
+from	.get_ps					import	parse_ps,												get_ps
 from	.get_sensors			import	parse_sensors,											get_sensors
 from	.get_uptime				import	parse_uptime,											get_uptime
 from	.get_user_info			import	parse_etc_passwd, parse_etc_shadow, parse_etc_group,	get_user_info
 
 
 
-
 __version__ = "0.2019.10.17"
+
+
+
+
+
+

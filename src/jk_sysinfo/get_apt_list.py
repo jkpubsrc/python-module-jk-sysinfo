@@ -31,7 +31,7 @@ from .invoke_utils import run
 #		]
 #	}
 #
-def parse_apt_list2(stdout:str, stderr:str, exitcode:int) -> dict:
+def parse_apt_list(stdout:str, stderr:str, exitcode:int) -> dict:
 
 	"""
 	chromium-browser/xenial-updates,xenial-security 77.0.3865.90-0ubuntu0.16.04.1 amd64 [upgradable from: 76.0.3809.100-0ubuntu0.16.04.1]
@@ -99,9 +99,9 @@ def parse_apt_list2(stdout:str, stderr:str, exitcode:int) -> dict:
 #		]
 #	}
 #
-def get_apt_list2(c = None) -> dict:
+def get_apt_list(c = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/usr/bin/apt list --upgradable")
-	return parse_apt_list2(stdout, stderr, exitcode)
+	return parse_apt_list(stdout, stderr, exitcode)
 #
 
 
