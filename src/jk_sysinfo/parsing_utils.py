@@ -65,7 +65,13 @@ def isVerticalSpaceColumn(lines:str, pos:int) -> bool:
 
 
 
-def splitAtVerticalSpaceColumnsFirstLineIsHeader(lines:str) -> list:
+def splitAtVerticalSpaceColumnsFirstLineIsHeader(
+	lines:str,
+	expectedColumnsMin:int = -1,
+	expectedColumnsMax:int = -1,
+	maxColumns:int = -1
+	) -> list:
+
 	headerLine = lines[0]
 	lines = lines[1:]
 
@@ -79,6 +85,16 @@ def splitAtVerticalSpaceColumnsFirstLineIsHeader(lines:str) -> list:
 			if i > nLastPositionWas + 1:
 				positions.append(i)
 			nLastPositionWas = i
+		if (maxColumns > 0) and (len(positions) == maxColumns - 1):
+			break
+
+	if expectedColumnsMin > 0:
+		if (len(positions) + 1) < expectedColumnsMin:
+			raise Exception("Number of columns found: " + str(len(positions)) + "; " + str(positions))
+
+	if expectedColumnsMax > 0:
+		if (len(positions) + 1) > expectedColumnsMax:
+			raise Exception("Number of columns found: " + str(len(positions)) + "; " + str(positions))
 
 	lines2 = []
 	for line in lines:
