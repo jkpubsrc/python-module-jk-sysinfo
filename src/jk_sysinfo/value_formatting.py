@@ -1,3 +1,8 @@
+#
+# TODO: Migrate this to jk_utils and jk_valueformatting.
+#
+
+
 
 
 import jk_console
@@ -45,6 +50,11 @@ def formatBitsPerSecond(value:float, floatPrecision:bool = False) -> tuple:
 	return value, unit
 #
 
+
+
+#
+# Same as <c>formatBitsPerSecond()</c> but does not return a tuple but a string.
+#
 def formatBitsPerSecondS(value:float, floatPrecision:bool = False) -> str:
 	value, unit = formatBitsPerSecond(value, floatPrecision)
 	return str(value) + " " + unit
@@ -218,7 +228,17 @@ def formatPercent(value:float, total:float) -> str:
 
 
 
-def _createColorSpectrum(fromColorR, fromColorG, fromColorB, toColorR, toColorG, toColorB, length):
+#
+# @param	float fromColorR		Red spectrum part ranging from 0 to 1
+# @param	float fromColorG		Green spectrum part ranging from 0 to 1
+# @param	float fromColorB		Blue spectrum part ranging from 0 to 1
+# @param	float toColorR			Red spectrum part ranging from 0 to 1
+# @param	float toColorG			Green spectrum part ranging from 0 to 1
+# @param	float toColorB			Blue spectrum part ranging from 0 to 1
+# @param	int length				The number of color values to create
+# @return	list					An array of strings with color escape codes
+#
+def _createColorSpectrum(fromColorR:float, fromColorG:float, fromColorB:float, toColorR:float, toColorG:float, toColorB:float, length:int):
 	ret = []
 	for i in range(0, length):
 		v = i / (length -1)
@@ -230,6 +250,13 @@ def _createColorSpectrum(fromColorR, fromColorG, fromColorB, toColorR, toColorG,
 	return ret
 #
 
+#
+# Build a graph showing fill grade in percentage
+#
+# @param	float value			The current value. This can be an arbitrary value greater than zero and smaller than <c>total</c>.
+# @param	float total			The maximum value. This can be an arbitrary value greater than <c>value</c>.
+# @param	int length			The length of the bar to produce.
+#
 def formatPercentGraphC(value:float, total:float, length:int = 40) -> str:
 	n = int(value / total * length)
 	s = "#" * n

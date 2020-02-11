@@ -9,7 +9,7 @@ from	.get_accesspoints		import															get_accesspoints
 from	.get_apt_list			import	parse_apt_list,											get_apt_list
 from	.get_bios_info			import															get_bios_info
 from	.get_cpu_info			import															get_cpu_info
-from	.get_etc_os_release		import	parse_etc_os_release,									get_etc_os_release
+from	.get_dpkg_list			import	parse_dpkg_list,										get_dpkg_list
 from	.get_date				import	parse_date_as_datetime,									get_date, get_date_as_datetime
 from	.get_df					import	parse_df,												get_df
 from	.get_etc_os_release		import	parse_etc_os_release,									get_etc_os_release
@@ -31,8 +31,7 @@ from	.get_user_info			import	parse_etc_passwd, parse_etc_shadow, parse_etc_group
 
 
 
-__version__ = "0.2019.10.22"
-
+__version__ = "0.2020.2.11"
 
 
 
