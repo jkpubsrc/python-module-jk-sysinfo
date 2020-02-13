@@ -1,5 +1,6 @@
 
 
+import os
 import re
 import pwd
 import grp
@@ -34,7 +35,8 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 #					"stat": "S",
 #					"tty": null,
 #					"uid": 0,
-#					"user": "root"
+#					"user": "root",
+#					"cwd": ....
 #			},
 #			{
 #					"cmd": "[ksoftirqd/0]",
@@ -43,7 +45,8 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 #					"stat": "S",
 #					"tty": null,
 #					"uid": 0,
-#					"user": "root"
+#					"user": "root",
+#					"cwd": ....
 #			},
 #			...
 #			{
@@ -55,7 +58,8 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 #					"uid": 1000,
 #					"user": "woodoo"
 #					"gid": 1000,
-#					"group": "woodoo"
+#					"group": "woodoo",
+#					"cwd": ....
 #			},
 #			{
 #					"args": "--spawner :1.9 /org/gtk/gvfs/exec_spaw/4",
@@ -67,7 +71,8 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 #					"uid": 1000,
 #					"user": "woodoo"
 #					"gid": 1000,
-#					"group": "woodoo"
+#					"group": "woodoo",
+#					"cwd": ....
 #			},
 #			...
 #			{
@@ -80,7 +85,8 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 #					"uid": 1000,
 #					"user": "woodoo"
 #					"gid": 1000,
-#					"group": "woodoo"
+#					"group": "woodoo",
+#					"cwd": ....
 #			},
 #			...
 #	]
@@ -107,6 +113,12 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 			"uid": uid,
 			"gid": gid,
 		}
+
+		try:
+			data["cwd"] = os.readlink("/proc/" + group[1] + "/cwd")
+		except:
+			pass
+
 		pos = group[6].find(" ")
 		if pos > 0:
 			data["cmd"] = group[6][:pos]
@@ -150,7 +162,8 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 #					"stat": "S",
 #					"tty": null,
 #					"uid": 0,
-#					"user": "root"
+#					"user": "root",
+#					"cwd": ....
 #			},
 #			{
 #					"cmd": "[ksoftirqd/0]",
@@ -159,7 +172,8 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 #					"stat": "S",
 #					"tty": null,
 #					"uid": 0,
-#					"user": "root"
+#					"user": "root",
+#					"cwd": ....
 #			},
 #			...
 #			{
@@ -171,7 +185,8 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 #					"uid": 1000,
 #					"user": "woodoo"
 #					"gid": 1000,
-#					"group": "woodoo"
+#					"group": "woodoo",
+#					"cwd": ....
 #			},
 #			{
 #					"args": "--spawner :1.9 /org/gtk/gvfs/exec_spaw/4",
@@ -183,7 +198,8 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 #					"uid": 1000,
 #					"user": "woodoo"
 #					"gid": 1000,
-#					"group": "woodoo"
+#					"group": "woodoo",
+#					"cwd": ....
 #			},
 #			...
 #			{
@@ -196,7 +212,8 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 #					"uid": 1000,
 #					"user": "woodoo"
 #					"gid": 1000,
-#					"group": "woodoo"
+#					"group": "woodoo",
+#					"cwd": ....
 #			},
 #			...
 #	]
