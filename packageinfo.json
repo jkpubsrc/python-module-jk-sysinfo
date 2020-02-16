@@ -1,7 +1,7 @@
 {
 	"language": "python3",
 	"name": "jk_sysinfo",
-	"version": "0.2020.2.13",
+	"version": "0.2020.2.16.1",
 	"meta": {
 		"description": "This python module provides ways to retrieve and parse technical data of (Linux) computer systems.",
 		"keywords": [
@@ -37,6 +37,9 @@
 			"jk_sysinfo"
 		],
 		"extra_data_files": [
+		],
+		"extra_binary_files": [
+			"bin/sysinfo.py"
 		]
 	},
 	"requirements": {

@@ -9,7 +9,7 @@ import jk_console
 import jk_sysinfo
 import jk_json
 import jk_flexdata
-from jk_testing import Assert
+from jk_typing import *
 
 
 
@@ -280,9 +280,8 @@ print("\n#### drives ####\n")
 
 print("runtime")
 
+@checkFunctionSignature()
 def printDevice(data_lsblk:jk_flexdata.FlexObject, data_mounts:jk_flexdata.FlexObject, data_df:jk_flexdata.FlexObject, indent:str=""):
-	Assert.isInstance(data_lsblk, jk_flexdata.FlexObject)
-
 	if data_lsblk.mountpoint and data_lsblk.mountpoint.startswith("/snap"):
 		return
 	s = indent + data_lsblk.dev

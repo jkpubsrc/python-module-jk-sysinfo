@@ -31,7 +31,5 @@ from	.get_user_info			import	parse_etc_passwd, parse_etc_shadow, parse_etc_group
 
 
 
-__version__ = "0.2020.2.13"
-
-
+__version__ = "0.2020.2.16.1"
 
