@@ -1,7 +1,7 @@
 {
 	"language": "python3",
 	"name": "jk_sysinfo",
-	"version": "0.2020.2.16.1",
+	"version": "0.2020.2.28",
 	"meta": {
 		"description": "This python module provides ways to retrieve and parse technical data of (Linux) computer systems.",
 		"keywords": [
@@ -47,7 +47,8 @@
 			"python-dateutil",
 			"fabric",
 			"pytz",
-			"jk_console"
+			"jk_console",
+			"jk_typing"
 		],
 		"python_packages_dev": [
 			"jk_json"
