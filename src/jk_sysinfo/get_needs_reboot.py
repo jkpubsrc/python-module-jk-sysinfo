@@ -74,7 +74,11 @@ def parse_needs_reboot(stdout:str, stderr:str, exitcode:int) -> dict:
 #
 def get_needs_reboot(c = None) -> dict:
 	# see: https://github.com/liske/needrestart/blob/master/README.batch.md
-	stdout, stderr, exitcode = run(c, "/usr/sbin/needrestart -kb")
+	try:
+		stdout, stderr, exitcode = run(c, "/usr/sbin/needrestart -kb")
+	except:
+		# needrestart not installed!
+		return {}
 	return parse_needs_reboot(stdout, stderr, exitcode)
 #
 

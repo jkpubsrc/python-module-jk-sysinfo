@@ -484,7 +484,7 @@ def __get_accesspoints_for_interface(interface:str, c = None, runAsRoot:bool = F
 #		"enp0s31f6": {
 #			"ifname": "enp0s31f6",
 #			"is_wlan": false,
-#			"mac_addr": "c8:f7:50:43:fa:84",
+#			"mac_addr": "a6:b5:c4:d3:e2:f1",
 #			"mtu": 1500
 #		},
 #		"lo": {
@@ -500,13 +500,13 @@ def __get_accesspoints_for_interface(interface:str, c = None, runAsRoot:bool = F
 #		},
 #		"wlp2s0": {
 #			"ifname": "wlp2s0",
-#			"ip4_addr": "192.168.99.236",
+#			"ip4_addr": "192.168.99.123",
 #			"ip4_broadcastAddr": "192.168.99.255",
 #			"ip4_netmask": "255.255.255.0",
-#			"ip6_addr": "fe80::a46e:9013:cc37:2a2c",
+#			"ip6_addr": "........",
 #			"ip6_scope": "link",
 #			"is_wlan": true,
-#			"mac_addr": "d4:3b:04:37:32:14",
+#			"mac_addr": "a1:b2:c3:d4:e5:f6",
 #			"mtu": 1500
 #		}
 #	}

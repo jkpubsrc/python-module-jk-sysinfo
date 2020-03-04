@@ -1,7 +1,9 @@
 
+import typing
 
 from .parsing_utils import *
 from .invoke_utils import run
+#import jk_json
 
 
 
@@ -20,7 +22,7 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter=":", valueCanBeWrappedInDouble
 #		...
 #	]
 #
-def parse_proc_cpu_info(stdout:str, stderr:str, exitcode:int) -> dict:
+def parse_proc_cpu_info(stdout:str, stderr:str, exitcode:int) -> typing.Tuple[list,dict]:
 
 	"""
 	processor	: 0
@@ -136,47 +138,71 @@ def parse_proc_cpu_info(stdout:str, stderr:str, exitcode:int) -> dict:
 		raise Exception()
 
 	cpuInfos = splitAtEmptyLines(stdout.split("\n"))
+	retExtra = {}
 	ret = []
 	for group in cpuInfos:
 		d = _parserColonKVP.parseLines(group)
+		if "processor" not in d:
+			for k, v in d.items():
+				retExtra[k.lower()] = v
+			continue
 
-		d["cache_size_kb"] = parseKByteWithUnit(d["cache_size"])
-		del d["cache_size"]
+		if "cache_size" in d:
+			d["cache_size_kb"] = parseKByteWithUnit(d["cache_size"])
+			del d["cache_size"]
 
-		d["wp"] = d["wp"] == "yes"
+		if "bogomips" in d:
+			d["bogomips"] = float(d["apicid"])
+		elif "BogoMIPS" in d:
+			d["bogomips"] = float(d["BogoMIPS"])
+			del d["BogoMIPS"]
 
-		d["apicid"] = int(d["apicid"])
+		if "bugs" in d:
+			d["bugs"] = d["bugs"].split()
 
-		d["bogomips"] = float(d["apicid"])
+		if "flags" in d:
+			d["flags"] = sorted(d["flags"].split())
+		elif "Features" in d:
+			d["flags"] = sorted(d["Features"].split())
+			del d["Features"]
 
-		d["bugs"] = d["bugs"].split()
+		# bool
+		for key in [ "fpu", "fpu_exception", "wp" ]:
+			if key in d:
+				d[key.lower()] = d[key] == "yes"
+				if key != key.lower():
+					del d[key]
 
-		d["cache_alignment"] = int(d["cache_alignment"])
+		# int
+		for key in [ "CPU_architecture", "CPU_revision", "physical_id", "initial_apicid", "cpu_cores", "core_id", "clflush_size", "cache_alignment", "apicid" ]:
+			if key in d:
+				d[key.lower()] = int(d[key])
+				if key != key.lower():
+					del d[key]
 
-		d["clflush_size"] = int(d["clflush_size"])
+		# float
+		for key in [ "cpu_MHz" ]:
+			if key in d:
+				d[key.lower()] = float(d[key])
+				if key != key.lower():
+					del d[key]
 
-		d["core_id"] = int(d["core_id"])
-
-		d["cpu_MHz"] = float(d["cpu_MHz"])
-
-		d["cpu_cores"] = int(d["cpu_cores"])
-
-		d["flags"] = sorted(d["flags"].split())
-
-		d["fpu"] = d["fpu"] == "yes"
-
-		d["fpu_exception"] = d["fpu_exception"] == "yes"
-
-		d["initial_apicid"] = int(d["initial_apicid"])
-
-		d["physical_id"] = int(d["physical_id"])
+		# str
+		for key in [ "CPU_implementer", "CPU_part", "CPU_variant" ]:
+			if key in d:
+				d[key.lower()] = d[key]
+				if key != key.lower():
+					del d[key]
 
 		d["processor"] = int(d["processor"])
 
-		d["siblings"] = int(d["siblings"])
+		if "siblings" in d:
+			d["siblings"] = int(d["siblings"])
 
+		#jk_json.prettyPrint(d)
 		ret.append(d)
-	return ret
+
+	return ret, retExtra
 #
 
 
@@ -192,7 +218,7 @@ def parse_proc_cpu_info(stdout:str, stderr:str, exitcode:int) -> dict:
 #		...
 #	]
 #
-def get_proc_cpu_info(c = None) -> dict:
+def get_proc_cpu_info(c = None) -> typing.Tuple[list,dict]:
 	stdout, stderr, exitcode = run(c, "cat /proc/cpuinfo")
 	return parse_proc_cpu_info(stdout, stderr, exitcode)
 #

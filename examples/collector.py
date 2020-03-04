@@ -22,16 +22,13 @@ import jk_utils
 from fabric import Connection
 import jk_pwdinput
 
-#REMOTE_HOST = "192.168.11.36"
 REMOTE_HOST = "127.0.0.1"
 REMOTE_PORT = 22
-#REMOTE_LOGIN = "jknauth"
-REMOTE_LOGIN = "woodoo"
+REMOTE_LOGIN = "<login>"
 REMOTE_PASSWORD = jk_pwdinput.readpwd("Password for " + REMOTE_LOGIN + "@" + REMOTE_HOST + ": ")
 c = Connection(host=REMOTE_HOST, user=REMOTE_LOGIN, port=REMOTE_PORT, connect_kwargs={"password": REMOTE_PASSWORD})
 
-SYSTEM_ID = "selenium"
-#SYSTEM_ID = "nbjk"
+SYSTEM_ID = "nbxxxxxxxx"
 
 #PRETTY = False
 PRETTY = True

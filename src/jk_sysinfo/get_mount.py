@@ -67,29 +67,11 @@ from .invoke_utils import run
 #				]
 #		},
 #		...,
-#		"/media/woodoo/BROODWAR": {
-#				"dev": "/dev/sr0",
-#				"fstype": "iso9660",
-#				"fstype2": null,
-#				"mountPoint": "/media/woodoo/BROODWAR",
-#				"options": [
-#						"ro",
-#						"nosuid",
-#						"nodev",
-#						"relatime",
-#						"uid=1000",
-#						"gid=1000",
-#						"iocharset=utf8",
-#						"mode=0400",
-#						"dmode=0500",
-#						"uhelper=udisks2"
-#				]
-#		},
-#		"/mounts/net/nbjk": {
-#				"dev": "jknauth@192.168.11.36:/home/jknauth",
+#		"/mounts/net/nbxxxxxxxx": {
+#				"dev": "xxxxxxxx@192.168.10.16:/home/xxxxxxxx",
 #				"fstype": "fuse.sshfs",
 #				"fstype2": null,
-#				"mountPoint": "/mounts/net/nbjk",
+#				"mountPoint": "/mounts/net/nbxxxxxxxx",
 #				"options": [
 #						"rw",
 #						"nosuid",
@@ -207,29 +189,11 @@ def parse_mount(stdout:str, stderr:str, exitcode:int) -> dict:
 #				]
 #		},
 #		...,
-#		"/media/woodoo/BROODWAR": {
-#				"dev": "/dev/sr0",
-#				"fstype": "iso9660",
-#				"fstype2": null,
-#				"mountPoint": "/media/woodoo/BROODWAR",
-#				"options": [
-#						"ro",
-#						"nosuid",
-#						"nodev",
-#						"relatime",
-#						"uid=1000",
-#						"gid=1000",
-#						"iocharset=utf8",
-#						"mode=0400",
-#						"dmode=0500",
-#						"uhelper=udisks2"
-#				]
-#		},
-#		"/mounts/net/nbjk": {
-#				"dev": "jknauth@192.168.11.36:/home/jknauth",
+#		"/mounts/net/nbxxxxxxxx": {
+#				"dev": "xxxxxxxx@192.168.10.16:/home/xxxxxxxx",
 #				"fstype": "fuse.sshfs",
 #				"fstype2": null,
-#				"mountPoint": "/mounts/net/nbjk",
+#				"mountPoint": "/mounts/net/nbxxxxxxxx",
 #				"options": [
 #						"rw",
 #						"nosuid",

@@ -99,7 +99,7 @@ def parse_ifconfig(stdout:str, stderr:str, exitcode:int) -> dict:
 
 	"""
 	enp0s31f6: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
-        ether c8:f7:50:43:fa:84  txqueuelen 1000  (Ethernet)
+        ether a6:b5:c4:d3:e2:f1  txqueuelen 1000  (Ethernet)
         RX packets 0  bytes 0 (0.0 B)
         RX errors 0  dropped 0  overruns 0  frame 0
         TX packets 0  bytes 0 (0.0 B)
@@ -117,8 +117,8 @@ def parse_ifconfig(stdout:str, stderr:str, exitcode:int) -> dict:
 
 	wlp2s0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 			inet 192.168.89.183  netmask 255.255.255.0  broadcast 192.168.89.255
-			inet6 fe80::e57d:cb6f:fb92:d6f3  prefixlen 64  scopeid 0x20<link>
-			ether d4:3b:04:37:32:14  txqueuelen 1000  (Ethernet)
+			inet6 ........  prefixlen 64  scopeid 0x20<link>
+			ether a1:b2:c3:d4:e5:f6  txqueuelen 1000  (Ethernet)
 			RX packets 3758562  bytes 3983872988 (3.9 GB)
 			RX errors 0  dropped 0  overruns 0  frame 0
 			TX packets 1630817  bytes 222286497 (222.2 MB)

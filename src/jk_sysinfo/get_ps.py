@@ -56,9 +56,9 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 #					"stat": "Ss+",
 #					"tty": "pts/3",
 #					"uid": 1000,
-#					"user": "woodoo"
+#					"user": "xxxxxxxx"
 #					"gid": 1000,
-#					"group": "woodoo",
+#					"group": "xxxxxxxx",
 #					"cwd": ....
 #			},
 #			{
@@ -69,9 +69,9 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 #					"stat": "Sl",
 #					"tty": null,
 #					"uid": 1000,
-#					"user": "woodoo"
+#					"user": "xxxxxxxx"
 #					"gid": 1000,
-#					"group": "woodoo",
+#					"group": "xxxxxxxx",
 #					"cwd": ....
 #			},
 #			...
@@ -83,9 +83,9 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 #					"stat": "Sl",
 #					"tty": null,
 #					"uid": 1000,
-#					"user": "woodoo"
+#					"user": "xxxxxxxx"
 #					"gid": 1000,
-#					"group": "woodoo",
+#					"group": "xxxxxxxx",
 #					"cwd": ....
 #			},
 #			...
@@ -183,9 +183,9 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 #					"stat": "Ss+",
 #					"tty": "pts/3",
 #					"uid": 1000,
-#					"user": "woodoo"
+#					"user": "xxxxxxxx"
 #					"gid": 1000,
-#					"group": "woodoo",
+#					"group": "xxxxxxxx",
 #					"cwd": ....
 #			},
 #			{
@@ -196,9 +196,9 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 #					"stat": "Sl",
 #					"tty": null,
 #					"uid": 1000,
-#					"user": "woodoo"
+#					"user": "xxxxxxxx"
 #					"gid": 1000,
-#					"group": "woodoo",
+#					"group": "xxxxxxxx",
 #					"cwd": ....
 #			},
 #			...
@@ -210,9 +210,9 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 #					"stat": "Sl",
 #					"tty": null,
 #					"uid": 1000,
-#					"user": "woodoo"
+#					"user": "xxxxxxxx"
 #					"gid": 1000,
-#					"group": "woodoo",
+#					"group": "xxxxxxxx",
 #					"cwd": ....
 #			},
 #			...

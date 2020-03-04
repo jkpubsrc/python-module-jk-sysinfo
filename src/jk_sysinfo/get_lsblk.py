@@ -16,7 +16,7 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 # Returns:
 #
 #	{
-#		"deviceTree": [
+#		"devtree": [
 #			{
 #				"children": [
 #					{
@@ -38,13 +38,13 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 #			{
 #				"dev": "/dev/sr0",
 #				"fstype": "iso9660",
-#				"label": "BROODWAR",
-#				"mountpoint": "/media/woodoo/BROODWAR",
+#				"label": "YYYYYY",
+#				"mountpoint": "/media/xxxxxxxx/YYYYYY",
 #				"name": "sr0",
 #				"uuid": "2001-10-05-02-59-13-00"
 #			}
 #		],
-#		"mountPoints": {
+#		"mountpoints": {
 #			"/": {
 #				"dev": "/dev/sda1",
 #				"fstype": "ext4",
@@ -53,11 +53,11 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 #				"name": "sda1",
 #				"uuid": "94933739-97e5-47e8-b7e8-ab8b7ed3f2a7"
 #			},
-#			"/media/woodoo/BROODWAR": {
+#			"/media/xxxxxxxx/YYYYYY": {
 #				"dev": "/dev/sr0",
 #				"fstype": "iso9660",
-#				"label": "BROODWAR",
-#				"mountPoint": "/media/woodoo/BROODWAR",
+#				"label": "YYYYYY",
+#				"mountPoint": "/media/xxxxxxxx/YYYYYY",
 #				"name": "sr0",
 #				"uuid": "2001-10-05-02-59-13-00"
 #			}
@@ -74,7 +74,7 @@ def parse_lsblk(stdout:str, stderr:str, exitcode:int) -> dict:
 				{"name": "sda1", "fstype": "ext4", "label": null, "uuid": "94933739-97e5-47e8-b7e8-ab8b7ed3f2a7", "mountpoint": "/"}
 				]
 			},
-			{"name": "sr0", "fstype": "iso9660", "label": "BROODWAR", "uuid": "2001-10-05-02-59-13-00", "mountpoint": "/media/woodoo/BROODWAR"}
+			{"name": "sr0", "fstype": "iso9660", "label": "YYYYYY", "uuid": "2001-10-05-02-59-13-00", "mountpoint": "/media/xxxxxxxx/YYYYYY"}
 		]
 	}
 	"""
@@ -133,8 +133,8 @@ def __postproces_lsblk_dev(j, mountPointMap):
 #			{
 #				"dev": "/dev/sr0",
 #				"fstype": "iso9660",
-#				"label": "BROODWAR",
-#				"mountpoint": "/media/woodoo/BROODWAR",
+#				"label": "YYYYYY",
+#				"mountpoint": "/media/xxxxxxxx/YYYYYY",
 #				"name": "sr0",
 #				"uuid": "2001-10-05-02-59-13-00"
 #			}
@@ -148,11 +148,11 @@ def __postproces_lsblk_dev(j, mountPointMap):
 #				"name": "sda1",
 #				"uuid": "94933739-97e5-47e8-b7e8-ab8b7ed3f2a7"
 #			},
-#			"/media/woodoo/BROODWAR": {
+#			"/media/xxxxxxxx/YYYYYY": {
 #				"dev": "/dev/sr0",
 #				"fstype": "iso9660",
-#				"label": "BROODWAR",
-#				"mountPoint": "/media/woodoo/BROODWAR",
+#				"label": "YYYYYY",
+#				"mountPoint": "/media/xxxxxxxx/YYYYYY",
 #				"name": "sr0",
 #				"uuid": "2001-10-05-02-59-13-00"
 #			}

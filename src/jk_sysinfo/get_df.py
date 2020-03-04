@@ -26,18 +26,10 @@ from .invoke_utils import run
 #			"spaceUsed": 0
 #		},
 #		...
-#		"/media/woodoo/BROODWAR": {
-#			"dev": "/dev/sr0",
+#		"/mounts/net/nbxxxxxxxx": {
+#			"dev": "xxxxxxxx@192.168.10.16:/home/xxxxxxxx",
 #			"fstype2": null,
-#			"mountPoint": "/media/woodoo/BROODWAR",
-#			"spaceFree": 0,
-#			"spaceTotal": 725319680,
-#			"spaceUsed": 725319680
-#		},
-#		"/mounts/net/nbjk": {
-#			"dev": "jknauth@192.168.11.36:/home/jknauth",
-#			"fstype2": null,
-#			"mountPoint": "/mounts/net/nbjk",
+#			"mountPoint": "/mounts/net/nbxxxxxxxx",
 #			"spaceFree": 137069015040,
 #			"spaceTotal": 1000948457472,
 #			"spaceUsed": 812962639872
@@ -73,8 +65,6 @@ def parse_df(stdout:str, stderr:str, exitcode:int) -> dict:
 	tmpfs                                                                         15935324K          0K   15935324K   0% /sys/fs/cgroup
 	tmpfs                                                                           262144K          0K     262144K   0% /mounts/ramdisk
 	tmpfs                                                                          3187068K        108K    3186960K   1% /run/user/1000
-	/dev/sr0                                                                        708320K     708320K          0K 100% /media/woodoo/BROODWAR
-	sirius@192.168.11.36:/home/sirius                                            977488728K  794100104K  133665184K  86% /mounts/net/nbs
 	"""
 
 	if exitcode != 0:
@@ -140,18 +130,10 @@ def parse_df(stdout:str, stderr:str, exitcode:int) -> dict:
 #			"spaceUsed": 0
 #		},
 #		...
-#		"/media/woodoo/BROODWAR": {
-#			"dev": "/dev/sr0",
+#		"/mounts/net/nbxxxxxxxx": {
+#			"dev": "xxxxxxxx@192.168.10.16:/home/xxxxxxxx",
 #			"fstype2": null,
-#			"mountPoint": "/media/woodoo/BROODWAR",
-#			"spaceFree": 0,
-#			"spaceTotal": 725319680,
-#			"spaceUsed": 725319680
-#		},
-#		"/mounts/net/nbjk": {
-#			"dev": "jknauth@192.168.11.36:/home/jknauth",
-#			"fstype2": null,
-#			"mountPoint": "/mounts/net/nbjk",
+#			"mountPoint": "/mounts/net/nbxxxxxxxx",
 #			"spaceFree": 137069015040,
 #			"spaceTotal": 1000948457472,
 #			"spaceUsed": 812962639872

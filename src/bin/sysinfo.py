@@ -15,14 +15,13 @@ from jk_typing import *
 
 
 
-
 """
 from fabric import Connection
 import jk_pwdinput
 
-REMOTE_HOST = "192.168.11.36"
+REMOTE_HOST = "<ipaddress>"
 REMOTE_PORT = 22
-REMOTE_LOGIN = "jknauth"
+REMOTE_LOGIN = "<login>"
 REMOTE_PASSWORD = jk_pwdinput.readpwd("Password for " + REMOTE_LOGIN + "@" + REMOTE_HOST + ": ")
 c = Connection(host=REMOTE_HOST, user=REMOTE_LOGIN, port=REMOTE_PORT, connect_kwargs={"password": REMOTE_PASSWORD})
 """
@@ -30,23 +29,77 @@ c = None
 
 
 
+os_release = jk_flexdata.createFromData(jk_sysinfo.get_etc_os_release(c))
 
-data_lsb_release_a = jk_flexdata.createFromData(jk_sysinfo.get_lsb_release_a(c))			# static
-data_lshw = jk_flexdata.createFromData(jk_sysinfo.get_lshw(c))								# static
-data_mobo = jk_flexdata.createFromData(jk_sysinfo.get_motherboard_info(c))					# static
-data_bios = jk_flexdata.createFromData(jk_sysinfo.get_bios_info(c))							# static
-data_proccpu = [ jk_flexdata.createFromData(x) for x in jk_sysinfo.get_proc_cpu_info(c) ]	# static, (runtime)
-data_cpu = jk_flexdata.createFromData(jk_sysinfo.get_cpu_info(c))							# static
-data_sensors = jk_flexdata.createFromData(jk_sysinfo.get_sensors(c))						# runtime
-data_sysload = jk_flexdata.createFromData(jk_sysinfo.get_proc_load_avg(c))					# runtime
-data_mem = jk_flexdata.createFromData(jk_sysinfo.get_proc_meminfo(c))						# runtime
-data_lsblk = jk_flexdata.createFromData(jk_sysinfo.get_lsblk(c))							# runtime
-data_reboot = jk_flexdata.createFromData(jk_sysinfo.get_needs_reboot(c))					# runtime
-data_mounts = jk_flexdata.createFromData(jk_sysinfo.get_mount(c))							# runtime
-data_df = jk_flexdata.createFromData(jk_sysinfo.get_df(c))									# runtime
-data_net_info = jk_flexdata.createFromData(jk_sysinfo.get_net_info(c))						# runtime
-data_uptime = jk_flexdata.createFromData(jk_sysinfo.get_uptime(c))							# runtime
+bIsRPi = os_release.distribution == "raspbian"
 
+
+
+
+
+data_lsb_release_a = jk_flexdata.createFromData(jk_sysinfo.get_lsb_release_a(c))				# static
+data_lshw = jk_flexdata.createFromData(jk_sysinfo.get_lshw(c))									# static
+if bIsRPi:
+	data_proccpu_extra = jk_flexdata.createFromData(jk_sysinfo.get_proc_cpu_info(c)[1])			# static
+	data_mobo_json = {
+		"vendor": "Raspberry Pi Foundation",
+	}
+	if data_proccpu_extra.hardware:
+		data_mobo_json["soc"] = data_proccpu_extra.hardware
+		data_mobo_json["serial"] = data_proccpu_extra.serial
+		data_mobo_json["name"] = data_proccpu_extra.model
+	data_mobo = jk_flexdata.createFromData(data_mobo_json)
+else:
+	data_mobo = jk_flexdata.createFromData(jk_sysinfo.get_motherboard_info(c))					# static
+data_bios = jk_flexdata.createFromData(jk_sysinfo.get_bios_info(c))								# static
+data_proccpu = [ jk_flexdata.createFromData(x) for x in jk_sysinfo.get_proc_cpu_info(c)[0] ]	# static, (runtime)
+data_cpu = jk_flexdata.createFromData(jk_sysinfo.get_cpu_info(c))								# static
+if bIsRPi:
+	t = jk_sysinfo.get_vcgencmd_measure_temp(c)
+	v = jk_sysinfo.get_vcgencmd_measure_volts(c)
+	data_sensors_json = {
+		"coretemp": {
+			"device": "coretemp",
+			"sensorData": {
+				"temp1": {
+					"sensor": "temp",
+					"value": t["cpu"]["temp"],
+				}
+			}
+		},
+		"corevolts": {
+			"device": "corevolts",
+			"sensorData": {
+				"temp1": {
+					"sensor": "volt",
+					"value": v["cpu"]["volt"],
+				}
+			}
+		},
+		"ramolts": {
+			"device": "ramvolts",
+			"sensorData": {
+				"volt1": {
+					"sensor": "volt",
+					"value": v["ram"]["volt"],
+				}
+			}
+		}
+	}
+	data_sensors = jk_flexdata.createFromData(data_sensors_json)								# runtime
+else:
+	data_sensors = jk_flexdata.createFromData(jk_sysinfo.get_sensors(c))						# runtime
+data_sysload = jk_flexdata.createFromData(jk_sysinfo.get_proc_load_avg(c))						# runtime
+data_mem = jk_flexdata.createFromData(jk_sysinfo.get_proc_meminfo(c))							# runtime
+data_lsblk = jk_flexdata.createFromData(jk_sysinfo.get_lsblk(c))								# runtime
+data_reboot = jk_flexdata.createFromData(jk_sysinfo.get_needs_reboot(c))						# runtime
+data_mounts = jk_flexdata.createFromData(jk_sysinfo.get_mount(c))								# runtime
+data_df = jk_flexdata.createFromData(jk_sysinfo.get_df(c))										# runtime
+data_net_info = jk_flexdata.createFromData(jk_sysinfo.get_net_info(c))							# runtime
+data_uptime = jk_flexdata.createFromData(jk_sysinfo.get_uptime(c))								# runtime
+
+if not data_reboot:
+	print(jk_console.Console.ForeGround.RED + "WARNING: Packet 'needrestart' not installed." + jk_console.Console.RESET)
 
 
 
@@ -122,7 +175,8 @@ print("\tcpu family:", data_proccpu[0].cpu_family)
 print("\tcores:", len(data_proccpu), "(hyperthreading)" if ("ht" in data_proccpu[0].flags) else "")
 if "cache_size" in data_proccpu[0]._keys():
 	print("\tcpu cache size:", data_proccpu[0].cache_size)
-print("\tbugs:", ", ".join(data_proccpu[0].bugs))
+if data_proccpu[0].bugs:
+	print("\tbugs:", ", ".join(data_proccpu[0].bugs))
 print("-")
 
 ################################################################
@@ -182,12 +236,15 @@ for multimedia in data_lshw._findAllR(id="multimedia"):
 
 print("\n#### network (hardware) ####\n")
 print("static")
-for network in data_lshw._findAllR(id="network"):
-	# jk_json.prettyPrint(network._toDict())
+for network in list(data_lshw._findAllR(id="network")) + list(data_lshw._findAllR(id=re.compile("^network:"))):
+	#jk_json.prettyPrint(network._toDict())
 	print("\tvendor:", network.vendor)
 	print("\tproduct:", network.product)
 	print("\tdevice:", network.logicalname)		# network device name
-	print("\thas_link:", network.configuration.link == "yes")
+	if network.configuration.link:
+		print("\thas_link:", network.configuration.link == "yes")
+	else:
+		print("\thas_link:", "unknown")
 	if network.capabilities.tp:
 		# regular twisted pair network
 
@@ -220,6 +277,8 @@ print("\n#### sensors ####\n")
 def formatSensorData(data:jk_flexdata.FlexObject) -> str:
 	if data._isEmpty():
 		return "n/a"
+	if data.sensor == "volt":
+		return str(data.value) + "V"
 	if data.sensor == "fan":
 		return str(data.value) + " rpm"
 	elif data.sensor == "temp":
@@ -230,8 +289,7 @@ def formatSensorData(data:jk_flexdata.FlexObject) -> str:
 			return jk_sysinfo.formatTemperatureGraphC(data.value)
 			#return str(data.value) + " °C"
 	else:
-		jk_json.prettyPrint(data._toDict())
-		raise Exception()
+		raise Exception("Unknown: " + repr(data.sensor))
 #
 
 print("runtime")
@@ -337,7 +395,7 @@ print()
 
 
 """
-System:    Host: selenium Kernel: 4.4.0-154-generic x86_64 (64 bit) Desktop: MATE 1.12.1
+System:    Host: nbxxxxxxxx Kernel: 4.4.0-154-generic x86_64 (64 bit) Desktop: MATE 1.12.1
            Distro: Ubuntu 16.04 xenial
 Machine:   Mobo: MSI model: B150M ECO (MS-7994) v: 1.0 Bios: American Megatrends v: 1.A0 date: 12/06/2017
 CPU:       Quad core Intel Core i5-6600 (-MCP-) cache: 6144 KB 

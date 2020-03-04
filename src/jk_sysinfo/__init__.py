@@ -1,6 +1,9 @@
 ﻿
 
 
+__version__ = "0.2020.3.4"
+
+
 
 from	.invoke_utils			import	enableDebugging, run
 from	.value_formatting		import	*
@@ -28,7 +31,8 @@ from	.get_ps					import	parse_ps,												get_ps
 from	.get_sensors			import	parse_sensors,											get_sensors
 from	.get_uptime				import	parse_uptime,											get_uptime
 from	.get_user_info			import	parse_etc_passwd, parse_etc_shadow, parse_etc_group,	get_user_info
+from	.get_vcgencmd			import															get_vcgencmd_get_config, get_vcgencmd_measure_volts, get_vcgencmd_measure_temp, get_vcgencmd_get_mem, get_vcgencmd_display_power, get_vcgencmd
 
 
 
-__version__ = "0.2020.2.28.1"
+

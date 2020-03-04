@@ -317,7 +317,7 @@ def _findAllR(d, **kwargs):
 #										"id": "medium",
 #										"logicalname": [
 #											"/dev/cdrom",
-#											"/media/woodoo/BROODWAR"
+#											"/media/xxxxxxxx/YYYYYY"
 #										],
 #										"physid": "0"
 #									}
@@ -341,7 +341,6 @@ def _findAllR(d, **kwargs):
 #									"/dev/dvd",
 #									"/dev/dvdrw",
 #									"/dev/sr0",
-#									"/media/woodoo/BROODWAR"
 #								],
 #								"physid": "0.0.0",
 #								"product": "CDDVDW SH-S203P",
@@ -366,7 +365,7 @@ def _findAllR(d, **kwargs):
 #		"claimed": true,
 #		"class": "system",
 #		"description": "Computer",
-#		"id": "selenium",
+#		"id": "nbxxxxxxxx",
 #		"width": 64
 #	}
 #
@@ -667,7 +666,7 @@ def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
 #										"id": "medium",
 #										"logicalname": [
 #											"/dev/cdrom",
-#											"/media/woodoo/BROODWAR"
+#											"/media/xxxxxxxx/YYYYYY"
 #										],
 #										"physid": "0"
 #									}
@@ -691,7 +690,7 @@ def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
 #									"/dev/dvd",
 #									"/dev/dvdrw",
 #									"/dev/sr0",
-#									"/media/woodoo/BROODWAR"
+#									"/media/xxxxxxxx/YYYYYY"
 #								],
 #								"physid": "0.0.0",
 #								"product": "CDDVDW SH-S203P",
@@ -716,7 +715,7 @@ def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
 #		"claimed": true,
 #		"class": "system",
 #		"description": "Computer",
-#		"id": "selenium",
+#		"id": "nbxxxxxxxx",
 #		"width": 64
 #	}
 #
