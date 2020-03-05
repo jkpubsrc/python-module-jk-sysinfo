@@ -2,6 +2,8 @@
 
 import re
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -99,6 +101,7 @@ def parse_apt_list(stdout:str, stderr:str, exitcode:int) -> dict:
 #		]
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_apt_list(c = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/usr/bin/apt list --upgradable")
 	return parse_apt_list(stdout, stderr, exitcode)

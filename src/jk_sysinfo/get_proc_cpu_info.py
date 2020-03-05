@@ -1,6 +1,8 @@
 
 import typing
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 #import jk_json
@@ -218,6 +220,7 @@ def parse_proc_cpu_info(stdout:str, stderr:str, exitcode:int) -> typing.Tuple[li
 #		...
 #	]
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_proc_cpu_info(c = None) -> typing.Tuple[list,dict]:
 	stdout, stderr, exitcode = run(c, "cat /proc/cpuinfo")
 	return parse_proc_cpu_info(stdout, stderr, exitcode)

@@ -2,10 +2,11 @@
 
 import re
 
+from jk_cachefunccalls import cacheCalls
+#import jk_json
+
 from .parsing_utils import *
 from .invoke_utils import run
-
-import jk_json
 
 
 
@@ -83,6 +84,7 @@ def _parse_vcgencmd_get_config(stdout:str, stderr:str, exitcode:int, outData:dic
 #		}
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_vcgencmd_get_config(c = None, outData:dict = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd get_config int")
 	return _parse_vcgencmd_get_config(stdout, stderr, exitcode, outData)
@@ -111,6 +113,7 @@ def _parse_vcgencmd_measure_volts(stdout:str, stderr:str, exitcode:int, key:str,
 
 
 
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_vcgencmd_measure_volts(c = None, outData:dict = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd measure_volts core")
 	outData = _parse_vcgencmd_measure_volts(stdout, stderr, exitcode, "cpu", outData)
@@ -142,6 +145,7 @@ def _parse_vcgencmd_measure_temp(stdout:str, stderr:str, exitcode:int, outData:d
 
 
 
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_vcgencmd_measure_temp(c = None, outData:dict = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd measure_temp")
 	return _parse_vcgencmd_measure_temp(stdout, stderr, exitcode, outData)
@@ -174,6 +178,7 @@ def _parse_vcgencmd_get_mem(stdout:str, stderr:str, exitcode:int, key:str, outDa
 
 
 
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_vcgencmd_get_mem(c = None, outData:dict = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd get_mem arm")
 	outData = _parse_vcgencmd_get_mem(stdout, stderr, exitcode, "system_mbytes", outData)
@@ -208,6 +213,7 @@ def _parse_vcgencmd_display_power(stdout:str, stderr:str, exitcode:int, outData:
 
 
 
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_vcgencmd_display_power(c = None, outData:dict = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd display_power")
 	outData = _parse_vcgencmd_display_power(stdout, stderr, exitcode, outData)
@@ -242,13 +248,13 @@ def get_vcgencmd_display_power(c = None, outData:dict = None) -> dict:
 #		}
 #	}
 #
-def get_vcgencmd(c = None) -> dict:
+def get_vcgencmd(c = None, _ignoreCache:bool = False) -> dict:
 	ret = {}
-	get_vcgencmd_get_config(c, ret)
-	get_vcgencmd_measure_volts(c, ret)
-	get_vcgencmd_measure_temp(c, ret)
-	get_vcgencmd_get_mem(c, ret)
-	get_vcgencmd_display_power(c, ret)
+	get_vcgencmd_get_config(c, ret, _ignoreCache=_ignoreCache)
+	get_vcgencmd_measure_volts(c, ret, _ignoreCache=_ignoreCache)
+	get_vcgencmd_measure_temp(c, ret, _ignoreCache=_ignoreCache)
+	get_vcgencmd_get_mem(c, ret, _ignoreCache=_ignoreCache)
+	get_vcgencmd_display_power(c, ret, _ignoreCache=_ignoreCache)
 	return ret
 #
 

@@ -2,6 +2,8 @@
 
 import re
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -37,6 +39,7 @@ from .get_vcgencmd import get_vcgencmd_get_config
 #		"freq_min": 800
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_cpu_info(c = None) -> dict:
 	os_release = get_etc_os_release(c)
 

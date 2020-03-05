@@ -3,6 +3,7 @@
 import sys
 import re
 
+from jk_cachefunccalls import cacheCalls
 #import jk_json
 
 from .parsing_utils import *
@@ -511,6 +512,7 @@ def __get_accesspoints_for_interface(interface:str, c = None, runAsRoot:bool = F
 #		}
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0, 1])
 def get_accesspoints(c = None, runAsRoot:bool = False) -> dict:
 	ret = {}
 

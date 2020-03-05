@@ -1,5 +1,7 @@
 
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -18,6 +20,7 @@ from .invoke_utils import run
 #		"version": "1.A0"
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_bios_info(c = None) -> dict:
 	bFail = False
 

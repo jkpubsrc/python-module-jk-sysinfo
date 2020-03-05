@@ -2,6 +2,8 @@
 
 import re
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -207,6 +209,7 @@ def parse_mount(stdout:str, stderr:str, exitcode:int) -> dict:
 #		...
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_mount(c = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/bin/mount")
 	return parse_mount(stdout, stderr, exitcode)

@@ -1,5 +1,7 @@
 
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -72,6 +74,7 @@ def parse_needs_reboot(stdout:str, stderr:str, exitcode:int) -> dict:
 #		"updateMicroCodeOrABI": true
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_needs_reboot(c = None) -> dict:
 	# see: https://github.com/liske/needrestart/blob/master/README.batch.md
 	try:

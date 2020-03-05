@@ -1,5 +1,7 @@
 
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -157,6 +159,7 @@ def parse_df(stdout:str, stderr:str, exitcode:int) -> dict:
 #		...
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_df(c = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/bin/df -BK")
 	return parse_df(stdout, stderr, exitcode)

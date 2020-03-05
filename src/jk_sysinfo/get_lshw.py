@@ -3,6 +3,8 @@
 import json
 import re
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -719,6 +721,7 @@ def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
 #		"width": 64
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_lshw(c = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/usr/bin/lshw -json")
 	return parse_lshw(stdout, stderr, exitcode)

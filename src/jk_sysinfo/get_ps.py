@@ -5,6 +5,11 @@ import re
 import pwd
 import grp
 
+# TODO: eliminate the use of modules pwd and grp as this way get_ps() can not be executed remotely.
+#		NOTE: we might be able implement this using data from get_user_info().
+
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -218,8 +223,11 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 #			...
 #	]
 #
-def get_ps(c = None) -> dict:
-	stdout, stderr, exitcode = run(c, "ps ax -o ppid,pid,tty,stat,uid,gid,cmd")
+# NOTE: This method makes use of the python modules <c>pwd</c> and <c>grp</c> which make use of the local user and group database only.
+#		For that reason this function can not be executed remotely until the implementation has been improved here.
+#
+def get_ps() -> dict:
+	stdout, stderr, exitcode = run(None, "ps ax -o ppid,pid,tty,stat,uid,gid,cmd")
 	return parse_ps(stdout, stderr, exitcode)
 #
 

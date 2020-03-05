@@ -4,6 +4,8 @@ import datetime
 import pytz
 from dateutil import tz
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 from .get_date import *
@@ -81,7 +83,7 @@ def parse_uptime(stdout:str, stderr:str, exitcode:int) -> float:
 #	}
 #
 def get_uptime(c = None) -> dict:
-	systemNowInDateTimeUTC = get_date_as_datetime(utc=True)
+	systemNowInDateTimeUTC = get_date_as_datetime(None, True)
 	systemNowInSeconds = (systemNowInDateTimeUTC - _EPOCH).total_seconds()
 	systemNowInDateTimeLocal = systemNowInDateTimeUTC.astimezone(tz.tzlocal())
 

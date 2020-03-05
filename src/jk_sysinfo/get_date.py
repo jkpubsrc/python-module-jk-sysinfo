@@ -3,6 +3,8 @@
 import datetime
 import pytz
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -34,8 +36,9 @@ def parse_date_as_datetime(stdout:str, stderr:str, exitcode:int, utc:bool = Fals
 
 
 #
+# Get the date as reported by the (possibly remote) operating system.
 #
-#
+@cacheCalls(seconds=3, dependArgs=[0, 1])
 def get_date(c = None, utc:bool = True) -> dict:
 	stdout, stderr, exitcode = run(c, "/bin/date " + ("-u" if utc else "") + " +'%Y-%m-%d-%H-%M-%S-%N'")
 	d = parse_date_as_datetime(stdout, stderr, exitcode, utc)
@@ -53,8 +56,9 @@ def get_date(c = None, utc:bool = True) -> dict:
 
 
 #
+# Get the date as reported by the (possibly remote) operating system.
 #
-#
+@cacheCalls(seconds=3, dependArgs=[0, 1])
 def get_date_as_datetime(c = None, utc:bool = True) -> datetime.datetime:
 	stdout, stderr, exitcode = run(c, "/bin/date " + ("-u" if utc else "") + " +'%Y-%m-%d-%H-%M-%S-%N'")
 	return parse_date_as_datetime(stdout, stderr, exitcode, utc)

@@ -29,6 +29,7 @@ c = None
 
 
 
+x = jk_sysinfo.get_etc_os_release(c)
 os_release = jk_flexdata.createFromData(jk_sysinfo.get_etc_os_release(c))
 
 bIsRPi = os_release.distribution == "raspbian"

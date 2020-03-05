@@ -1,5 +1,7 @@
 
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -53,6 +55,7 @@ def parse_etc_os_release(stdout:str, stderr:str, exitcode:int) -> dict:
 #		"versionStr": "16.04.6 LTS (Xenial Xerus)",
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_etc_os_release(c = None) -> dict:
 	stdout, stderr, exitcode = run(c, "cat /etc/os-release")
 	return parse_etc_os_release(stdout, stderr, exitcode)

@@ -1,5 +1,7 @@
 
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -42,6 +44,7 @@ def parse_lsb_release_a(stdout:str, stderr:str, exitcode:int) -> dict:
 #		"version": "16.04.6"
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_lsb_release_a(c = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/usr/bin/lsb_release -a")
 	return parse_lsb_release_a(stdout, stderr, exitcode)

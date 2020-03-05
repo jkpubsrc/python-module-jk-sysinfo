@@ -3,6 +3,7 @@
 import sys
 import re
 
+from jk_cachefunccalls import cacheCalls
 #import jk_json
 
 from .parsing_utils import *
@@ -62,6 +63,7 @@ def _get_network_file_list(c = None) -> dict:
 #		}
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_net_info(c = None) -> dict:
 	ret = {}
 

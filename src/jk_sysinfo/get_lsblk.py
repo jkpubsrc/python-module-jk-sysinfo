@@ -3,6 +3,8 @@
 import copy
 import json
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -159,6 +161,7 @@ def __postproces_lsblk_dev(j, mountPointMap):
 #		}
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_lsblk(c = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/bin/lsblk -bJpO")
 	return parse_lsblk(stdout, stderr, exitcode)

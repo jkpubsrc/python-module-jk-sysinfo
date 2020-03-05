@@ -1,5 +1,7 @@
 
 
+from jk_cachefunccalls import cacheCalls
+
 from .parsing_utils import *
 from .invoke_utils import run
 
@@ -16,10 +18,12 @@ from .invoke_utils import run
 #		"version": "1.0"
 #	}
 #
+@cacheCalls(seconds=3, dependArgs=[0])
 def get_motherboard_info(c = None) -> dict:
 	bFail = False
 
 	try:
+		# TODO: sysinfo.py avoids calling this method on Raspberry Pi devices thus working around getting the desired information this way. 
 		model, _, _ = run(c, "cat /sys/firmware/devicetree/base/model")
 		PATTERN = "Raspberry Pi"
 		if model.startswith(PATTERN):
