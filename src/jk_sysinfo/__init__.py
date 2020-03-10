@@ -1,7 +1,7 @@
 ﻿
 
 
-__version__ = "0.2020.3.5.1"
+__version__ = "0.2020.3.10"
 
 
 
@@ -24,6 +24,7 @@ from	.get_motherboard_info	import															get_motherboard_info
 from	.get_mount				import	parse_mount,											get_mount
 from	.get_needs_reboot		import	parse_needs_reboot,										get_needs_reboot
 from	.get_net_info			import															get_net_info
+from	.get_pip3_list			import	parse_pip3_list,										get_pip3_list
 from	.get_proc_cpu_info		import	parse_proc_cpu_info,									get_proc_cpu_info
 from	.get_proc_load_avg		import	parse_proc_load_avg,									get_proc_load_avg
 from	.get_proc_meminfo		import	parse_proc_meminfo,										get_proc_meminfo
@@ -32,8 +33,6 @@ from	.get_sensors			import	parse_sensors,											get_sensors
 from	.get_uptime				import	parse_uptime,											get_uptime
 from	.get_user_info			import	parse_etc_passwd, parse_etc_shadow, parse_etc_group,	get_user_info
 from	.get_vcgencmd			import															get_vcgencmd_get_config, get_vcgencmd_measure_volts, get_vcgencmd_measure_temp, get_vcgencmd_get_mem, get_vcgencmd_display_power, get_vcgencmd
-
-
 
 
 
