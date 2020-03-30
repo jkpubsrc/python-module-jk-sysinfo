@@ -33,7 +33,7 @@ from .invoke_utils import run
 #		]
 #	}
 #
-def parse_apt_list(stdout:str, stderr:str, exitcode:int) -> dict:
+def parse_apt_list_upgradable(stdout:str, stderr:str, exitcode:int) -> dict:
 
 	"""
 	chromium-browser/xenial-updates,xenial-security 77.0.3865.90-0ubuntu0.16.04.1 amd64 [upgradable from: 76.0.3809.100-0ubuntu0.16.04.1]
@@ -66,7 +66,10 @@ def parse_apt_list(stdout:str, stderr:str, exitcode:int) -> dict:
 		if m:
 			upgradable.append(m.group(1))
 		else:
-			print(line)
+			if line == "Listing...":
+				continue
+			else:
+				raise Exception("Unparsable line: " + repr(line))
 
 	return {
 		"install": [],
@@ -102,9 +105,9 @@ def parse_apt_list(stdout:str, stderr:str, exitcode:int) -> dict:
 #	}
 #
 @cacheCalls(seconds=3, dependArgs=[0])
-def get_apt_list(c = None) -> dict:
+def get_apt_list_upgradable(c = None) -> dict:
 	stdout, stderr, exitcode = run(c, "/usr/bin/apt list --upgradable")
-	return parse_apt_list(stdout, stderr, exitcode)
+	return parse_apt_list_upgradable(stdout, stderr, exitcode)
 #
 
 

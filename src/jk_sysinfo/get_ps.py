@@ -226,8 +226,8 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 # NOTE: This method makes use of the python modules <c>pwd</c> and <c>grp</c> which make use of the local user and group database only.
 #		For that reason this function can not be executed remotely until the implementation has been improved here.
 #
-def get_ps() -> dict:
-	stdout, stderr, exitcode = run(None, "ps ax -o ppid,pid,tty,stat,uid,gid,cmd")
+def get_ps(c = None) -> dict:
+	stdout, stderr, exitcode = run(c, "ps ax -o ppid,pid,tty,stat,uid,gid,cmd")
 	return parse_ps(stdout, stderr, exitcode)
 #
 

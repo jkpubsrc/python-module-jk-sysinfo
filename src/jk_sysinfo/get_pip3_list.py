@@ -40,10 +40,15 @@ def parse_pip3_list(stdout:str, stderr:str, exitcode:int) -> dict:
 	ret = {}
 
 	lines = stdout.strip().split("\n")
+	if (len(lines) >= 2) and lines[0].startswith("Package") and lines[1].startswith("----"):
+		lines = lines[2:]
 	for line in lines:
-		m = re.match("^(.*)\s+\((.*)\)$", line)
+		line = line.strip()
+		m = re.match("^([^\s]+)\s+\((.+)\)$", line)
 		if m is None:
-			raise Exception("Failed to parse line: " + repr(line))
+			m = re.match("^([^\s]+)\s+(.+)$", line)
+			if m is None:
+				raise Exception("Failed to parse line: " + repr(line))
 		pythonPackageName = m.group(1)
 		sPythonPackageVersion = m.group(2)
 		ret[pythonPackageName] = sPythonPackageVersion
@@ -67,7 +72,10 @@ def parse_pip3_list(stdout:str, stderr:str, exitcode:int) -> dict:
 #@cacheCalls(seconds=3, dependArgs=[0])
 @cacheCalls(seconds=3)
 def get_pip3_list(c = None) -> dict:
-	stdout, stderr, exitcode = run(c, "/usr/bin/pip3 list")
+	try:
+		stdout, stderr, exitcode = run(c, "/usr/bin/pip3 list --no-python-version-warning")
+	except:
+		stdout, stderr, exitcode = run(c, "/usr/local/bin/pip3 list")
 	return parse_pip3_list(stdout, stderr, exitcode)
 #
 
