@@ -1,7 +1,7 @@
 ﻿
 
 
-__version__ = "0.2020.4.2"
+__version__ = "0.2020.4.2.1"
 
 
 
@@ -16,6 +16,7 @@ from	.get_dpkg_list				import	parse_dpkg_list,										get_dpkg_list
 from	.get_date					import	parse_date_as_datetime,									get_date, get_date_as_datetime
 from	.get_df						import	parse_df,												get_df
 from	.get_etc_group				import	parse_etc_group,										get_etc_group
+from	.get_etc_hostname			import	parse_etc_hostname,										get_etc_hostname
 from	.get_etc_os_release			import	parse_etc_os_release,									get_etc_os_release
 from	.get_etc_passwd				import	parse_etc_passwd,										get_etc_passwd
 from	.get_ifconfig				import	parse_ifconfig,											get_ifconfig
@@ -35,4 +36,8 @@ from	.get_sensors				import	parse_sensors,											get_sensors
 from	.get_uptime					import	parse_uptime,											get_uptime
 from	.get_user_info				import	parse_etc_passwd, parse_etc_shadow, parse_etc_group,	get_user_info
 from	.get_vcgencmd				import															get_vcgencmd_get_config, get_vcgencmd_measure_volts, get_vcgencmd_measure_temp, get_vcgencmd_get_mem, get_vcgencmd_display_power, get_vcgencmd
+
+
+
+
 

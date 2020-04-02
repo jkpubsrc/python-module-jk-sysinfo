@@ -5,6 +5,6 @@
 	* Possible solution: Split into two directories: lower level functions and higher level functions.
 * TODO: Replace the existing connection management provided by `invoke_utils` with `jk_invoke`.
 	* TODO: Extend `jk_invoke` to check if files exist and to iterate through directories.
-
+* TODO: retrieving user data is somehow redundant.
 
 

@@ -75,7 +75,10 @@ def get_pip3_list(c = None) -> dict:
 	try:
 		stdout, stderr, exitcode = run(c, "/usr/bin/pip3 list --no-python-version-warning")
 	except:
-		stdout, stderr, exitcode = run(c, "/usr/local/bin/pip3 list")
+		try:
+			stdout, stderr, exitcode = run(c, "/usr/bin/pip3 list")
+		except:
+			stdout, stderr, exitcode = run(c, "/usr/local/bin/pip3 list")
 	return parse_pip3_list(stdout, stderr, exitcode)
 #
 

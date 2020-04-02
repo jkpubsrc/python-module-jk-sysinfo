@@ -19,7 +19,7 @@ def parse_etc_passwd(stdoutPasswd:str, stdoutShadow:str) -> dict:
 
 
 
-def get_etc_passwd(c = None, utc:bool = True) -> dict:
+def get_etc_passwd(c = None) -> dict:
 	if os.geteuid() != 0:
 		raise Exception("Must be root!")
 

@@ -19,7 +19,7 @@ def parse_etc_group(stdoutGroup:str, stdoutGShadow:str) -> dict:
 
 
 
-def get_etc_group(c = None, utc:bool = True) -> dict:
+def get_etc_group(c = None) -> dict:
 	if os.geteuid() != 0:
 		raise Exception("Must be root!")
 

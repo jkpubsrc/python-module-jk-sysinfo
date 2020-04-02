@@ -61,6 +61,7 @@ ALL_SYSINFO_OPTIONS = [
 	SysInfoOption("i-date-utc", "Get date (UTC)", jk_sysinfo.get_date, utc=True),
 	SysInfoOption("i-df", "Get disk space information", jk_sysinfo.get_df),
 	SysInfoOption("i-dpkg-list", "Get information about installed packages", jk_sysinfo.get_dpkg_list),
+	SysInfoOption("i-etc-hostname", "Get hostname information", jk_sysinfo.get_etc_hostname),
 	SysInfoOption("i-etc-os-release", "Get information about the OS as stored in /etc/os/release", jk_sysinfo.get_etc_os_release),
 	SysInfoOption("i-ifconfig", "Get information about the network interfaces as provided by 'ifconfig'", jk_sysinfo.get_ifconfig),
 	SysInfoOption("i-lsb-release-a", "Get information about the current linux distribution", jk_sysinfo.get_lsb_release_a),
