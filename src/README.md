@@ -10,7 +10,7 @@ To achieve this goal this module encapsulates various operating system tools by 
 
 Information about this module can be found here:
 
-* [github.org](https://github.com/jkpubsrc/....)
+* [github.org](https://github.com/jkpubsrc/python-module-jk-sysinfo)
 * [pypi.python.org](https://pypi.python.org/pypi/jk_sysinfo)
 
 Why this module?

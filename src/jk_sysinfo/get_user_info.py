@@ -164,11 +164,13 @@ def parse_etc_shadow(stdout:str, stderr:str, exitcode:int) -> dict:
 	ret = {}
 	for line in lines:
 		userName, password, x1, x2, x3, x4, x5, x6, x7 = line.split(":")
-		ret[userName] = {
+		x = {
 			"user": userName,
-			"isLocked": password.startswith("!"),
+			"isDisabled": password.startswith("!"),
 			"hasPassword": (password.startswith("$") or password.startswith("!$")) and (len(password) > 10),
 		}
+		x["canLogin"] = x["hasPassword"] and not x["isDisabled"]
+		ret[userName] = x
 
 	return ret
 #

@@ -21,10 +21,11 @@ import jk_argparsing
 
 class SysInfoOption(object):
 
-	def __init__(self, longOption:str, description:str, function):
+	def __init__(self, longOption:str, description:str, function, **kwargs):
 		self.longOption = longOption
 		self.description = description
 		self.function = function
+		self.extraArgs = kwargs
 	#
 
 	def onOptionEnable(self, argOption, argOptionArguments, parsedArgs):
@@ -42,7 +43,7 @@ class SysInfoOption(object):
 	#
 
 	def run(self, c):
-		return self.function(c)
+		return self.function(c, **self.extraArgs)
 	#
 
 #
@@ -56,7 +57,8 @@ ALL_SYSINFO_OPTIONS = [
 	SysInfoOption("i-apt-list-upgradable", "Get information about upgradable packages", jk_sysinfo.get_apt_list_upgradable),
 	SysInfoOption("i-bios-info", "Get information about the BIOS", jk_sysinfo.get_bios_info),
 	SysInfoOption("i-cpu-info", "Get information about the CPU", jk_sysinfo.get_cpu_info),
-	SysInfoOption("i-date", "Get date", jk_sysinfo.get_date),
+	SysInfoOption("i-date", "Get date (local)", jk_sysinfo.get_date, utc=False),
+	SysInfoOption("i-date-utc", "Get date (UTC)", jk_sysinfo.get_date, utc=True),
 	SysInfoOption("i-df", "Get disk space information", jk_sysinfo.get_df),
 	SysInfoOption("i-dpkg-list", "Get information about installed packages", jk_sysinfo.get_dpkg_list),
 	SysInfoOption("i-etc-os-release", "Get information about the OS as stored in /etc/os/release", jk_sysinfo.get_etc_os_release),
@@ -154,9 +156,9 @@ if cmdName is None:
 """
 
 if parsedArgs.optionData["color"]:
-	log = jk_logging.ConsoleLogger.create(logMsgFormatter = jk_logging.COLOR_LOG_MESSAGE_FORMATTER)
+	log = jk_logging.ConsoleLogger.create(logMsgFormatter = jk_logging.COLOR_LOG_MESSAGE_FORMATTER, printToStdErr = True)
 else:
-	log = jk_logging.ConsoleLogger.create()
+	log = jk_logging.ConsoleLogger.create(printToStdErr = True)
 
 bSuccess = True
 
@@ -166,6 +168,7 @@ for opt in ALL_SYSINFO_OPTIONS:
 		try:
 			ret[opt.longOption] = opt.run(None)
 		except Exception as ee:
+			# there has been an error
 			ret[opt.longOption] = None
 			# log.error("Failed to retrieve data for: " + opt.longOption)
 			log.exception(ee)
