@@ -103,6 +103,15 @@ def onOptionAllStd(argOption, argOptionArguments, parsedArgs):
 		parsedArgs.optionData.set(opt.longOption, True)
 #
 
+def onOptionAllVM(argOption, argOptionArguments, parsedArgs):
+	for opt in ALL_SYSINFO_OPTIONS:
+		if opt.longOption in [ "i-vcgencmd" ]:
+			continue
+		if opt.longOption in [ "i-sensors" ]:
+			continue
+		parsedArgs.optionData.set(opt.longOption, True)
+#
+
 def onOptionAllRPi(argOption, argOptionArguments, parsedArgs):
 	for opt in ALL_SYSINFO_OPTIONS:
 		if opt.longOption in []:
@@ -130,6 +139,7 @@ for opt in ALL_SYSINFO_OPTIONS:
 ap.createOption(None, 'i-all', "Use all system information modules.").onOption = onOptionAll
 ap.createOption(None, 'i-all-std', "Use all system information modules (Standard).").onOption = onOptionAllStd
 ap.createOption(None, 'i-all-rpi', "Use all system information modules (Raspberry Pi).").onOption = onOptionAllRPi
+ap.createOption(None, 'i-all-vm', "Use all system information modules (Virtual Machines).").onOption = onOptionAllVM
 
 ap.createAuthor("Jürgen Knauth", "jk@binary-overflow.de")
 ap.setLicense("Apache", YEAR = 2020, COPYRIGHTHOLDER = "Jürgen Knauth")
