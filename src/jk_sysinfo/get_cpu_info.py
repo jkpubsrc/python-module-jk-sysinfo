@@ -66,29 +66,34 @@ def get_cpu_info(c = None) -> dict:
 		})
 
 	else:
-		# other Linux
-		for cpu in cpus:
-			n = int(cpu[3:])
-			stdoutMin, _, _ = run(c, "cat /sys/devices/system/cpu/cpufreq/policy" + str(n) + "/cpuinfo_min_freq")
-			stdoutMax, _, _ = run(c, "cat /sys/devices/system/cpu/cpufreq/policy" + str(n) + "/cpuinfo_max_freq")
-			freqMin = int(stdoutMin.strip()) // 1000
-			freqMax = int(stdoutMax.strip()) // 1000
-			ret["cpus"].append({
-				"freq_min": freqMin,
-				"freq_max": freqMax,
-			})
+		# other Linux; does not work in VMs
+		try:
+			for cpu in cpus:
+				n = int(cpu[3:])
+				stdoutMin, _, _ = run(c, "cat /sys/devices/system/cpu/cpufreq/policy" + str(n) + "/cpuinfo_min_freq")
+				stdoutMax, _, _ = run(c, "cat /sys/devices/system/cpu/cpufreq/policy" + str(n) + "/cpuinfo_max_freq")
+				freqMin = int(stdoutMin.strip()) // 1000
+				freqMax = int(stdoutMax.strip()) // 1000
+				ret["cpus"].append({
+					"freq_min": freqMin,
+					"freq_max": freqMax,
+				})
+		except:
+			# TODO: maybe issue a warning here
+			pass
 
-	totalFreqMin = 999999999999999
-	totalFreqMax = 0
-	for cpu in ret["cpus"]:
-		freqMin = cpu["freq_min"]
-		freqMax = cpu["freq_max"]
-		if freqMax > totalFreqMax:
-			totalFreqMax = freqMax
-		if freqMin < totalFreqMin:
-			totalFreqMin = freqMin
-	ret["freq_min"] = totalFreqMin
-	ret["freq_max"] = totalFreqMax
+	if "freq_min" in ret["cpus"]:
+		totalFreqMin = 999999999999999
+		totalFreqMax = 0
+		for cpu in ret["cpus"]:
+			freqMin = cpu["freq_min"]
+			freqMax = cpu["freq_max"]
+			if freqMax > totalFreqMax:
+				totalFreqMax = freqMax
+			if freqMin < totalFreqMin:
+				totalFreqMin = freqMin
+		ret["freq_min"] = totalFreqMin
+		ret["freq_max"] = totalFreqMax
 
 	return ret
 #

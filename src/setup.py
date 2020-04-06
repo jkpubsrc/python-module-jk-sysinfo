@@ -24,7 +24,7 @@ setup(
 		"Topic :: System :: Monitoring",
 	],
 	description = "This python module provides ways to retrieve and parse technical data of (Linux) computer systems.",
-	download_url = "https://github.com/jkpubsrc/python-module-jk-sysinfo/tarball/0.2020.4.6",
+	download_url = "https://github.com/jkpubsrc/python-module-jk-sysinfo/tarball/0.2020.4.6.1",
 	include_package_data = False,
 	install_requires = [
 		"python-dateutil",
@@ -50,7 +50,7 @@ setup(
 		"bin/sysinfo2.py",
 	],
 	url = "https://github.com/jkpubsrc/python-module-jk-sysinfo",
-	version = "0.2020.4.6",
+	version = "0.2020.4.6.1",
 	zip_safe = False,
 	long_description = readme(),
 	long_description_content_type="text/markdown",
