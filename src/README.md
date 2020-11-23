@@ -1,4 +1,4 @@
-﻿jk_sysinfo
+jk_sysinfo
 ==========
 
 Introduction

@@ -176,7 +176,7 @@ print("\n#### cpu ####\n")
 print("static")
 print("\tvendor:", data_proccpu[0].vendor_id)
 print("\tmodel:", data_proccpu[0].model_name)
-print("\tspeed:", jk_sysinfo.formatFrequencyRangeS(data_cpu.freq_min * 1000000, data_cpu.freq_max  * 1000000))
+print("\tspeed:", jk_sysinfo.formatFrequencyRangeS(data_cpu.freq_min * 1000000, data_cpu.freq_max * 1000000))
 print("\tcpu family:", data_proccpu[0].cpu_family)
 print("\tcores:", len(data_proccpu), "(hyperthreading)" if ("ht" in data_proccpu[0].flags) else "")
 if "cache_size" in data_proccpu[0]._keys():

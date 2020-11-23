@@ -57,13 +57,20 @@ def get_cpu_info(c = None) -> dict:
 		"cpus": [],
 	}
 
+	_freqMins = []			# collectors
+	_freqMaxs = []			# collectors
+
 	if os_release["distribution"] == "raspbian":
 		# Raspian Linux
 		_cfg_result = get_vcgencmd_get_config(c)
+		freqMin = _cfg_result["cpu"]["freq_min"]
+		freqMax = _cfg_result["cpu"]["freq_max"]
 		ret["cpus"].append({
-			"freq_min": _cfg_result["cpu"]["freq_min"],
-			"freq_max": _cfg_result["cpu"]["freq_max"],
+			"freq_min": freqMin,
+			"freq_max": freqMax,
 		})
+		_freqMins.append(freqMin)
+		_freqMaxs.append(freqMax)
 
 	else:
 		# other Linux; does not work in VMs
@@ -78,22 +85,18 @@ def get_cpu_info(c = None) -> dict:
 					"freq_min": freqMin,
 					"freq_max": freqMax,
 				})
+				_freqMins.append(freqMin)
+				_freqMaxs.append(freqMax)
 		except:
 			# TODO: maybe issue a warning here
 			pass
 
-	if "freq_min" in ret["cpus"]:
-		totalFreqMin = 999999999999999
-		totalFreqMax = 0
-		for cpu in ret["cpus"]:
-			freqMin = cpu["freq_min"]
-			freqMax = cpu["freq_max"]
-			if freqMax > totalFreqMax:
-				totalFreqMax = freqMax
-			if freqMin < totalFreqMin:
-				totalFreqMin = freqMin
-		ret["freq_min"] = totalFreqMin
-		ret["freq_max"] = totalFreqMax
+	if _freqMins:
+		ret["freq_min"] = min(_freqMins)
+		ret["freq_max"] = max(_freqMaxs)
+	else:
+		ret["freq_min"] = 0
+		ret["freq_max"] = 0
 
 	return ret
 #

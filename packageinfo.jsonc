@@ -1,48 +1,40 @@
 {
-	"language": "python3",
-	"name": "jk_sysinfo",
-	"version": "0.2020.4.6.3",
+	"documentation": [],
+	"magic": {
+		"magic": "packageinfo",
+		"version": 2
+	},
 	"meta": {
-		"description": "This python module provides ways to retrieve and parse technical data of (Linux) computer systems.",
+		"authors": [
+			{
+				"email": "pubsrc@binary-overflow.de",
+				"name": "J\u00fcrgen Knauth"
+			}
+		],
+		"description": "This python module provides ways to retrieve and parse operational system data of computer systems. Note: This module (currently) focuses on Linux operating systems only.",
+		"development_status": "alpha",
 		"keywords": [
 			"monitoring"
 		],
-		"license": "Apache 2.0",
-		"development_status": "alpha",
-		"authors": [
-			{
-				"name": "Jürgen Knauth",
-				"email": "pubsrc@binary-overflow.de"
-			}
-		],
-		"wiki": {
-			"page": "DevDocs:jk_sysinfo"
-		}
+		"language": "python3",
+		"license": "Apache2",
+		"name": "jk_sysinfo",
+		"packageClass": "python-module",
+		"version": "0.2020.11.23"
 	},
 	"repositories": [
 		{
-			"type": "github",
-			"user": "jkpubsrc",
+			"devon_publish": true,
 			"project": "python-module-jk-sysinfo",
-			"devon_publish": true
+			"type": "github",
+			"user": "jkpubsrc"
 		},
 		{
-			"type": "pypy",
+			"devon_publish": true,
 			"project": "jk-sysinfo",
-			"devon_publish": true
+			"type": "pypi"
 		}
 	],
-	"source": {
-		"packages": [
-			"jk_sysinfo"
-		],
-		"extra_data_files": [
-		],
-		"extra_binary_files": [
-			"bin/sysinfo.py",
-			"bin/sysinfo2.py"
-		]
-	},
 	"requirements": {
 		"python_packages": [
 			"python-dateutil",
@@ -64,6 +56,15 @@
 			"libffi-dev",
 			"lshw"
 		]
+	},
+	"source": {
+		"extra_binary_files": [
+			"bin/sysinfo.py",
+			"bin/sysinfo2.py"
+		],
+		"extra_data_files": [],
+		"packages": [
+			"jk_sysinfo"
+		]
 	}
 }
-

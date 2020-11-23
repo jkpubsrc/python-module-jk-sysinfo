@@ -21,10 +21,10 @@ setup(
 	classifiers = [
 		"Development Status :: 3 - Alpha",
 		"License :: OSI Approved :: Apache Software License",
+		"Programming Language :: Python :: 3",
 		"Topic :: System :: Monitoring",
 	],
-	description = "This python module provides ways to retrieve and parse technical data of (Linux) computer systems.",
-	download_url = "https://github.com/jkpubsrc/python-module-jk-sysinfo/tarball/0.2020.4.6.1",
+	description = "This python module provides ways to retrieve and parse operational system data of computer systems. Note: This module (currently) focuses on Linux operating systems only.",
 	include_package_data = False,
 	install_requires = [
 		"python-dateutil",
@@ -40,7 +40,7 @@ setup(
 	keywords = [
 		"monitoring",
 	],
-	license = "Apache 2.0",
+	license = "Apache2",
 	name = "jk_sysinfo",
 	packages = [
 		"jk_sysinfo",
@@ -49,8 +49,7 @@ setup(
 		"bin/sysinfo.py",
 		"bin/sysinfo2.py",
 	],
-	url = "https://github.com/jkpubsrc/python-module-jk-sysinfo",
-	version = "0.2020.4.6.1",
+	version = "0.2020.11.23",
 	zip_safe = False,
 	long_description = readme(),
 	long_description_content_type="text/markdown",

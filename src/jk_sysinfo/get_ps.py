@@ -146,6 +146,21 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 
 
 
+
+def _enrich(jProgramData:dict, pid:int):
+	procPath = "/proc/" + str(jProgramData["pid"]) + "/statm"
+	try:
+		with open(procPath, "r") as f:
+			components = f.read().strip().split(" ")
+		assert len(components) == 7
+		jProgramData["vmsizeKB"] = int(components[0]) * 4
+	except:
+		jProgramData["vmsizeKB"] = -1
+#
+
+
+
+
 #
 # Returns:
 #
@@ -228,13 +243,18 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 #
 def get_ps(c = None) -> dict:
 	stdout, stderr, exitcode = run(c, "ps ax -o ppid,pid,tty,stat,uid,gid,cmd")
-	return parse_ps(stdout, stderr, exitcode)
+	ret = parse_ps(stdout, stderr, exitcode)
+
+	# remove ps process information itself and enrich this data
+	ret2 = []
+	for jProgramData in ret:
+		if (jProgramData["cmd"] in [ "ps", "/bin/sh" ]) and (jProgramData["args"].find("ax -o ppid,pid,tty,stat,uid,gid,cmd") >= 0):
+			continue
+		_enrich(jProgramData, jProgramData["pid"])
+		ret2.append(jProgramData)
+
+	return ret2
 #
-
-
-
-
-
 
 
 
