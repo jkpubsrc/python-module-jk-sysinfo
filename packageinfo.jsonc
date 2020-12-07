@@ -46,7 +46,8 @@
 			"jk_version",
 			"jk_cachefunccalls",
 			"jk_argparsing",
-			"jk_etcpasswd"
+			"jk_etcpasswd",
+			"jk_cmdoutputparsinghelper",
 		],
 		"python_packages_dev": [
 			"jk_json"
