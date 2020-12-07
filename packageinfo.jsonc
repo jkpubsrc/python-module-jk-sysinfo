@@ -11,7 +11,7 @@
 				"name": "J\u00fcrgen Knauth"
 			}
 		],
-		"description": "This python module provides ways to retrieve and parse operational system data of computer systems. Note: This module (currently) focuses on Linux operating systems only.",
+		"description": "This python module provides ways to retrieve and parse technical system data of Linux computer systems.",
 		"development_status": "alpha",
 		"keywords": [
 			"monitoring",

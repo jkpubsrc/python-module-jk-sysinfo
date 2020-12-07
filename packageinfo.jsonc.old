@@ -1,0 +1,69 @@
+{
+	"language": "python3",
+	"name": "jk_sysinfo",
+	"version": "0.2020.4.6.3",
+	"meta": {
+		"description": "This python module provides ways to retrieve and parse technical data of (Linux) computer systems.",
+		"keywords": [
+			"monitoring"
+		],
+		"license": "Apache 2.0",
+		"development_status": "alpha",
+		"authors": [
+			{
+				"name": "Jürgen Knauth",
+				"email": "pubsrc@binary-overflow.de"
+			}
+		],
+		"wiki": {
+			"page": "DevDocs:jk_sysinfo"
+		}
+	},
+	"repositories": [
+		{
+			"type": "github",
+			"user": "jkpubsrc",
+			"project": "python-module-jk-sysinfo",
+			"devon_publish": true
+		},
+		{
+			"type": "pypy",
+			"project": "jk-sysinfo",
+			"devon_publish": true
+		}
+	],
+	"source": {
+		"packages": [
+			"jk_sysinfo"
+		],
+		"extra_data_files": [
+		],
+		"extra_binary_files": [
+			"bin/sysinfo.py",
+			"bin/sysinfo2.py"
+		]
+	},
+	"requirements": {
+		"python_packages": [
+			"python-dateutil",
+			"fabric",
+			"pytz",
+			"jk_console",
+			"jk_typing",
+			"jk_version",
+			"jk_cachefunccalls",
+			"jk_argparsing",
+			"jk_etcpasswd"
+		],
+		"python_packages_dev": [
+			"jk_json"
+		],
+		"system_apt_packages": [
+			"needrestart",
+			"lm-sensors",
+			"libffi-dev",
+			"lshw"
+		]
+	}
+}
+

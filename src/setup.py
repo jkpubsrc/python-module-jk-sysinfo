@@ -24,7 +24,7 @@ setup(
 		"Programming Language :: Python :: 3",
 		"Topic :: System :: Monitoring",
 	],
-	description = "This python module provides ways to retrieve and parse operational system data of computer systems. Note: This module (currently) focuses on Linux operating systems only.",
+	description = "This python module provides ways to retrieve and parse technical system data of Linux computer systems.",
 	include_package_data = False,
 	install_requires = [
 		"python-dateutil",
@@ -36,6 +36,7 @@ setup(
 		"jk_cachefunccalls",
 		"jk_argparsing",
 		"jk_etcpasswd",
+		"jk_cmdoutputparsinghelper",
 	],
 	keywords = [
 		"monitoring",
