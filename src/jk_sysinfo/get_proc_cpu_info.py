@@ -2,6 +2,7 @@
 import typing
 
 from jk_cachefunccalls import cacheCalls
+from jk_cmdoutputparsinghelper import ValueParser_ByteWithUnit
 
 from .parsing_utils import *
 from .invoke_utils import run
@@ -9,7 +10,7 @@ from .invoke_utils import run
 
 
 
-_parserColonKVP = ParseAtFirstDelimiter(delimiter=":", valueCanBeWrappedInDoubleQuotes=False, keysReplacesSpacesWithUnderscores=True)
+_parserColonKVP = ParseAtFirstDelimiter(delimiter=":", valueCanBeWrappedInDoubleQuotes=False, keysReplaceSpacesWithUnderscores=True)
 
 
 
@@ -150,7 +151,7 @@ def parse_proc_cpu_info(stdout:str, stderr:str, exitcode:int) -> typing.Tuple[li
 			continue
 
 		if "cache_size" in d:
-			d["cache_size_kb"] = parseKByteWithUnit(d["cache_size"])
+			d["cache_size_kb"] = ValueParser_ByteWithUnit.parse(d["cache_size"]) // 1024
 			del d["cache_size"]
 
 		if "bogomips" in d:

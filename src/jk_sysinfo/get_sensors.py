@@ -7,7 +7,7 @@ from .invoke_utils import run
 
 
 
-_parserColonKVP = ParseAtFirstDelimiter(delimiter=":", valueCanBeWrappedInDoubleQuotes=False, keysReplacesSpacesWithUnderscores=False)
+_parserColonKVP = ParseAtFirstDelimiter(delimiter=":", valueCanBeWrappedInDoubleQuotes=False, keysReplaceSpacesWithUnderscores=False)
 
 
 

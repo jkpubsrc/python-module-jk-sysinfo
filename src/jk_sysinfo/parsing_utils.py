@@ -8,6 +8,7 @@ import typing
 
 
 
+# copied to jk_cmdoutputparsinghelper
 def parseKByteWithUnit(s:str):
 	assert isinstance(s, str)
 
@@ -19,6 +20,7 @@ def parseKByteWithUnit(s:str):
 
 
 
+# copied to jk_cmdoutputparsinghelper
 def splitAtEmptyLines(lines):
 	ret = []
 	buffer = []
@@ -37,6 +39,7 @@ def splitAtEmptyLines(lines):
 
 
 
+# copied to jk_cmdoutputparsinghelper
 def getPositionsOfWords(line:str) -> list:
 	ret = []
 	bLastWasSpace = True
@@ -52,6 +55,7 @@ def getPositionsOfWords(line:str) -> list:
 
 
 
+# copied to jk_cmdoutputparsinghelper
 def isVerticalSpaceColumn(lines:str, pos:int) -> bool:
 	for i in range(0, len(lines)):
 		line = lines[i]
@@ -134,6 +138,7 @@ def lineSplitAt(line:str, splitPositions:list, bTrim:bool = True):
 	return ret
 #
 
+# copied to jk_cmdoutputparsinghelper
 def removeAllLeadingSpaces(lines:list) -> list:
 	# count leading spaces
 	counts = []
@@ -175,11 +180,12 @@ def groupLinesByLeadingSpace(lines:list) -> dict:
 #
 
 
+# copied to jk_cmdoutputparsinghelper
 class ParseAtFirstDelimiter(object):
 
-	def __init__(self, delimiter:str = ":", valueCanBeWrappedInDoubleQuotes:bool = False, keysReplacesSpacesWithUnderscores:bool = False):
+	def __init__(self, delimiter:str = ":", valueCanBeWrappedInDoubleQuotes:bool = False, keysReplaceSpacesWithUnderscores:bool = False):
 		self.delimiter = delimiter
-		self.keysReplacesSpacesWithUnderscores = keysReplacesSpacesWithUnderscores
+		self.keysReplaceSpacesWithUnderscores = keysReplaceSpacesWithUnderscores
 		self.valueCanBeWrappedInDoubleQuotes = valueCanBeWrappedInDoubleQuotes
 	#
 
@@ -206,7 +212,7 @@ class ParseAtFirstDelimiter(object):
 				if v.startswith("\"") and v.endswith("\""):
 					v = v[1:-1]
 					v = v.replace("\\\"", "\"")
-			if self.keysReplacesSpacesWithUnderscores:
+			if self.keysReplaceSpacesWithUnderscores:
 				k = k.replace(" ", "_")
 			return k, v
 		else:
@@ -271,3 +277,12 @@ def joinDictsByKey(*args):
 				ret[key][key2] = value
 	return ret
 #
+
+
+
+
+
+
+
+
+

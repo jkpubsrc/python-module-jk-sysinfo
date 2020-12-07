@@ -39,6 +39,7 @@ setup(
 	],
 	keywords = [
 		"monitoring",
+		"os",
 	],
 	license = "Apache2",
 	name = "jk_sysinfo",
@@ -47,9 +48,9 @@ setup(
 	],
 	scripts = [
 		"bin/sysinfo.py",
-		"bin/sysinfo2.py",
+		"bin/sysinfo_json.py",
 	],
-	version = "0.2020.11.23",
+	version = "0.2020.12.7",
 	zip_safe = False,
 	long_description = readme(),
 	long_description_content_type="text/markdown",

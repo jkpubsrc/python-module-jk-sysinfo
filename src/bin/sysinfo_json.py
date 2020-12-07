@@ -77,6 +77,7 @@ ALL_SYSINFO_OPTIONS = [
 	SysInfoOption("i-proc-meminfo", "Retrieve information about the memory usage as provided by /proc/meminfo", jk_sysinfo.get_proc_meminfo),
 	SysInfoOption("i-ps", "Get information about processes", jk_sysinfo.get_ps),
 	SysInfoOption("i-sensors", "Get information about processes", jk_sysinfo.get_sensors),
+	SysInfoOption("i-systemctl-units", "Get information about all systemctrl units", jk_sysinfo.get_systemctl_units),
 	SysInfoOption("i-uptime", "Get information about uptime", jk_sysinfo.get_uptime),
 	SysInfoOption("i-user-info", "Get information about users", jk_sysinfo.get_user_info),
 	SysInfoOption("i-vcgencmd", "Get information about a Raspberry Pi", jk_sysinfo.get_vcgencmd),
@@ -123,7 +124,7 @@ def onOptionAllRPi(argOption, argOptionArguments, parsedArgs):
 
 
 
-ap = jk_argparsing.ArgsParser("sysinfo2", "Display system information.")
+ap = jk_argparsing.ArgsParser(os.path.basename(__file__), "Display system information.")
 
 ap.optionDataDefaults.set("help", False)
 ap.optionDataDefaults.set("color", True)
@@ -137,7 +138,7 @@ ap.createOption(None, 'no-color', "Dont' use colors in output.").onOption = \
 for opt in ALL_SYSINFO_OPTIONS:
 	opt.register(ap)
 ap.createOption(None, 'i-all', "Use all system information modules.").onOption = onOptionAll
-ap.createOption(None, 'i-all-std', "Use all system information modules (Standard).").onOption = onOptionAllStd
+ap.createOption(None, 'i-all-std', "Use all system information modules (Regular *nix Machines).").onOption = onOptionAllStd
 ap.createOption(None, 'i-all-rpi', "Use all system information modules (Raspberry Pi).").onOption = onOptionAllRPi
 ap.createOption(None, 'i-all-vm', "Use all system information modules (Virtual Machines).").onOption = onOptionAllVM
 

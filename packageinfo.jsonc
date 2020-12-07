@@ -14,13 +14,14 @@
 		"description": "This python module provides ways to retrieve and parse operational system data of computer systems. Note: This module (currently) focuses on Linux operating systems only.",
 		"development_status": "alpha",
 		"keywords": [
-			"monitoring"
+			"monitoring",
+			"os"
 		],
 		"language": "python3",
 		"license": "Apache2",
 		"name": "jk_sysinfo",
 		"packageClass": "python-module",
-		"version": "0.2020.11.23"
+		"version": "0.2020.12.7"
 	},
 	"repositories": [
 		{
@@ -60,11 +61,11 @@
 	"source": {
 		"extra_binary_files": [
 			"bin/sysinfo.py",
-			"bin/sysinfo2.py"
+			"bin/sysinfo_json.py"
 		],
 		"extra_data_files": [],
 		"packages": [
-			"jk_sysinfo"
+			"jk_sysinfo",
 		]
 	}
 }
