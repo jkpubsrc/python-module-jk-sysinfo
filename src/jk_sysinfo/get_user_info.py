@@ -21,7 +21,7 @@ from .invoke_utils import run
 #		...
 #	}
 #
-def parse_etc_passwd(stdout:str, stderr:str, exitcode:int) -> dict:
+def parse_user_info_etc_passwd(stdout:str, stderr:str, exitcode:int) -> dict:
 
 	"""
 	root:x:0:0:root:/root:/bin/bash
@@ -105,7 +105,7 @@ def parse_etc_passwd(stdout:str, stderr:str, exitcode:int) -> dict:
 #		...
 #	}
 #
-def parse_etc_shadow(stdout:str, stderr:str, exitcode:int) -> dict:
+def parse_user_info_etc_shadow(stdout:str, stderr:str, exitcode:int) -> dict:
 
 	"""
 	root:$6$iSgU4RbH$....:17970:0:99999:7:::
@@ -189,7 +189,7 @@ def parse_etc_shadow(stdout:str, stderr:str, exitcode:int) -> dict:
 #		...
 #	}
 #
-def parse_etc_group(stdout:str, stderr:str, exitcode:int) -> dict:
+def parse_user_info_etc_group(stdout:str, stderr:str, exitcode:int) -> dict:
 
 	"""
 	root:x:0:
@@ -308,17 +308,20 @@ def parse_etc_group(stdout:str, stderr:str, exitcode:int) -> dict:
 #	}
 #
 @cacheCalls(seconds=3, dependArgs=[0])
-def get_user_info(c = None) -> dict:
+def get_user_info(c = None, catEtcShadowScript:str = None) -> dict:
+	if catEtcShadowScript is None:
+		catEtcShadowScript = "cat /etc/shadow"
+
 	stdOutPasswd, stdErrPasswd, exitCodePasswd = run(c, "cat /etc/passwd")
-	stdOutShadow, stdErrShadow, exitCodeShadow = run(c, "sudo cat /etc/shadow")
+	stdOutShadow, stdErrShadow, exitCodeShadow = run(c, "sudo " + catEtcShadowScript)
 
 	retUsers = joinDictsByKey(
-		parse_etc_passwd(stdOutPasswd, stdErrPasswd, exitCodePasswd),
-		parse_etc_shadow(stdOutShadow, stdErrShadow, exitCodeShadow),
+		parse_user_info_etc_passwd(stdOutPasswd, stdErrPasswd, exitCodePasswd),
+		parse_user_info_etc_shadow(stdOutShadow, stdErrShadow, exitCodeShadow),
 	)
 
 	stdOutGroup, stdErrGroup, exitCodeGroup = run(c, "cat /etc/group")
-	groups = parse_etc_group(stdOutGroup, stdErrGroup, exitCodeGroup)
+	groups = parse_user_info_etc_group(stdOutGroup, stdErrGroup, exitCodeGroup)
 
 	for data in retUsers.values():
 		data["groups"] = []
