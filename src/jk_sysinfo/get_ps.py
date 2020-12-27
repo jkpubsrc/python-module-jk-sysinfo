@@ -4,6 +4,8 @@ import os
 import re
 import pwd
 import grp
+import typing
+import resource
 
 # TODO: eliminate the use of modules pwd and grp as this way get_ps() can not be executed remotely.
 #		NOTE: we might be able implement this using data from get_user_info().
@@ -13,6 +15,8 @@ from jk_cachefunccalls import cacheCalls
 from .parsing_utils import *
 from .invoke_utils import run
 
+_PAGESIZE = resource.getpagesize()
+_PAGESIZE_KB = _PAGESIZE / 1024
 
 
 _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDoubleQuotes=True)
@@ -146,14 +150,13 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 
 
 
-
-def _enrich(jProgramData:dict, pid:int):
+def _enrichWithVMSize(jProgramData:dict, pid:int):
 	procPath = "/proc/" + str(jProgramData["pid"]) + "/statm"
 	try:
 		with open(procPath, "r") as f:
 			components = f.read().strip().split(" ")
 		assert len(components) == 7
-		jProgramData["vmsizeKB"] = int(components[0]) * 4
+		jProgramData["vmsizeKB"] = int(components[0]) * _PAGESIZE_KB
 	except:
 		jProgramData["vmsizeKB"] = -1
 #
@@ -241,7 +244,7 @@ def _enrich(jProgramData:dict, pid:int):
 # NOTE: This method makes use of the python modules <c>pwd</c> and <c>grp</c> which make use of the local user and group database only.
 #		For that reason this function can not be executed remotely until the implementation has been improved here.
 #
-def get_ps(c = None) -> dict:
+def get_ps(c = None, bAddVMemSize:bool = False) -> typing.List[dict]:
 	stdout, stderr, exitcode = run(c, "ps ax -o ppid,pid,tty,stat,uid,gid,cmd")
 	ret = parse_ps(stdout, stderr, exitcode)
 
@@ -250,7 +253,8 @@ def get_ps(c = None) -> dict:
 	for jProgramData in ret:
 		if (jProgramData["cmd"] in [ "ps", "/bin/sh" ]) and (jProgramData["args"].find("ax -o ppid,pid,tty,stat,uid,gid,cmd") >= 0):
 			continue
-		_enrich(jProgramData, jProgramData["pid"])
+		if bAddVMemSize:
+			_enrichWithVMSize(jProgramData, jProgramData["pid"])
 		ret2.append(jProgramData)
 
 	return ret2

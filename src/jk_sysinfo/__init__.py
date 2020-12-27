@@ -1,7 +1,7 @@
 ﻿
 
 
-__version__ = "0.2020.12.16"
+__version__ = "0.2020.12.27"
 
 
 
@@ -39,8 +39,6 @@ from	.get_user_info				import	parse_user_info_etc_passwd, parse_user_info_etc_sh
 from	.get_vcgencmd				import																						get_vcgencmd_get_config, get_vcgencmd_measure_volts, get_vcgencmd_measure_temp, get_vcgencmd_get_mem, get_vcgencmd_display_power, get_vcgencmd
 
 from	.get_systemctl_units		import	parse_systemctl_units,																get_systemctl_units
-
-
 
 
 

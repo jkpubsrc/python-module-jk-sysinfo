@@ -21,6 +21,11 @@ def enableDebugging():
 
 
 
+#
+# Run a command locally or remotely.
+# If a "cat <file>" is to be invoked *and* this is to be invoked locally, this method will detect this. In that case instead of running "cat" it will fall back to a regular file read
+# for efficiency. Therefore you can access data on local and remote systems in a uniform way without spending too much thoughts on efficiency.
+#
 def run(c, command, failOnNonZeroExitCode:bool = True):
 	global _debuggingEnabled
 
