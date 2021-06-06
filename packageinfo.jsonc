@@ -21,7 +21,7 @@
 		"license": "Apache2",
 		"name": "jk_sysinfo",
 		"packageClass": "python-module",
-		"version": "0.2020.12.27"
+		"version": "0.2021.6.6"
 	},
 	"repositories": [
 		{
