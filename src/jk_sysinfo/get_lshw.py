@@ -12,7 +12,7 @@ from .invoke_utils import run
 
 
 
-def _isObj(data, filter:dict) -> bool:
+def _isObj(data:dict, filter:dict) -> bool:
 	assert isinstance(data, dict)
 	assert isinstance(filter, dict)
 
@@ -37,7 +37,9 @@ def _isObj(data, filter:dict) -> bool:
 	return True
 #
 
-def _findAllR(d, **kwargs):
+def _findAllR(d:dict, **kwargs):
+	assert isinstance(d, dict)
+
 	for key, data in d.items():
 		if isinstance(data, (list, tuple)):
 			for e in data:
@@ -373,6 +375,12 @@ def _findAllR(d, **kwargs):
 #
 def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
 	data_lshw = json.loads(stdout)
+	if isinstance(data_lshw, list):
+		assert len(data_lshw) == 1
+		data_lshw = data_lshw[0]
+	assert isinstance(data_lshw, dict)
+
+	# enrich with additional information: network
 
 	for network in _findAllR(data_lshw, id="network"):
 		if ("capabilities" in network) and network["capabilities"].get("tp"):
@@ -392,12 +400,16 @@ def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
 			if maxSpeedInBitsPerSecond:
 				network["maxSpeedInBitsPerSecond"] = maxSpeedInBitsPerSecond
 
+	# enrich with additional information: cpu
+
 	for cpu in _findAllR(data_lshw, id="cpu"):
 		if "capabilities" in cpu:
 			cpu["hyperthreading"] = "ht" in cpu["capabilities"]
 			cpu["virtualization"] = "vmx" in cpu["capabilities"]
 			cpu["bitArch"] = 64 if "x86-64" in cpu["capabilities"] else 32
 			cpu["encryption"] = "aes" in cpu["capabilities"]
+
+	# return data
 
 	return data_lshw
 #

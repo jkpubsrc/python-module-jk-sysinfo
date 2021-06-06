@@ -1,6 +1,7 @@
 
 
 import re
+import os
 
 from jk_cachefunccalls import cacheCalls
 #import jk_json
@@ -256,6 +257,13 @@ def get_vcgencmd(c = None, _ignoreCache:bool = False) -> dict:
 	get_vcgencmd_get_mem(c, ret, _ignoreCache=_ignoreCache)
 	get_vcgencmd_display_power(c, ret, _ignoreCache=_ignoreCache)
 	return ret
+#
+
+
+
+def has_local_vcgencmd() -> bool:
+	# TODO: can we generalize this?
+	return os.path.isfile("/usr/bin/vcgencmd")
 #
 
 

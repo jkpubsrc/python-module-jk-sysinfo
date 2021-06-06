@@ -11,6 +11,7 @@ import resource
 #		NOTE: we might be able implement this using data from get_user_info().
 
 from jk_cachefunccalls import cacheCalls
+import jk_cmdoutputparsinghelper
 
 from .parsing_utils import *
 from .invoke_utils import run
@@ -104,42 +105,43 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 	if exitcode != 0:
 		raise Exception()
 
-	lines = stdout.strip().split("\n")
-	lines2 = splitAtVerticalSpaceColumnsFirstLineIsHeader(lines, expectedColumnsMin=7, maxColumns=7)
+	lines = jk_cmdoutputparsinghelper.TextData(stdout).lines
+	lines.removeTrailingEmptyLines()
+	splitPositions = lines.identifySpaceColumnPositions()
+	table = lines.createDataTableFromColumns(positions=splitPositions, bLStrip=True, bRStrip=True, bFirstLineIsHeader=True, columnDefs=[
+		jk_cmdoutputparsinghelper.ColumnDef("ppid", int),
+		jk_cmdoutputparsinghelper.ColumnDef("pid", int),
+		jk_cmdoutputparsinghelper.ColumnDef("tty", str),
+		jk_cmdoutputparsinghelper.ColumnDef("stat", str),
+		jk_cmdoutputparsinghelper.ColumnDef("uid", int),
+		jk_cmdoutputparsinghelper.ColumnDef("gid", int),
+		jk_cmdoutputparsinghelper.ColumnDef("cmd", str),
+	])
 
 	#	0	 1	 2		  3		 4		5	6
 	# PPID   PID TT       STAT   UID   GID CMD
 
 	ret = []
-	for group in lines2:
-		uid = int(group[4])
-		gid = int(group[5])
-		data = {
-			"ppid": int(group[0]),
-			"pid": int(group[1]),
-			"tty": None if group[2] == "?" else group[2],
-			"stat": group[3],
-			"uid": uid,
-			"gid": gid,
-		}
+	for data in table.rowDictIterator():
+		if data["tty"] == "?":
+			data["tty"] = None
 
 		try:
-			data["cwd"] = os.readlink("/proc/" + group[1] + "/cwd")
+			data["cwd"] = os.readlink("/proc/" + data["pid"] + "/cwd")
 		except:
 			pass
 
-		pos = group[6].find(" ")
+		_cmd = data["cmd"]
+		pos = _cmd.find(" ")
 		if pos > 0:
-			data["cmd"] = group[6][:pos]
-			data["args"] = group[6][pos+1:]
-		else:
-			data["cmd"] = group[6]
+			data["cmd"] = _cmd[:pos]
+			data["args"] = _cmd[pos+1:]
 
-		pwdEntry = pwd.getpwuid(uid)
+		pwdEntry = pwd.getpwuid(data["uid"])
 		if pwdEntry:
 			data["user"] = pwdEntry.pw_name
 
-		grpEntry = grp.getgrgid(gid)
+		grpEntry = grp.getgrgid(data["gid"])
 		if grpEntry:
 			data["group"] = grpEntry.gr_name
 

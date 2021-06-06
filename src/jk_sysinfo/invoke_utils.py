@@ -26,7 +26,13 @@ def enableDebugging():
 # If a "cat <file>" is to be invoked *and* this is to be invoked locally, this method will detect this. In that case instead of running "cat" it will fall back to a regular file read
 # for efficiency. Therefore you can access data on local and remote systems in a uniform way without spending too much thoughts on efficiency.
 #
-def run(c, command, failOnNonZeroExitCode:bool = True):
+# @param		fabric.Connection c				(optional) Provide a fabric connection here if you want to run a command remotely.
+#												If you specify <c>None</c> here the command will be run locally.
+# @param		str command						(required) The command to run. Please note that this command will be interpreted by a shell.
+# @param		bool failOnNonZeroExitCode		(optional) Raises an exception if the last command executed returned with a non-zero exit code.
+#
+#
+def run(c, command:str, failOnNonZeroExitCode:bool = True):
 	global _debuggingEnabled
 
 	if c is None:

@@ -344,7 +344,7 @@ def __get_accesspoints_for_interface(interface:str, c = None, runAsRoot:bool = F
 	assert lines[0].find("Scan completed") > 0
 	lines = lines[1:]
 
-	lines = removeAllLeadingSpaces(lines)
+	lines = removeAllCommonLeadingSpaces(lines)
 
 	radioCellDict = groupLinesByLeadingSpace(lines)
 

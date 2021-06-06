@@ -223,7 +223,7 @@ def parse_systemctl_units(stdout:str, stderr:str, exitcode:int) -> dict:
 
 	# get column split positions
 	wordPos = [ 0 ] + getPositionsOfWords(lines[0])
-	table = lines.createDataTableFromColumns(wordPos, bFirstLineIsHeader=True, columnDefs=[
+	table = lines.createDataTableFromColumns(wordPos, bLStrip=True, bRStrip=True, bFirstLineIsHeader=True, columnDefs=[
 		ColumnDef("MARK", _parseMark),
 		ColumnDef("UNIT"),
 		ColumnDef("LOAD"),
