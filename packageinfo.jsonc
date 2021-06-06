@@ -21,7 +21,7 @@
 		"license": "Apache2",
 		"name": "jk_sysinfo",
 		"packageClass": "python-module",
-		"version": "0.2021.6.6"
+		"version": "0.2021.6.6.1"
 	},
 	"repositories": [
 		{
@@ -48,9 +48,10 @@
 			"jk_argparsing",
 			"jk_etcpasswd",
 			"jk_cmdoutputparsinghelper",
+			"jk_json",
+			"jk_flexdata",
 		],
 		"python_packages_dev": [
-			"jk_json"
 		],
 		"system_apt_packages": [
 			"needrestart",

@@ -125,6 +125,31 @@ def parse_ifconfig(stdout:str, stderr:str, exitcode:int) -> dict:
 			RX errors 0  dropped 0  overruns 0  frame 0
 			TX packets 1630817  bytes 222286497 (222.2 MB)
 			TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+	--------------------------------------------------------------------------------------------------------------------------------
+	---- Ubuntu 16.04
+
+	lo        Link encap:Local Loopback  
+			inet addr:127.0.0.1  Mask:255.0.0.0
+			inet6 addr: ::1/128 Scope:Host
+			UP LOOPBACK RUNNING  MTU:65536  Metric:1
+			RX packets:3039 errors:0 dropped:0 overruns:0 frame:0
+			TX packets:3039 errors:0 dropped:0 overruns:0 carrier:0
+			collisions:0 txqueuelen:0 
+			RX bytes:9941926 (9.9 MB)  TX bytes:9941926 (9.9 MB)
+
+	venet0    Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  
+			inet addr:127.0.0.1  P-t-P:127.0.0.1  Bcast:0.0.0.0  Mask:255.255.255.255
+			inet6 addr: ::2/128 Scope:Compat
+			UP BROADCAST POINTOPOINT RUNNING NOARP  MTU:1500  Metric:1
+			RX packets:65050751 errors:0 dropped:0 overruns:0 frame:0
+			TX packets:76929410 errors:0 dropped:0 overruns:0 carrier:0
+			collisions:0 txqueuelen:0 
+			RX bytes:3515170097 (3.5 GB)  TX bytes:3482061899 (3.4 GB)
+
+	venet0:0  Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  
+			inet addr:82.165.136.239  P-t-P:82.165.136.239  Bcast:82.165.136.239  Mask:255.255.255.255
+			UP BROADCAST POINTOPOINT RUNNING NOARP  MTU:1500  Metric:1
 	"""
 
 	lines = stdout.strip().split("\n")
@@ -157,12 +182,12 @@ def parse_ifconfig(stdout:str, stderr:str, exitcode:int) -> dict:
 		for line in lineGroup:
 			line = line.strip()
 			if line.startswith("inet "):
-				m = re.match(r"^inet addr:([^\s]+)(\s+Bcast:([^\s]+))?\s+Mask:([^\s]+)$", line)
+				m = re.match(r"^(?P<inetaddr>inet addr:([^\s]+))\s+(?P<ptp>P-t-P:([^\s]+))?\s+(?P<bcast>Bcast:([^\s]+))?\s+(?P<mask>Mask:([^\s]+))$", line)
 				if m:
-					g = m.groups()
-					record["ip4_addr"] = g[0]
-					record["ip4_broadcast_addr"] = g[2]
-					record["ip4_netmask"] = g[3]
+					g = m.groupdict()
+					record["ip4_addr"] = g["inetaddr"]
+					record["ip4_broadcast_addr"] = g["bcast"]
+					record["ip4_netmask"] = g["mask"]
 				else:
 					m = re.match(r"^inet ([^\s]+)\s+netmask\s+([^\s]+)(\s+broadcast\s+([^\s]+))?$", line)
 					if m:

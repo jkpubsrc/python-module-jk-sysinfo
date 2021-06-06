@@ -37,6 +37,8 @@ setup(
 		"jk_argparsing",
 		"jk_etcpasswd",
 		"jk_cmdoutputparsinghelper",
+		"jk_json",
+		"jk_flexdata",
 	],
 	keywords = [
 		"monitoring",
@@ -51,7 +53,7 @@ setup(
 		"bin/sysinfo.py",
 		"bin/sysinfo_json.py",
 	],
-	version = "0.2021.6.6",
+	version = "0.2021.6.6.1",
 	zip_safe = False,
 	long_description = readme(),
 	long_description_content_type="text/markdown",

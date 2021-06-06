@@ -8,7 +8,7 @@ import re
 import jk_console
 import jk_sysinfo
 import jk_json
-import jk_flexdata
+#import jk_flexdata
 import jk_logging
 from jk_typing import *
 import jk_argparsing
