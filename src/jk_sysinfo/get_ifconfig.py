@@ -182,7 +182,18 @@ def parse_ifconfig(stdout:str, stderr:str, exitcode:int) -> dict:
 		for line in lineGroup:
 			line = line.strip()
 			if line.startswith("inet "):
-				m = re.match(r"^(?P<inetaddr>inet addr:([^\s]+))\s+(?P<ptp>P-t-P:([^\s]+))?\s+(?P<bcast>Bcast:([^\s]+))?\s+(?P<mask>Mask:([^\s]+))$", line)
+				m = re.match(r"""
+					^
+					(?P<inetaddr>inet addr:([^\s]+))
+					(
+						\s+(?P<ptp>P-t-P:([^\s]+))
+					)?
+					(
+						\s+(?P<bcast>Bcast:([^\s]+))
+					)?
+					\s+(?P<mask>Mask:([^\s]+))
+					$
+					""", line, re.VERBOSE)
 				if m:
 					g = m.groupdict()
 					record["ip4_addr"] = g["inetaddr"]
