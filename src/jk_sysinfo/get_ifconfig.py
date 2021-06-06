@@ -14,6 +14,28 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter=":", valueCanBeWrappedInDouble
 
 
 
+
+# we specify the following pattern in such a tortuous way to be compatible to Python 3.5
+_PATTERN_1 = "".join([ x.strip() for x in """
+	^
+	(?P<inetaddr>inet addr:([^\\s]+))
+	(
+		\\s+(?P<ptp>P-t-P:([^\\s]+))
+	)?
+	(
+		\\s+(?P<bcast>Bcast:([^\\s]+))
+	)?
+	\\s+(?P<mask>Mask:([^\\s]+))
+	$
+""".split("\n") ])
+
+
+
+
+
+
+
+
 #
 # Note: This function is a building block for <c>get_net_info()</c>.
 #
@@ -182,18 +204,7 @@ def parse_ifconfig(stdout:str, stderr:str, exitcode:int) -> dict:
 		for line in lineGroup:
 			line = line.strip()
 			if line.startswith("inet "):
-				m = re.match(r"""
-					^
-					(?P<inetaddr>inet addr:([^\s]+))
-					(
-						\s+(?P<ptp>P-t-P:([^\s]+))
-					)?
-					(
-						\s+(?P<bcast>Bcast:([^\s]+))
-					)?
-					\s+(?P<mask>Mask:([^\s]+))
-					$
-					""", line, re.VERBOSE)
+				m = re.match(_PATTERN_1, line)
 				if m:
 					g = m.groupdict()
 					record["ip4_addr"] = g["inetaddr"]
