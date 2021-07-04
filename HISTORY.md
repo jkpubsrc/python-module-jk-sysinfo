@@ -3,3 +3,6 @@
 	* Modified: Autodetect for `--i-all`
 	* Fixed: Parsing error in `get_ifconfig` for older Debian based systems
 	* Fixed: Dependencies
+
+* 2021-07-04
+	* Improved: Parsing of ps output

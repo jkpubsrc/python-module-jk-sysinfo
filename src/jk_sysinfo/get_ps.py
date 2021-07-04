@@ -107,7 +107,7 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 
 	lines = jk_cmdoutputparsinghelper.TextData(stdout).lines
 	lines.removeTrailingEmptyLines()
-	splitPositions = lines.identifySpaceColumnPositions()
+	splitPositions = lines.identifySpaceColumnPositions(maxSplitPositions=6)
 	table = lines.createDataTableFromColumns(positions=splitPositions, bLStrip=True, bRStrip=True, bFirstLineIsHeader=True, columnDefs=[
 		jk_cmdoutputparsinghelper.ColumnDef("ppid", int),
 		jk_cmdoutputparsinghelper.ColumnDef("pid", int),
@@ -127,6 +127,7 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 			data["tty"] = None
 
 		try:
+			# NOTE: this can only be read by root
 			data["cwd"] = os.readlink("/proc/" + data["pid"] + "/cwd")
 		except:
 			pass
