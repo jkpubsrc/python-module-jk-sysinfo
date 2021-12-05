@@ -6,3 +6,7 @@
 
 * 2021-07-04
 	* Improved: Parsing of ps output
+
+* 2021-12-06
+	* Extended: user and group processing in get_ps.py
+

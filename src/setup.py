@@ -53,7 +53,7 @@ setup(
 		"bin/sysinfo.py",
 		"bin/sysinfo_json.py",
 	],
-	version = "0.2021.7.4",
+	version = "0.2021.12.6",
 	zip_safe = False,
 	long_description = readme(),
 	long_description_content_type="text/markdown",

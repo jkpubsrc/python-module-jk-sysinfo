@@ -101,7 +101,7 @@ _parserColonKVP = ParseAtFirstDelimiter(delimiter="=", valueCanBeWrappedInDouble
 #			...
 #	]
 #
-def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
+def parse_ps(stdout:str, stderr:str, exitcode:int, userIDToNameMap:typing.Dict[int,str] = None, grpIDToNameMap:typing.Dict[int,str] = None) -> dict:
 	if exitcode != 0:
 		raise Exception()
 
@@ -138,13 +138,10 @@ def parse_ps(stdout:str, stderr:str, exitcode:int) -> dict:
 			data["cmd"] = _cmd[:pos]
 			data["args"] = _cmd[pos+1:]
 
-		pwdEntry = pwd.getpwuid(data["uid"])
-		if pwdEntry:
-			data["user"] = pwdEntry.pw_name
-
-		grpEntry = grp.getgrgid(data["gid"])
-		if grpEntry:
-			data["group"] = grpEntry.gr_name
+		if userIDToNameMap:
+			data["user"] = userIDToNameMap.get(data["uid"], None)
+		if grpIDToNameMap:
+			data["group"] = grpIDToNameMap.get(data["gid"], None)
 
 		ret.append(data)
 
@@ -247,9 +244,20 @@ def _enrichWithVMSize(jProgramData:dict, pid:int):
 # NOTE: This method makes use of the python modules <c>pwd</c> and <c>grp</c> which make use of the local user and group database only.
 #		For that reason this function can not be executed remotely until the implementation has been improved here.
 #
-def get_ps(c = None, bAddVMemSize:bool = False) -> typing.List[dict]:
+def get_ps(c = None, bAddVMemSize:bool = False, userIDToNameMap:typing.Dict[int,str] = None, grpIDToNameMap:typing.Dict[int,str] = None) -> typing.List[dict]:
 	stdout, stderr, exitcode = run(c, "ps ax -o ppid,pid,tty,stat,uid,gid,cmd")
-	ret = parse_ps(stdout, stderr, exitcode)
+
+	if c is None:
+		if userIDToNameMap is None:
+			userIDToNameMap = {}
+			for entry in pwd.getpwall():
+				userIDToNameMap[entry.pw_uid] = entry.pw_name
+		if grpIDToNameMap is None:
+			grpIDToNameMap = {}
+			for entry in grp.getgrall():
+				grpIDToNameMap[entry.gr_gid] = entry.gr_name
+
+	ret = parse_ps(stdout, stderr, exitcode, userIDToNameMap, grpIDToNameMap)
 
 	# remove ps process information itself and enrich this data
 	ret2 = []
