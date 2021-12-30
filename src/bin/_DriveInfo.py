@@ -40,10 +40,17 @@ class _DriveInfo(jk_prettyprintobj.DumpMixin):
 
 		self.formFactor = jdata_hdparam_I["configuration"]["formFactor"]
 		self.nominalMediaRotationRate = jdata_hdparam_I["configuration"]["nominalMediaRotationRate"]
-		assert jdata_hdparam_I["general"]["model"] == self.model
-		assert jdata_hdparam_I["general"]["serial"] == self.serial
-		self.firmwareRevision = jdata_hdparam_I["general"]["firmwareRevision"]
 		self.transportHR = jdata_hdparam_I["general"]["transport"]
+		self.firmwareRevision = jdata_hdparam_I["general"]["firmwareRevision"]
+
+		#print(repr(jdata_hdparam_I["general"]["serial"]))
+		#print(repr(self.serial))
+		assert jdata_hdparam_I["general"]["serial"] == self.serial
+		
+		#print(repr(jdata_hdparam_I["general"]["model"]))
+		#print(repr(self.model))
+		#second model seems to be more reasonable - skip this test as there might be differences
+		#assert jdata_hdparam_I["general"]["model"] == self.model
 
 		self.isNCQSupported = "Native Command Queueing (NCQ)" in jdata_hdparam_I["features"]
 		self.isTRIMSupported = False

@@ -137,7 +137,11 @@ print("\n#### busses and bus devices ####\n")
 print("static")
 
 def printPCIStruct(data:jk_flexdata.FlexObject, indent:str=""):
-	print(indent + data["class"].upper() + " " + data.product + " (" + data.vendor + ")")
+	print(indent + data["class"].upper()
+		+ " " + (data.product if data.product else "-")
+		+ " (" + data.vendor + ")"
+		+ " " + (data.description if data.description else "-")
+	)
 	if data.children:
 		for c in data.children:
 			printPCIStruct(c, indent=indent + "\t")
