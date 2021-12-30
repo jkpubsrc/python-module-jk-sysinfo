@@ -109,6 +109,66 @@ def __parse_lsblk_postproces_dev(j, mountPointMap):
 		mountPointMap[j2["mountpoint"]] = j2
 #
 
+class _LsBlkDevTreeFilter(object):
+
+	def __init__(self, **filterElements) -> None:
+		if not filterElements:
+			raise Exception("No filter elements specified!")
+
+		self.__jFilter = {}
+		for fe_key, fe_valueOrValues in filterElements.items():
+			assert isinstance(fe_key, str)
+
+			if isinstance(fe_valueOrValues, (int,str,bool)):
+				pass
+			elif isinstance(fe_valueOrValues, (list, tuple)):
+				for v in fe_valueOrValues:
+					if not isinstance(v, (int,str,bool)):
+						raise Exception("Filter " + fe_key + " has a value of invalid type!")
+			else:
+				raise Exception("Filter " + fe_key + " has a value of invalid type!")
+
+			self.__jFilter[fe_key] = fe_valueOrValues
+	#
+
+	def checkAccept(self, jData:dict) -> bool:
+		for filterKey, filterValueOrValues in self.__jFilter.items():
+
+			jDataValue = jData.get(filterKey, None)
+			if jDataValue is None:
+				# required key-value-pair does not exist or value is (null)
+				return False
+			if isinstance(filterValueOrValues, (tuple,list)):
+				if jDataValue not in filterValueOrValues:
+					# value is not in list of allowed values
+					return False
+			else:
+				if jDataValue != filterValueOrValues:
+					# value is not an allowed value
+					return False
+
+		return True
+	#
+
+#
+
+def filter_lsblk_devtree(jsonRawData:dict, **filterElements) -> list:
+	if ("deviceTree" not in jsonRawData) or ("mountPoints" not in jsonRawData):
+		raise Exception("Specified data is no JSON raw data!")
+
+	j = jsonRawData["deviceTree"]
+	assert isinstance(j, list)
+
+	filter = _LsBlkDevTreeFilter(**filterElements)
+
+	ret = []
+	for jitem in j:
+		if filter.checkAccept(jitem):
+			ret.append(jitem)
+
+	return ret
+#
+
 
 
 #
