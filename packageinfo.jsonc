@@ -50,6 +50,7 @@
 			"jk_cmdoutputparsinghelper",
 			"jk_json",
 			"jk_flexdata",
+			"jk_utils",
 		],
 		"python_packages_dev": [
 		],
