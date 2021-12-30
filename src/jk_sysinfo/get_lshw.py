@@ -55,8 +55,6 @@ def _findAllR(d:dict, **kwargs):
 			yield from _findAllR(data, **kwargs)
 #
 
-
-
 #
 # Returns:
 #	{
@@ -374,7 +372,11 @@ def _findAllR(d:dict, **kwargs):
 #	}
 #
 def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
-	data_lshw = json.loads(stdout)
+	try:
+		data_lshw = json.loads(stdout)
+	except json.decoder.JSONDecodeError as ee:
+		raise Exception("JSON parsing error. Please upgrade lshw as your OS seems to use a very old version of lshw.")
+
 	if isinstance(data_lshw, list):
 		assert len(data_lshw) == 1
 		data_lshw = data_lshw[0]
