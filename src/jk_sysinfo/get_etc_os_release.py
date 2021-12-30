@@ -41,9 +41,10 @@ def parse_etc_os_release(stdout:str, stderr:str, exitcode:int) -> dict:
 		"fullNameStr": data["NAME"] + " " + data["VERSION"],	# this should be the same as PRETTY_NAME
 		"url": data["HOME_URL"],								# "https://www.ubuntu.com/"
 	}
+
 	m = re.match(r".+\s\(([^\)]+)\)$", ret["versionStr"])
-	if m:
-		ret["codeName"] = m.group(1)
+	ret["codeName"] = m.group(1) if m else None
+
 	return ret
 #
 
