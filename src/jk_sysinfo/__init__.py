@@ -22,7 +22,7 @@ from	.get_etc_os_release			import	parse_etc_os_release,																get_etc_o
 from	.get_etc_passwd				import	parse_etc_passwd,																	get_etc_passwd
 from	.get_ifconfig				import	parse_ifconfig,																		get_ifconfig
 from	.get_lsb_release_a			import	parse_lsb_release_a,																get_lsb_release_a
-from	.get_lsblk					import	parse_lsblk,																		get_lsblk
+from	.get_lsblk					import	parse_lsblk, filter_lsblk_devtree,													get_lsblk
 from	.get_lshw					import	parse_lshw,																			get_lshw
 from	.get_motherboard_info		import																						get_motherboard_info
 from	.get_mount					import	parse_mount,																		get_mount
@@ -33,9 +33,11 @@ from	.get_proc_cpu_info			import	parse_proc_cpu_info,																get_proc_cp
 from	.get_proc_load_avg			import	parse_proc_load_avg,																get_proc_load_avg
 from	.get_proc_meminfo			import	parse_proc_meminfo,																	get_proc_meminfo
 from	.get_ps						import	parse_ps,																			get_ps
+from	.get_ps_local				import																						get_ps_local, get_process_info_local
 from	.get_sensors				import	parse_sensors,																		get_sensors, has_local_sensors
 from	.get_uptime					import	parse_uptime,																		get_uptime
 from	.get_user_info				import	parse_user_info_etc_passwd, parse_user_info_etc_shadow, parse_user_info_etc_group,	get_user_info
 from	.get_vcgencmd				import																						get_vcgencmd_get_config, get_vcgencmd_measure_volts, get_vcgencmd_measure_temp, get_vcgencmd_get_mem, get_vcgencmd_display_power, get_vcgencmd, has_local_vcgencmd
+from	.get_hdparm_I				import	parse_hdparm_I,																		get_hdparm_I
 
 from	.get_systemctl_units		import	parse_systemctl_units,																get_systemctl_units

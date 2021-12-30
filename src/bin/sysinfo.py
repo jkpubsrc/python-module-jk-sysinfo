@@ -11,6 +11,7 @@ import jk_json
 import jk_flexdata
 from jk_typing import *
 
+from _DriveInfo import _DriveInfo
 
 
 
@@ -216,17 +217,62 @@ for display in data_lshw._findAllR(id="display"):
 
 print("\n#### storage ####\n")
 print("static")
-for storage in data_lshw._findAllR(id="storage"):
-	print("\tvendor:", storage.vendor)
-	print("\tproduct:", storage.product)
-	print("\tdescription:", storage.description)
-	print("\tdriver:", storage.configuration.driver)
-	print("-")
-for storage in data_lshw._findAllR(id="cdrom"):
-	print("\tvendor:", storage.vendor)
-	print("\tproduct:", storage.product)
-	print("\tdescription:", storage.description)
-	print("-")
+#for storage in data_lshw._findAllR(id="storage"):
+#	print("\tvendor:", storage.vendor)
+#	print("\tproduct:", storage.product)
+#	print("\tdescription:", storage.description)
+#	print("\tdriver:", storage.configuration.driver)
+#	print("-")
+#for storage in data_lshw._findAllR(id="cdrom"):
+#	print("\tvendor:", storage.vendor)
+#	print("\tproduct:", storage.product)
+#	print("\tdescription:", storage.description)
+#	print("-")
+
+data_lsblk_disks = jk_sysinfo.filter_lsblk_devtree(data_lsblk._toDict(), type="disk")
+diskTable = jk_console.SimpleTable()
+diskTable.addRow(
+	"device",
+	"model",
+	"vendor",
+	"serial",
+	"firmwareRevision",
+	"formFactor",
+	"diskGranularity",
+	"rotationRate",
+	"transport",
+	"size",
+	"uuid",
+	"readOnly",
+	"rotational",
+	"hotplug",
+	"NCQ",
+	"TRIM",
+).hlineAfterRow = True
+for jDisk in data_lsblk_disks:
+	devicePath = jDisk["dev"]
+	data_hdparam_I = jk_sysinfo.get_hdparm_I(devPath=devicePath)
+	di = _DriveInfo(jDisk, data_hdparam_I)
+	diskTable.addRow(
+		di.devicePath,
+		di.model,
+		di.vendor,
+		di.serial,
+		di.firmwareRevision,
+		di.formFactor,
+		di.diskGranularity,
+		di.nominalMediaRotationRate,
+		di.transport,
+		di.size,
+		di.uuid if di.uuid else "-",
+		di.isReadOnly,
+		di.isRotational,
+		di.isHotplug,
+		di.isNCQSupported,
+		di.isTRIMSupported,
+	)	
+diskTable.print(prefix="\t")
+print("-")
 
 ################################################################
 
@@ -303,6 +349,7 @@ for data in data_sensors._values():
 	#jk_json.prettyPrint(data._toDict())
 	for sensorItemName, sensorItemStruct in data.sensorData._items():
 		print("\t" + data.device + "." + sensorItemName + ": " + formatSensorData(sensorItemStruct))
+print("-")
 
 ################################################################
 
@@ -337,6 +384,7 @@ for networkInterface, networkInterfaceData in data_net_info._items():
 		networkInterfaceData.tx_errors,
 	)
 table.print(prefix="\t")
+print("-")
 
 ################################################################
 
@@ -393,39 +441,13 @@ def printDevice(data_lsblk:jk_flexdata.FlexObject, data_mounts:jk_flexdata.FlexO
 for d in data_lsblk.deviceTree:
 	printDevice(d, data_mounts, data_df, "\t")
 	# TODO: list logical drives
+print("-")
 
 ################################################################
 
 print()
 
 
-
-"""
-System:    Host: nbxxxxxxxx Kernel: 4.4.0-154-generic x86_64 (64 bit) Desktop: MATE 1.12.1
-           Distro: Ubuntu 16.04 xenial
-Machine:   Mobo: MSI model: B150M ECO (MS-7994) v: 1.0 Bios: American Megatrends v: 1.A0 date: 12/06/2017
-CPU:       Quad core Intel Core i5-6600 (-MCP-) cache: 6144 KB 
-           clock speeds: max: 3900 MHz 1: 799 MHz 2: 799 MHz 3: 799 MHz 4: 799 MHz
-Graphics:  Card: Intel HD Graphics 530
-           Display Server: X.Org 1.18.4 drivers: intel (unloaded: fbdev,vesa) Resolution: 1920x1200@59.95hz
-           GLX Renderer: Mesa DRI Intel HD Graphics 530 (Skylake GT2) GLX Version: 3.0 Mesa 18.0.5
-Audio:     Card Intel 100 Series/C230 Series Family HD Audio Controller driver: snd_hda_intel
-           Sound: Advanced Linux Sound Architecture v: k4.4.0-154-generic
-Network:   Card: Intel Ethernet Connection (2) I219-V driver: e1000e
-           IF: enp0s31f6 state: up speed: 1000 Mbps duplex: full mac: d8:cb:8a:ec:5f:05
-Drives:    HDD Total Size: 1000.2GB (76.7% used) ID-1: /dev/sda model: CT1000MX500SSD1 size: 1000.2GB
-Partition: ID-1: / size: 917G used: 715G (83%) fs: ext4 dev: /dev/sda1
-RAID:      No RAID devices: /proc/mdstat, md_mod kernel module present
-Sensors:   System Temperatures: cpu: 29.8C mobo: 27.8C
-           Fan Speeds (in rpm): cpu: N/A
-Info:      Processes: 281 Uptime: 8 days Memory: 10592.6/31123.7MB Client: Shell (bash) inxi: 2.2.35 
-
-
-·
-•
-○
-
-"""
 
 
 

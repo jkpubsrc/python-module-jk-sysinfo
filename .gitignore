@@ -11,4 +11,5 @@ examples/*.json
 examples/data/**
 testing/test_get_lshw.json
 testing/test_get_lshw2.xml
+notes/TEMP.md
 
