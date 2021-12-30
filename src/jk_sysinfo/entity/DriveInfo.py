@@ -8,14 +8,14 @@ import jk_utils
 import jk_json
 import jk_prettyprintobj
 
-from _DrivePartitionInfo import _DrivePartitionInfo
+from .DrivePartitionInfo import DrivePartitionInfo
 
 
 
 
 
 
-class _DriveInfo(jk_prettyprintobj.DumpMixin):
+class DriveInfo(jk_prettyprintobj.DumpMixin):
 
 	################################################################################################################################
 	## Constructor
@@ -61,7 +61,7 @@ class _DriveInfo(jk_prettyprintobj.DumpMixin):
 		self.partitions = []
 		if "children" in jdata_lsblk_disk:
 			for jchild in jdata_lsblk_disk["children"]:
-				self.partitions.append(_DrivePartitionInfo(jchild))
+				self.partitions.append(DrivePartitionInfo(jchild))
 	#
 
 	################################################################################################################################

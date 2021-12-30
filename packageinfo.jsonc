@@ -21,7 +21,7 @@
 		"license": "Apache2",
 		"name": "jk_sysinfo",
 		"packageClass": "python-module",
-		"version": "0.2021.12.6"
+		"version": "0.2021.12.30"
 	},
 	"repositories": [
 		{
@@ -69,6 +69,7 @@
 		"extra_data_files": [],
 		"packages": [
 			"jk_sysinfo",
+			"jk_sysinfo.entity",
 		]
 	}
 }

@@ -6,12 +6,13 @@ import sys
 import re
 
 import jk_console
-import jk_sysinfo
 import jk_json
 import jk_flexdata
 from jk_typing import *
 
-from _DriveInfo import _DriveInfo
+import jk_sysinfo
+import jk_sysinfo.entity
+
 
 
 
@@ -256,7 +257,7 @@ diskTable.addRow(
 for jDisk in data_lsblk_disks:
 	devicePath = jDisk["dev"]
 	data_hdparam_I = jk_sysinfo.get_hdparm_I(devPath=devicePath)
-	di = _DriveInfo(jDisk, data_hdparam_I)
+	di = jk_sysinfo.entity.DriveInfo(jDisk, data_hdparam_I)
 	diskTable.addRow(
 		di.devicePath,
 		di.model,

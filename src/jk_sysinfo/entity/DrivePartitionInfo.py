@@ -14,7 +14,7 @@ import jk_prettyprintobj
 
 
 
-class _DrivePartitionInfo(jk_prettyprintobj.DumpMixin):
+class DrivePartitionInfo(jk_prettyprintobj.DumpMixin):
 
 	################################################################################################################################
 	## Constructor

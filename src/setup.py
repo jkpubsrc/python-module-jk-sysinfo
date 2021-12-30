@@ -39,6 +39,7 @@ setup(
 		"jk_cmdoutputparsinghelper",
 		"jk_json",
 		"jk_flexdata",
+		"jk_utils",
 	],
 	keywords = [
 		"monitoring",
@@ -48,12 +49,13 @@ setup(
 	name = "jk_sysinfo",
 	packages = [
 		"jk_sysinfo",
+		"jk_sysinfo.entity",
 	],
 	scripts = [
 		"bin/sysinfo.py",
 		"bin/sysinfo_json.py",
 	],
-	version = "0.2021.12.6",
+	version = "0.2021.12.30",
 	zip_safe = False,
 	long_description = readme(),
 	long_description_content_type="text/markdown",

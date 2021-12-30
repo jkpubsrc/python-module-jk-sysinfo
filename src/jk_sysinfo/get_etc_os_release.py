@@ -1,5 +1,7 @@
 
 
+import re
+
 from jk_cachefunccalls import cacheCalls
 
 from .parsing_utils import *
@@ -29,7 +31,7 @@ def parse_etc_os_release(stdout:str, stderr:str, exitcode:int) -> dict:
 		raise Exception()
 
 	data = _parserKVPs.parseLines(stdout.strip().split("\n"))
-	return {
+	ret = {
 		"name": data["NAME"],									# "Ubuntu", "Raspbian GNU/Linux"
 		"distribution": data["ID"],								# "ubuntu", "raspbian"
 		"version": data["PRETTY_NAME"].split()[1],				# "16.04.6", "18.04.3", "10"
@@ -37,7 +39,12 @@ def parse_etc_os_release(stdout:str, stderr:str, exitcode:int) -> dict:
 		"versionStr": data["VERSION"],							# "16.04.6 LTS (Xenial Xerus)", "18.04.3 LTS (Bionic Beaver)", "10 (buster)"
 		"lts": data["PRETTY_NAME"].endswith(" LTS"),			# True/False; might only work for Ubuntu
 		"fullNameStr": data["NAME"] + " " + data["VERSION"],	# this should be the same as PRETTY_NAME
+		"url": data["HOME_URL"],								# "https://www.ubuntu.com/"
 	}
+	m = re.match(r".+\s\(([^\)]+)\)$", ret["versionStr"])
+	if m:
+		ret["codeName"] = m.group(1)
+	return ret
 #
 
 

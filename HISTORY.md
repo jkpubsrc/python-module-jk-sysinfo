@@ -9,4 +9,5 @@
 
 * 2021-12-06
 	* Extended: user and group processing in get_ps.py
+	* Improved: OS version parsing
 
