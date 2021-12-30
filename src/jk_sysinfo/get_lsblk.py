@@ -87,7 +87,7 @@ def parse_lsblk(stdout:str, stderr:str, exitcode:int) -> dict:
 	ret = json.loads(stdout.strip())["blockdevices"]
 	mountPointMap = {}
 	for jBlockDevice in ret:
-		__postproces_lsblk_dev(jBlockDevice, mountPointMap)
+		__parse_lsblk_postproces_dev(jBlockDevice, mountPointMap)
 
 	return {
 		"deviceTree": ret,
@@ -95,11 +95,13 @@ def parse_lsblk(stdout:str, stderr:str, exitcode:int) -> dict:
 	}
 #
 
-def __postproces_lsblk_dev(j, mountPointMap):
+def __parse_lsblk_postproces_dev(j, mountPointMap):
 	j["dev"] = j["name"]
 	if "children" in j:
 		for j2 in j["children"]:
-			__postproces_lsblk_dev(j2, mountPointMap)
+			__parse_lsblk_postproces_dev(j2, mountPointMap)
+	if j["vendor"]:
+		j["vendor"] = j["vendor"].strip()
 	if j["mountpoint"]:
 		j2 = copy.deepcopy(j)
 		if "children" in j2:
