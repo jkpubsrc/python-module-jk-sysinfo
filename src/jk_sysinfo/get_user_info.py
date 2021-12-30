@@ -308,12 +308,12 @@ def parse_user_info_etc_group(stdout:str, stderr:str, exitcode:int) -> dict:
 #	}
 #
 @cacheCalls(seconds=3, dependArgs=[0])
-def get_user_info(c = None, catEtcShadowScript:str = None) -> dict:
-	if catEtcShadowScript is None:
-		catEtcShadowScript = "cat /etc/shadow"
+def get_user_info(c = None, catEtcShadowScriptCmd:str = None) -> dict:
+	if catEtcShadowScriptCmd is None:
+		catEtcShadowScriptCmd = "cat /etc/shadow"
 
 	stdOutPasswd, stdErrPasswd, exitCodePasswd = run(c, "cat /etc/passwd")
-	stdOutShadow, stdErrShadow, exitCodeShadow = run(c, "sudo " + catEtcShadowScript)
+	stdOutShadow, stdErrShadow, exitCodeShadow = run(c, "sudo " + catEtcShadowScriptCmd)
 
 	retUsers = joinDictsByKey(
 		parse_user_info_etc_passwd(stdOutPasswd, stdErrPasswd, exitCodePasswd),
