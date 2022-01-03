@@ -11,3 +11,7 @@
 	* Extended: user and group processing in get_ps.py
 	* Improved: OS version parsing
 
+* 2022-02-02
+	* Improved: Parsing output of hdparm
+	* Added: Parsing output of dmidecode
+

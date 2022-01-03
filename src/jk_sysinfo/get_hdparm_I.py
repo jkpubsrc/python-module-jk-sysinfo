@@ -247,6 +247,7 @@ class _CommandsFeaturesBlock(object):
 #
 def parse_hdparm_I(stdout:str, stderr:str, exitcode:int, devPath:str) -> dict:
 	lineList = jk_cmdoutputparsinghelper.LineList(stdout.split("\n"))
+	#lineList.dump()
 
 	# ----------------------------------------------------------------
 
@@ -257,6 +258,10 @@ def parse_hdparm_I(stdout:str, stderr:str, exitcode:int, devPath:str) -> dict:
 	nStart += 1
 	assert not lineList[nStart]		# this should be an empty line
 	nStart += 1
+
+	if len(lineList) == 3:
+		return {}
+
 	assert lineList[nStart]			# this should not be an empty line
 
 	# find an empty line after beginning
@@ -318,6 +323,22 @@ def parse_hdparm_I(stdout:str, stderr:str, exitcode:int, devPath:str) -> dict:
 
 
 
+def where_is(c = None, programName:str = None) -> str:
+	assert isinstance(programName, str)
+
+	stdout, stderr, exitcode = run(c, "sudo /usr/bin/whereis " + programName)
+	assert stdout.startswith(programName + ":")
+	stdout = stdout[len(programName) + 1:].strip()
+	listOfLocations = stdout.split(" ")
+	for loc in listOfLocations:
+		if loc.endswith("/" + programName):
+			return loc
+	
+	raise Exception("Not installed: " + programName)
+#
+
+
+
 #
 # Returns:
 #
@@ -325,7 +346,9 @@ def get_hdparm_I(c = None, devPath:str = None) -> typing.Union[dict,None]:
 	if not devPath:
 		raise Exception("Argument 'devPath' is required!")
 
-	stdout, stderr, exitcode = run(c, "sudo /usr/sbin/hdparm -I " + devPath)
+	programPath = where_is(None, "hdparm")
+
+	stdout, stderr, exitcode = run(c, "sudo {} -I {}".format(programPath, devPath))
 	return parse_hdparm_I(stdout, stderr, exitcode, devPath)
 #
 

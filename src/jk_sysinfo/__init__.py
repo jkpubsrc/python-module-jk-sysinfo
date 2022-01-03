@@ -1,7 +1,7 @@
 ﻿
 
 
-__version__ = "0.2021.12.30"
+__version__ = "0.2022.1.3"
 
 
 
@@ -38,6 +38,9 @@ from	.get_sensors				import	parse_sensors,																		get_sensors, has_loc
 from	.get_uptime					import	parse_uptime,																		get_uptime
 from	.get_user_info				import	parse_user_info_etc_passwd, parse_user_info_etc_shadow, parse_user_info_etc_group,	get_user_info
 from	.get_vcgencmd				import																						get_vcgencmd_get_config, get_vcgencmd_measure_volts, get_vcgencmd_measure_temp, get_vcgencmd_get_mem, get_vcgencmd_display_power, get_vcgencmd, has_local_vcgencmd
+
 from	.get_hdparm_I				import	parse_hdparm_I,																		get_hdparm_I
+from	.get_dmi_decode				import	parse_dmi_decode,																	get_dmi_decode, DMIDecodeConstants
 
 from	.get_systemctl_units		import	parse_systemctl_units,																get_systemctl_units
+
