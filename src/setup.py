@@ -25,7 +25,7 @@ setup(
 		"Topic :: System :: Monitoring",
 	],
 	description = "This python module provides ways to retrieve and parse technical system data of Linux computer systems.",
-	include_package_data = False,
+	include_package_data = True,
 	install_requires = [
 		"python-dateutil",
 		"fabric",
@@ -40,6 +40,7 @@ setup(
 		"jk_json",
 		"jk_flexdata",
 		"jk_utils",
+		"jk_logging",
 	],
 	keywords = [
 		"monitoring",
@@ -47,6 +48,10 @@ setup(
 	],
 	license = "Apache2",
 	name = "jk_sysinfo",
+	package_data = {
+		"": [
+		],
+	},
 	packages = [
 		"jk_sysinfo",
 		"jk_sysinfo.entity",
@@ -55,8 +60,8 @@ setup(
 		"bin/sysinfo.py",
 		"bin/sysinfo_json.py",
 	],
-	version = "0.2022.1.3",
+	version = '0.2023.2.10',
 	zip_safe = False,
 	long_description = readme(),
-	long_description_content_type="text/markdown",
+	long_description_content_type = "text/markdown",
 )

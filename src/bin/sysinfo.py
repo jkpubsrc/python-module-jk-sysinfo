@@ -1,18 +1,78 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 
 import os
 import sys
 import re
+import typing
 
+import jk_typing
+import jk_argparsing
+import jk_logging
 import jk_console
-import jk_json
 import jk_flexdata
-from jk_typing import *
 
 import jk_sysinfo
 import jk_sysinfo.entity
 
+
+
+
+
+
+
+def _createArgsParser() -> jk_argparsing.ArgsParser:
+	ap = jk_argparsing.ArgsParser(os.path.basename(__file__), "Display system information in a human readable way.")
+
+	ap.optionDataDefaults.set("help", False)
+	ap.optionDataDefaults.set("color", True)
+
+	ap.createOption('h', 'help', "Display this help text.").onOption = \
+		lambda argOption, argOptionArguments, parsedArgs: \
+			parsedArgs.optionData.set("help", True)
+	ap.createOption(None, 'no-color', "Dont' use colors in output.").onOption = \
+		lambda argOption, argOptionArguments, parsedArgs: \
+			parsedArgs.optionData.set("colors", False)
+
+	ap.createAuthor("Jürgen Knauth", "jk@binary-overflow.de")
+	ap.setLicense("Apache", YEAR = 2021, COPYRIGHTHOLDER = "Jürgen Knauth")
+
+	ap.createReturnCode(0, "Everything is okay.")
+	ap.createReturnCode(1, "An error occurred.")
+
+	return ap
+#
+
+
+
+
+class CollectedSystemData(object):
+
+	def __init__(self) -> None:
+		self.os_release:jk_flexdata.FlexObject = None
+		self.bIsRPi:bool = None
+		self.data_lsb_release_a:jk_flexdata.FlexObject = None
+		self.data_lshw:jk_flexdata.FlexObject = None
+		self.data_proccpu_extra:jk_flexdata.FlexObject = None
+		self.data_proccpu_extra:jk_flexdata.FlexObject = None
+		self.data_mobo:jk_flexdata.FlexObject = None
+		self.data_bios:jk_flexdata.FlexObject = None
+		self.data_proccpu:jk_flexdata.FlexObject = None
+		self.data_cpu:jk_flexdata.FlexObject = None
+		self.data_sensors:jk_flexdata.FlexObject = None
+		self.data_sysload:jk_flexdata.FlexObject = None
+		self.data_mem:jk_flexdata.FlexObject = None
+		self.data_lsblk:jk_flexdata.FlexObject = None
+		self.data_reboot:jk_flexdata.FlexObject = None
+		self.data_mounts:jk_flexdata.FlexObject = None
+		self.data_df:jk_flexdata.FlexObject = None
+		self.data_net_info:jk_flexdata.FlexObject = None
+		self.data_uptime:jk_flexdata.FlexObject = None
+		self.data_df:jk_flexdata.FlexObject = None
+
+	#
+
+#
 
 
 
@@ -36,425 +96,467 @@ c = None
 
 
 
-x = jk_sysinfo.get_etc_os_release(c)
-os_release = jk_flexdata.createFromData(jk_sysinfo.get_etc_os_release(c))
 
-bIsRPi = os_release.distribution == "raspbian"
+#
+# Collect all data and return it.
+#
+# @param	fabric.Connection c			(optional) A fabric connection object.
+# @return	CollectedSystemData			(always) The collected system data.
+#
+def collectSystemData(c = None) -> CollectedSystemData:
+	#collectedSystemData = CollectedSystemData()
+	ret = CollectedSystemData()
 
+	ret.os_release = jk_flexdata.createFromData(jk_sysinfo.get_etc_os_release(c))
 
+	ret.bIsRPi = ret.os_release.distribution == "raspbian"
 
-
-
-data_lsb_release_a = jk_flexdata.createFromData(jk_sysinfo.get_lsb_release_a(c))				# static
-data_lshw = jk_flexdata.createFromData(jk_sysinfo.get_lshw(c))									# static
-if bIsRPi:
-	data_proccpu_extra = jk_flexdata.createFromData(jk_sysinfo.get_proc_cpu_info(c)[1])			# static
-	data_mobo_json = {
-		"vendor": "Raspberry Pi Foundation",
-	}
-	if data_proccpu_extra.hardware:
-		data_mobo_json["soc"] = data_proccpu_extra.hardware
-		data_mobo_json["serial"] = data_proccpu_extra.serial
-		data_mobo_json["name"] = data_proccpu_extra.model
-	data_mobo = jk_flexdata.createFromData(data_mobo_json)
-else:
-	data_mobo = jk_flexdata.createFromData(jk_sysinfo.get_motherboard_info(c))					# static
-data_bios = jk_flexdata.createFromData(jk_sysinfo.get_bios_info(c))								# static
-data_proccpu = [ jk_flexdata.createFromData(x) for x in jk_sysinfo.get_proc_cpu_info(c)[0] ]	# static, (runtime)
-data_cpu = jk_flexdata.createFromData(jk_sysinfo.get_cpu_info(c))								# static
-if bIsRPi:
-	t = jk_sysinfo.get_vcgencmd_measure_temp(c)
-	v = jk_sysinfo.get_vcgencmd_measure_volts(c)
-	data_sensors_json = {
-		"coretemp": {
-			"device": "coretemp",
-			"sensorData": {
-				"temp1": {
-					"sensor": "temp",
-					"value": t["cpu"]["temp"],
+	ret.data_lsb_release_a = jk_flexdata.createFromData(jk_sysinfo.get_lsb_release_a(c))				# static
+	ret.data_lshw = jk_flexdata.createFromData(jk_sysinfo.get_lshw(c))									# static
+	if ret.bIsRPi:
+		ret.data_proccpu_extra = jk_flexdata.createFromData(jk_sysinfo.get_proc_cpu_info(c)[1])			# static
+		_data_mobo_json = {
+			"vendor": "Raspberry Pi Foundation",
+		}
+		if ret.data_proccpu_extra.hardware:
+			_data_mobo_json["soc"] = ret.data_proccpu_extra.hardware
+			_data_mobo_json["serial"] = ret.data_proccpu_extra.serial
+			_data_mobo_json["name"] = ret.data_proccpu_extra.model
+		ret.data_mobo = jk_flexdata.createFromData(_data_mobo_json)
+	else:
+		ret.data_mobo = jk_flexdata.createFromData(jk_sysinfo.get_motherboard_info(c))					# static
+	ret.data_bios = jk_flexdata.createFromData(jk_sysinfo.get_bios_info(c))								# static
+	ret.data_proccpu = [ jk_flexdata.createFromData(x) for x in jk_sysinfo.get_proc_cpu_info(c)[0] ]	# static, (runtime)
+	ret.data_cpu = jk_flexdata.createFromData(jk_sysinfo.get_cpu_info(c))								# static
+	if ret.bIsRPi:
+		_t = jk_sysinfo.get_vcgencmd_measure_temp(c)
+		_v = jk_sysinfo.get_vcgencmd_measure_volts(c)
+		_data_sensors_json = {
+			"coretemp": {
+				"device": "coretemp",
+				"sensorData": {
+					"temp1": {
+						"sensor": "temp",
+						"value": _t["cpu"]["temp"],
+					}
 				}
-			}
-		},
-		"corevolts": {
-			"device": "corevolts",
-			"sensorData": {
-				"temp1": {
-					"sensor": "volt",
-					"value": v["cpu"]["volt"],
+			},
+			"corevolts": {
+				"device": "corevolts",
+				"sensorData": {
+					"temp1": {
+						"sensor": "volt",
+						"value": _v["cpu"]["volt"],
+					}
 				}
-			}
-		},
-		"ramolts": {
-			"device": "ramvolts",
-			"sensorData": {
-				"volt1": {
-					"sensor": "volt",
-					"value": v["ram"]["volt"],
+			},
+			"ramolts": {
+				"device": "ramvolts",
+				"sensorData": {
+					"volt1": {
+						"sensor": "volt",
+						"value": _v["ram"]["volt"],
+					}
 				}
 			}
 		}
-	}
-	data_sensors = jk_flexdata.createFromData(data_sensors_json)								# runtime
-else:
-	data_sensors = jk_flexdata.createFromData(jk_sysinfo.get_sensors(c))						# runtime
-data_sysload = jk_flexdata.createFromData(jk_sysinfo.get_proc_load_avg(c))						# runtime
-data_mem = jk_flexdata.createFromData(jk_sysinfo.get_proc_meminfo(c))							# runtime
-data_lsblk = jk_flexdata.createFromData(jk_sysinfo.get_lsblk(c))								# runtime
-data_reboot = jk_flexdata.createFromData(jk_sysinfo.get_needs_reboot(c))						# runtime
-data_mounts = jk_flexdata.createFromData(jk_sysinfo.get_mount(c))								# runtime
-data_df = jk_flexdata.createFromData(jk_sysinfo.get_df(c))										# runtime
-data_net_info = jk_flexdata.createFromData(jk_sysinfo.get_net_info(c))							# runtime
-data_uptime = jk_flexdata.createFromData(jk_sysinfo.get_uptime(c))								# runtime
+		ret.data_sensors = jk_flexdata.createFromData(_data_sensors_json)								# runtime
+	else:
+		ret.data_sensors = jk_flexdata.createFromData(jk_sysinfo.get_sensors(c))						# runtime
+	ret.data_sysload = jk_flexdata.createFromData(jk_sysinfo.get_proc_load_avg(c))						# runtime
+	ret.data_mem = jk_flexdata.createFromData(jk_sysinfo.get_proc_meminfo(c))							# runtime
+	ret.data_lsblk = jk_flexdata.createFromData(jk_sysinfo.get_lsblk(c))								# runtime
+	ret.data_reboot = jk_flexdata.createFromData(jk_sysinfo.get_needs_reboot(c))						# runtime
+	ret.data_mounts = jk_flexdata.createFromData(jk_sysinfo.get_mount(c))								# runtime
+	ret.data_df = jk_flexdata.createFromData(jk_sysinfo.get_df(c))										# runtime
+	ret.data_net_info = jk_flexdata.createFromData(jk_sysinfo.get_net_info(c))							# runtime
+	ret.data_uptime = jk_flexdata.createFromData(jk_sysinfo.get_uptime(c))								# runtime
 
-if not data_reboot:
-	print(jk_console.Console.ForeGround.RED + "WARNING: Packet 'needrestart' not installed." + jk_console.Console.RESET)
+	if not ret.data_reboot:
+		print(jk_console.Console.ForeGround.RED + "WARNING: Packet 'needrestart' not installed." + jk_console.Console.RESET)
 
-
-
-
-
-
-################################################################
-
-print("\n#### bios ####\n")
-print("static")
-print("\tvendor:", data_bios.vendor)
-print("\tversion:", data_bios.version)
-print("\tdate:", data_bios.date)
-print("-")
-
-################################################################
-
-print("\n#### motherboard ####\n")
-print("static")
-print("\tvendor:", data_mobo.vendor)
-print("\tname:", data_mobo.name)
-print("\tversion:", data_mobo.version)
-print("-")
-
-################################################################
-
-print("\n#### busses and bus devices ####\n")
-print("static")
-
-def printPCIStruct(data:jk_flexdata.FlexObject, indent:str=""):
-	print(indent + data["class"].upper()
-		+ " " + (data.product if data.product else "-")
-		+ " (" + data.vendor + ")"
-		+ " " + (data.description if data.description else "-")
-	)
-	if data.children:
-		for c in data.children:
-			printPCIStruct(c, indent=indent + "\t")
+	return ret
 #
 
-bridge = data_lshw._findR(_class="bridge")
-printPCIStruct(bridge, indent="\t")
-print("-")
 
-################################################################
 
-print("\n#### system ####\n")
-print("static")
-print("\thostname:", data_lshw.id)	# hostname
-print("\tos distribution:", data_lsb_release_a.distribution)
-print("\tos version:", data_lsb_release_a.version)
-print("\tis LTS version:", data_lsb_release_a.lts)
-print("runtime")
-print("\tprocesses:", data_sysload.processes_total)
-print("\tsystem load:", data_sysload.load1, "/", data_sysload.load5, "/", data_sysload.load15)
-days, hours, minutes, seconds, milliseconds = jk_sysinfo.convertSecondsToHumanReadableDuration(data_uptime.uptimeInSeconds)
-print("\tuptime:", days, "day(s),", hours, "hour(s),", minutes, "minute(s),", seconds, "second(s)")
-if data_reboot.needsReboot:
-	updatesRequired = set()
-	if data_reboot.updateMicroCodeOrABI:
-		updatesRequired.add("CPU or ABI")
-	if data_reboot.updateKernel:
-		updatesRequired.add("kernel")
-	if not updatesRequired:
-		raise Exception()
-	print(jk_console.Console.ForeGround.ORANGE + "\tUpdate required:", ",".join(updatesRequired) + jk_console.Console.RESET)
-print("-")
+def printCollectedSystemData(csd:CollectedSystemData) -> None:
+	assert isinstance(csd, CollectedSystemData)
 
-################################################################
+	################################################################
 
-print("\n#### cpu ####\n")
-print("static")
-print("\tvendor:", data_proccpu[0].vendor_id)
-print("\tmodel:", data_proccpu[0].model_name)
-print("\tspeed:", jk_sysinfo.formatFrequencyRangeS(data_cpu.freq_min * 1000000, data_cpu.freq_max * 1000000))
-print("\tcpu family:", data_proccpu[0].cpu_family)
-print("\tcores:", len(data_proccpu), "(hyperthreading)" if ("ht" in data_proccpu[0].flags) else "")
-if "cache_size" in data_proccpu[0]._keys():
-	print("\tcpu cache size:", data_proccpu[0].cache_size)
-if data_proccpu[0].bugs:
-	print("\tbugs:", ", ".join(data_proccpu[0].bugs))
-print("-")
-
-################################################################
-
-print("\n#### memory ####\n")
-print("runtime")
-mem = data_lshw._findR(id="memory")
-assert mem.units == "bytes"
-#print("size:", jk_sysinfo.formatBytesS(int(mem.size)))
-print("\tmem total:", jk_sysinfo.formatBytesS(data_mem.MemTotal * 1024))
-print("\tmem available:", jk_sysinfo.formatBytesS(data_mem.MemAvailable * 1024))
-print("\tmem free:", jk_sysinfo.formatBytesS(data_mem.MemFree * 1024))
-print("\tmem buffers:", jk_sysinfo.formatBytesS(data_mem.Buffers * 1024))
-print("\tmem cached:", jk_sysinfo.formatBytesS(data_mem.Cached * 1024))
-print("\tswap total:", jk_sysinfo.formatBytesS(data_mem.SwapTotal * 1024))
-print("\tswap free:", jk_sysinfo.formatBytesS(data_mem.SwapFree * 1024))
-print("\tswap cached:", jk_sysinfo.formatBytesS(data_mem.SwapCached * 1024))
-print("-")
-
-################################################################
-
-print("\n#### display ####\n")
-print("static")
-for display in data_lshw._findAllR(id="display"):
-	print("\tvendor:", display.vendor)
-	print("\tproduct:", display.product)
-	print("\tdriver:", display.configuration.driver)
+	print("\n#### bios ####\n")
+	print("static")
+	print("\tvendor:", csd.data_bios.vendor)
+	print("\tversion:", csd.data_bios.version)
+	print("\tdate:", csd.data_bios.date)
 	print("-")
 
-################################################################
+	################################################################
 
-print("\n#### storage ####\n")
-print("static")
-#for storage in data_lshw._findAllR(id="storage"):
-#	print("\tvendor:", storage.vendor)
-#	print("\tproduct:", storage.product)
-#	print("\tdescription:", storage.description)
-#	print("\tdriver:", storage.configuration.driver)
-#	print("-")
-#for storage in data_lshw._findAllR(id="cdrom"):
-#	print("\tvendor:", storage.vendor)
-#	print("\tproduct:", storage.product)
-#	print("\tdescription:", storage.description)
-#	print("-")
-
-data_lsblk_disks = jk_sysinfo.filter_lsblk_devtree(data_lsblk._toDict(), type="disk")
-diskTable = jk_console.SimpleTable()
-diskTable.addRow(
-	"device",
-	"model",
-	"vendor",
-	"serial",
-	"firmwareRevision",
-	"formFactor",
-	"diskGranularity",
-	"rotationRate",
-	"transport",
-	"size",
-	"uuid",
-	"readOnly",
-	"rotational",
-	"hotplug",
-	"NCQ",
-	"TRIM",
-).hlineAfterRow = True
-for jDisk in data_lsblk_disks:
-	devicePath = jDisk["dev"]
-	data_hdparam_I = jk_sysinfo.get_hdparm_I(devPath=devicePath)
-	di = jk_sysinfo.entity.DriveInfo(jDisk, data_hdparam_I)
-	diskTable.addRow(
-		di.devicePath,
-		di.model,
-		di.vendor,
-		di.serial,
-		di.firmwareRevision,
-		di.formFactor,
-		di.diskGranularity,
-		di.nominalMediaRotationRate,
-		di.transport,
-		di.size,
-		di.uuid if di.uuid else "-",
-		di.isReadOnly,
-		di.isRotational,
-		di.isHotplug,
-		di.isNCQSupported,
-		di.isTRIMSupported,
-	)	
-diskTable.print(prefix="\t")
-print("-")
-
-################################################################
-
-print("\n#### multimedia ####\n")
-print("static")
-for multimedia in data_lshw._findAllR(id="multimedia"):
-	print("\tvendor:", multimedia.vendor)
-	print("\tproduct:", multimedia.product)
-	print("\tdriver:", multimedia.configuration.driver)
+	print("\n#### motherboard ####\n")
+	print("static")
+	print("\tvendor:", csd.data_mobo.vendor)
+	print("\tname:", csd.data_mobo.name)
+	print("\tversion:", csd.data_mobo.version)
 	print("-")
 
-################################################################
+	################################################################
 
-print("\n#### network (hardware) ####\n")
-print("static")
-for network in list(data_lshw._findAllR(id="network")) + list(data_lshw._findAllR(id=re.compile("^network:"))):
-	#jk_json.prettyPrint(network._toDict())
-	print("\tvendor:", network.vendor)
-	print("\tproduct:", network.product)
-	print("\tdevice:", network.logicalname)		# network device name
-	if network.configuration.link:
-		print("\thas_link:", network.configuration.link == "yes")
-	else:
-		print("\thas_link:", "unknown")
-	if network.capabilities.tp:
-		# regular twisted pair network
+	print("\n#### busses and bus devices ####\n")
+	print("static")
 
-		if network.maxSpeedInBitsPerSecond:
-			speed, unit = jk_sysinfo.formatBitsPerSecond(network.maxSpeedInBitsPerSecond)
-			print("\tspeed maximum:", speed, unit)					# general speed in bits/s
+	def _printPCIStruct(data:jk_flexdata.FlexObject, indent:str=""):
+		print(indent + data["class"].upper()
+			+ " " + (data.product if data.product else "-")
+			+ " (" + data.vendor + ")"
+			+ " " + (data.description if data.description else "-")
+		)
+		if data.children:
+			for c in data.children:
+				_printPCIStruct(c, indent=indent + "\t")
+	#
 
-		if network.configuration.speed:
-			print("\tspeed current:", network.configuration.speed)			# current speed
-		if network.configuration.duplex:
-			print("\tduplex:", network.configuration.duplex)
-
-	elif network.configuration.wireless:
-		# regular wireless network
-
-		print("\twireless standard:", network.configuration.wireless)			# "IEEE 802.11"
-
-	else:
-		raise Exception("Unknown network type")
-
-	print("\tdescription:", network.description)
-	print("\tdriver:", network.configuration.driver)
-	print("\tmac_addr:", network.serial)
+	_bridge = csd.data_lshw._findR(_class="bridge")
+	_printPCIStruct(_bridge, indent="\t")
 	print("-")
 
-################################################################
+	################################################################
 
-print("\n#### sensors ####\n")
+	print("\n#### system ####\n")
+	print("static")
+	print("\thostname:", csd.data_lshw.id)	# hostname
+	print("\tos distribution:", csd.data_lsb_release_a.distribution)
+	print("\tos version:", csd.data_lsb_release_a.version)
+	print("\tis LTS version:", csd.data_lsb_release_a.lts)
+	print("runtime")
+	print("\tprocesses:", csd.data_sysload.processes_total)
+	print("\tsystem load:", csd.data_sysload.load1, "/", csd.data_sysload.load5, "/", csd.data_sysload.load15)
+	days, hours, minutes, seconds, milliseconds = jk_sysinfo.convertSecondsToHumanReadableDuration(csd.data_uptime.uptimeInSeconds)
+	print("\tuptime:", days, "day(s),", hours, "hour(s),", minutes, "minute(s),", seconds, "second(s)")
+	if csd.data_reboot.needsReboot:
+		updatesRequired = set()
+		if csd.data_reboot.updateMicroCodeOrABI:
+			updatesRequired.add("CPU or ABI")
+		if csd.data_reboot.updateKernel:
+			updatesRequired.add("kernel")
+		if not updatesRequired:
+			raise Exception()
+		print(jk_console.Console.ForeGround.ORANGE + "\tUpdate required:", ",".join(updatesRequired) + jk_console.Console.RESET)
+	print("-")
 
-def formatSensorData(data:jk_flexdata.FlexObject) -> str:
-	if data._isEmpty():
-		return "n/a"
-	if data.sensor == "volt":
-		return str(data.value) + "V"
-	if data.sensor == "fan":
-		return str(data.value) + " rpm"
-	elif data.sensor == "temp":
-		if data.crit and data.max:
-			return jk_sysinfo.formatTemperatureGraphC(data.value, data.crit) + " (max: " + str(data.max) + ", crit: " + str(data.crit) + ")"
-			#return str(data.value) + " °C (max: " + str(data.max) + ", crit: " + str(data.crit) + ")"
+	################################################################
+
+	print("\n#### cpu ####\n")
+	print("static")
+	print("\tvendor:", csd.data_proccpu[0].vendor_id)
+	print("\tmodel:", csd.data_proccpu[0].model_name)
+	print("\tspeed:", jk_sysinfo.formatFrequencyRangeS(csd.data_cpu.freq_min * 1000000, csd.data_cpu.freq_max * 1000000))
+	print("\tcpu family:", csd.data_proccpu[0].cpu_family)
+	print("\tcores:", len(csd.data_proccpu), "(hyperthreading)" if ("ht" in csd.data_proccpu[0].flags) else "")
+	if "cache_size" in csd.data_proccpu[0]._keys():
+		print("\tcpu cache size:", csd.data_proccpu[0].cache_size)
+	if csd.data_proccpu[0].bugs:
+		print("\tbugs:", ", ".join(csd.data_proccpu[0].bugs))
+	print("-")
+
+	################################################################
+
+	print("\n#### memory ####\n")
+	print("runtime")
+	_mem = csd.data_lshw._findR(id="memory")
+	assert _mem.units == "bytes"
+	#print("size:", jk_sysinfo.formatBytesS(int(mem.size)))
+	print("\tmem total:", jk_sysinfo.formatBytesS(csd.data_mem.MemTotal * 1024))
+	print("\tmem available:", jk_sysinfo.formatBytesS(csd.data_mem.MemAvailable * 1024))
+	print("\tmem free:", jk_sysinfo.formatBytesS(csd.data_mem.MemFree * 1024))
+	print("\tmem buffers:", jk_sysinfo.formatBytesS(csd.data_mem.Buffers * 1024))
+	print("\tmem cached:", jk_sysinfo.formatBytesS(csd.data_mem.Cached * 1024))
+	print("\tswap total:", jk_sysinfo.formatBytesS(csd.data_mem.SwapTotal * 1024))
+	print("\tswap free:", jk_sysinfo.formatBytesS(csd.data_mem.SwapFree * 1024))
+	print("\tswap cached:", jk_sysinfo.formatBytesS(csd.data_mem.SwapCached * 1024))
+	print("-")
+
+	################################################################
+
+	print("\n#### display ####\n")
+	print("static")
+	for _display in csd.data_lshw._findAllR(id="display"):
+		print("\tvendor:", _display.vendor)
+		print("\tproduct:", _display.product)
+		print("\tdriver:", _display.configuration.driver)
+		print("-")
+
+	################################################################
+
+	print("\n#### storage ####\n")
+	print("static")
+	#for storage in data_lshw._findAllR(id="storage"):
+	#	print("\tvendor:", storage.vendor)
+	#	print("\tproduct:", storage.product)
+	#	print("\tdescription:", storage.description)
+	#	print("\tdriver:", storage.configuration.driver)
+	#	print("-")
+	#for storage in data_lshw._findAllR(id="cdrom"):
+	#	print("\tvendor:", storage.vendor)
+	#	print("\tproduct:", storage.product)
+	#	print("\tdescription:", storage.description)
+	#	print("-")
+
+	_data_lsblk_disks = jk_sysinfo.filter_lsblk_devtree(csd.data_lsblk._toDict(), type="disk")
+	_diskTable = jk_console.SimpleTable()
+	_diskTable.addRow(
+		"device",
+		"model",
+		"vendor",
+		"serial",
+		"firmwareRevision",
+		"formFactor",
+		"diskGranularity",
+		"rotationRate",
+		"transport",
+		"size",
+		"uuid",
+		"readOnly",
+		"rotational",
+		"hotplug",
+		"NCQ",
+		"TRIM",
+	).hlineAfterRow = True
+	for _jDisk in _data_lsblk_disks:
+		_devicePath = _jDisk["dev"]
+		_data_hdparam_I = jk_sysinfo.get_hdparm_I(devPath=_devicePath)
+		_di = jk_sysinfo.entity.DriveInfo(_jDisk, _data_hdparam_I)
+		_diskTable.addRow(
+			_di.devicePath,
+			_di.model,
+			_di.vendor,
+			_di.serial,
+			_di.firmwareRevision,
+			_di.formFactor,
+			_di.diskGranularity,
+			_di.nominalMediaRotationRate,
+			_di.transport,
+			_di.size,
+			_di.uuid if _di.uuid else "-",
+			_di.isReadOnly,
+			_di.isRotational,
+			_di.isHotplug,
+			_di.isNCQSupported,
+			_di.isTRIMSupported,
+		)	
+	_diskTable.print(prefix="\t")
+	print("-")
+
+	################################################################
+
+	print("\n#### multimedia ####\n")
+	print("static")
+	for _multimedia in csd.data_lshw._findAllR(id="multimedia"):
+		print("\tvendor:", _multimedia.vendor)
+		print("\tproduct:", _multimedia.product)
+		print("\tdriver:", _multimedia.configuration.driver)
+		print("-")
+
+	################################################################
+
+	print("\n#### network (hardware) ####\n")
+	print("static")
+	for _network in list(csd.data_lshw._findAllR(id="network")) + list(csd.data_lshw._findAllR(id=re.compile("^network:"))):
+		#jk_json.prettyPrint(network._toDict())
+		print("\tvendor:", _network.vendor)
+		print("\tproduct:", _network.product)
+		print("\tdevice:", _network.logicalname)		# network device name
+		if _network.configuration.link:
+			print("\thas_link:", _network.configuration.link == "yes")
 		else:
-			return jk_sysinfo.formatTemperatureGraphC(data.value)
-			#return str(data.value) + " °C"
-	else:
-		raise Exception("Unknown: " + repr(data.sensor))
-#
+			print("\thas_link:", "unknown")
+		if _network.capabilities.tp:
+			# regular twisted pair network
 
-print("runtime")
-for data in data_sensors._values():
-	#jk_json.prettyPrint(data._toDict())
-	for sensorItemName, sensorItemStruct in data.sensorData._items():
-		print("\t" + data.device + "." + sensorItemName + ": " + formatSensorData(sensorItemStruct))
-print("-")
+			if _network.maxSpeedInBitsPerSecond:
+				speed, unit = jk_sysinfo.formatBitsPerSecond(_network.maxSpeedInBitsPerSecond)
+				print("\tspeed maximum:", speed, unit)					# general speed in bits/s
 
-################################################################
+			if _network.configuration.speed:
+				print("\tspeed current:", _network.configuration.speed)			# current speed
+			if _network.configuration.duplex:
+				print("\tduplex:", _network.configuration.duplex)
 
-print("\n#### network (os) ####\n")
-print("runtime")
-table = jk_console.SimpleTable()
-table.addRow(
-	"ifname",
-	"loop",
-	"wlan",
-	"mac",
-	"mtu",
-	"rx pkgs",
-	"rx dropped",
-	"rx errors",
-	"tx pkgs",
-	"tx dropped",
-	"tx errors",
-).hlineAfterRow = True
-for networkInterface, networkInterfaceData in data_net_info._items():
-	table.addRow(
-		networkInterface,
-		networkInterfaceData.is_loop,
-		networkInterfaceData.is_wlan,
-		networkInterfaceData.mac_addr,
-		networkInterfaceData.mtu,
-		networkInterfaceData.rx_packets,
-		networkInterfaceData.rx_dropped,
-		networkInterfaceData.rx_errors,
-		networkInterfaceData.tx_packets,
-		networkInterfaceData.tx_dropped,
-		networkInterfaceData.tx_errors,
-	)
-table.print(prefix="\t")
-print("-")
+		elif _network.configuration.wireless:
+			# regular wireless network
 
-################################################################
+			print("\twireless standard:", _network.configuration.wireless)			# "IEEE 802.11"
 
-print("\n#### drives ####\n")
-
-print("runtime")
-
-@checkFunctionSignature()
-def printDevice(data_lsblk:jk_flexdata.FlexObject, data_mounts:jk_flexdata.FlexObject, data_df:jk_flexdata.FlexObject, indent:str=""):
-	if data_lsblk.mountpoint and data_lsblk.mountpoint.startswith("/snap"):
-		return
-	s = indent + data_lsblk.dev
-
-	if data_lsblk.mountpoint:
-		s += " @ "
-		s += data_lsblk.mountpoint
-		sAdd = " :: "
-	else:
-		sAdd = " :: "
-
-	if data_lsblk.uuid:
-		s += sAdd + repr(data_lsblk.uuid)
-		sAdd = " ~ "
-	if data_lsblk.fstype:
-		s += sAdd + data_lsblk.fstype
-		sAdd = " ~ "
-
-	print(s)
-	indent += "\t"
-
-	if data_mounts and data_lsblk.mountpoint:
-		data_df_2 = data_df._get(data_lsblk.mountpoint)
-		#jk_json.prettyPrint(data_mounts._toDict())
-		#jk_json.prettyPrint(data_df._toDict())
-		if data_df_2:
-			print(indent
-				+ "total:", jk_sysinfo.formatBytesS(data_df_2.spaceTotal)
-				+ ", used:", jk_sysinfo.formatBytesS(data_df_2.spaceUsed)
-				+ ", free:", jk_sysinfo.formatBytesS(data_df_2.spaceFree)
-				+ ", filled:", jk_sysinfo.formatPercentGraphC(data_df_2.spaceUsed, data_df_2.spaceTotal), jk_sysinfo.formatPercent(data_df_2.spaceUsed, data_df_2.spaceTotal)
-				)
-			#jk_json.prettyPrint(data_df_2._toDict())
 		else:
-			print("Not found: " + data_lsblk.mountpoint)
+			raise Exception("Unknown network type")
 
-	if data_lsblk.children:
-		for c in data_lsblk.children:
-			printDevice(c, data_mounts, data_df, indent)
+		print("\tdescription:", _network.description)
+		print("\tdriver:", _network.configuration.driver)
+		print("\tmac_addr:", _network.serial)
+		print("-")
+
+	################################################################
+
+	print("\n#### sensors ####\n")
+
+	def _formatSensorData(data:jk_flexdata.FlexObject) -> typing.Tuple[str,str,str]:
+		if data._isEmpty():
+			return "n/a"
+		if data.sensor == "volt":
+			return str(data.value) + "V"
+		if data.sensor == "fan":
+			return str(data.value) + " rpm"
+		elif data.sensor == "temp":
+			_bar, _text = jk_sysinfo.formatTemperatureGraphC2(data.value, data.crit if data.crit else 100)
+			if data.crit and data.max:
+				_extraText = "max: " + str(data.max) + ", crit: " + str(data.crit) + ""
+			else:
+				_extraText = "n/a"
+			return (_bar, _text, _extraText)
+		else:
+			raise Exception("Unknown: " + repr(data.sensor))
+	#
+
+	print("runtime")
+	_table = jk_console.SimpleTable()
+	_table.addRow(
+		"identifier",
+		"visualization",
+		"data value",
+		"range",
+	).hlineAfterRow = True
+	for _data in csd.data_sensors._values():
+		#jk_json.prettyPrint(data._toDict())
+		for sensorItemName, sensorItemStruct in _data.sensorData._items():
+			_bar, _text, _extraText = _formatSensorData(sensorItemStruct)
+			_table.addRow(
+				_data.device + "." + sensorItemName,
+				_bar,
+				_text,
+				_extraText,
+			)
+	_table.print(prefix="\t")
+	print("-")
+
+	################################################################
+
+	print("\n#### network (os) ####\n")
+	print("runtime")
+	_table = jk_console.SimpleTable()
+	_table.addRow(
+		"ifname",
+		"loop",
+		"wlan",
+		"mac",
+		"mtu",
+		"rx pkgs",
+		"rx dropped",
+		"rx errors",
+		"tx pkgs",
+		"tx dropped",
+		"tx errors",
+	).hlineAfterRow = True
+	for _networkInterface, _networkInterfaceData in csd.data_net_info._items():
+		_table.addRow(
+			_networkInterface,
+			_networkInterfaceData.is_loop,
+			_networkInterfaceData.is_wlan,
+			_networkInterfaceData.mac_addr,
+			_networkInterfaceData.mtu,
+			_networkInterfaceData.rx_packets,
+			_networkInterfaceData.rx_dropped,
+			_networkInterfaceData.rx_errors,
+			_networkInterfaceData.tx_packets,
+			_networkInterfaceData.tx_dropped,
+			_networkInterfaceData.tx_errors,
+		)
+	_table.print(prefix="\t")
+	print("-")
+
+	################################################################
+
+	print("\n#### drives ####\n")
+
+	print("runtime")
+
+	@jk_typing.checkFunctionSignature()
+	def _printDevice(data_lsblk:jk_flexdata.FlexObject, data_mounts:jk_flexdata.FlexObject, data_df:jk_flexdata.FlexObject, indent:str=""):
+		if data_lsblk.mountpoint and data_lsblk.mountpoint.startswith("/snap"):
+			return
+		s = indent + data_lsblk.dev
+
+		if data_lsblk.mountpoint:
+			s += " @ "
+			s += data_lsblk.mountpoint
+			sAdd = " :: "
+		else:
+			sAdd = " :: "
+
+		if data_lsblk.uuid:
+			s += sAdd + repr(data_lsblk.uuid)
+			sAdd = " ~ "
+		if data_lsblk.fstype:
+			s += sAdd + data_lsblk.fstype
+			sAdd = " ~ "
+
+		print(s)
+		indent += "\t"
+
+		if data_mounts and data_lsblk.mountpoint:
+			data_df_2 = data_df._get(data_lsblk.mountpoint)
+			#jk_json.prettyPrint(data_mounts._toDict())
+			#jk_json.prettyPrint(data_df._toDict())
+			if data_df_2:
+				print(indent
+					+ "total:", jk_sysinfo.formatBytesS(data_df_2.spaceTotal)
+					+ ", used:", jk_sysinfo.formatBytesS(data_df_2.spaceUsed)
+					+ ", free:", jk_sysinfo.formatBytesS(data_df_2.spaceFree)
+					+ ", filled:", jk_sysinfo.formatPercentGraphC(data_df_2.spaceUsed, data_df_2.spaceTotal), jk_sysinfo.formatPercent(data_df_2.spaceUsed, data_df_2.spaceTotal)
+					)
+				#jk_json.prettyPrint(data_df_2._toDict())
+			else:
+				print("Not found: " + data_lsblk.mountpoint)
+
+		if data_lsblk.children:
+			for c in data_lsblk.children:
+				_printDevice(c, data_mounts, data_df, indent)
+	#
+
+	# TODO: drive models
+
+	#print(data_lsblk._keys())
+	for _d in csd.data_lsblk.deviceTree:
+		_printDevice(_d, csd.data_mounts, csd.data_df, "\t")
+		# TODO: list logical drives
+	print("-")
+
+	################################################################
+
+	print()
+
 #
 
-# TODO: drive models
 
-#print(data_lsblk._keys())
-for d in data_lsblk.deviceTree:
-	printDevice(d, data_mounts, data_df, "\t")
-	# TODO: list logical drives
-print("-")
+with jk_logging.wrapMain() as log:
 
-################################################################
+	ap = _createArgsParser()
+	parsedArgs = ap.parse()
+	#parsedArgs.dump()
 
-print()
+	if parsedArgs.optionData["help"]:
+		ap.showHelp()
+		sys.exit(0)
 
+	if not parsedArgs.optionData["color"]:
+		log = jk_logging.ConsoleLogger.create(logMsgFormatter = jk_logging.DEFAULT_LOG_MESSAGE_FORMATTER, printToStdErr = True)
 
+	# ----
 
+	csd = collectSystemData()
+	printCollectedSystemData(csd)
 
+#
 
 
 

@@ -1,5 +1,4 @@
 {
-	"documentation": [],
 	"magic": {
 		"magic": "packageinfo",
 		"version": 2
@@ -21,22 +20,10 @@
 		"license": "Apache2",
 		"name": "jk_sysinfo",
 		"packageClass": "python-module",
-		"version": "0.2022.1.3"
+		"version": "0.2023.2.10"
 	},
-	"repositories": [
-		{
-			"devon_publish": true,
-			"project": "python-module-jk-sysinfo",
-			"type": "github",
-			"user": "jkpubsrc"
-		},
-		{
-			"devon_publish": true,
-			"project": "jk-sysinfo",
-			"type": "pypi"
-		}
-	],
 	"requirements": {
+		"htmlcssjs_packages": [],
 		"python_packages": [
 			"python-dateutil",
 			"fabric",
@@ -51,9 +38,10 @@
 			"jk_json",
 			"jk_flexdata",
 			"jk_utils",
+			"jk_logging"
 		],
-		"python_packages_dev": [
-		],
+		"python_packages_dev": [],
+		"python_packages_recommended": [],
 		"system_apt_packages": [
 			"needrestart",
 			"lm-sensors",
@@ -69,7 +57,7 @@
 		"extra_data_files": [],
 		"packages": [
 			"jk_sysinfo",
-			"jk_sysinfo.entity",
+			"jk_sysinfo.entity"
 		]
 	}
 }

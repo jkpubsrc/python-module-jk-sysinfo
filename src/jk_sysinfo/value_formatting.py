@@ -4,8 +4,11 @@
 
 
 
+import typing
 
 import jk_console
+
+
 
 
 
@@ -283,10 +286,12 @@ def formatPercentGraphC(value:float, total:float, length:int = 40) -> str:
 	return s
 #
 
-def formatTemperatureGraphC(value:float, maximum:float = 100, length:int = 40) -> str:
+def formatTemperatureGraphC2(value:float, maximum:float = 100, length:int = 40) -> typing.Tuple[str,str]:
 	assert isinstance(value, (int, float))
 	assert isinstance(maximum, (int, float))
 	assert isinstance(length, int)
+
+	# ----
 
 	orgValue = value
 	if value < 0:
@@ -318,10 +323,21 @@ def formatTemperatureGraphC(value:float, maximum:float = 100, length:int = 40) -
 		s += jk_console.Console.RESET
 
 	s += ":" * (length - n)
-	return s + " " + firstColor + str(int(orgValue + 0.5)) + "°C" + jk_console.Console.RESET
+
+	s2 = str(int(orgValue + 0.5)) + "°C"
+
+	return (
+		s,
+		firstColor + s2 + jk_console.Console.RESET
+	)
 #
 
-def convertSecondsToHumanReadableDuration(seconds:float):
+def formatTemperatureGraphC(value:float, maximum:float = 100, length:int = 40) -> str:
+	x = formatTemperatureGraphC2(value, maximum, length)
+	return x[1] + " " + x[3]
+#
+
+def convertSecondsToHumanReadableDuration(seconds:float) -> typing.Tuple[int,int,int,int,float]:
 	milliseconds = (seconds - int(seconds)) * 1000
 	seconds = int(seconds)
 

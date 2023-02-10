@@ -1,16 +1,13 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 
 import os
 import sys
 import re
 
-import jk_console
 import jk_sysinfo
 import jk_json
-#import jk_flexdata
 import jk_logging
-from jk_typing import *
 import jk_argparsing
 
 
@@ -92,7 +89,7 @@ ALL_SYSINFO_OPTIONS_MAP = {
 	opt.longOption:opt for opt in ALL_SYSINFO_OPTIONS
 }
 
-def onOptionAllAutoDetect(argOption, argOptionArguments, parsedArgs):
+def _onOptionAllAutoDetect(argOption, argOptionArguments, parsedArgs):
 	for opt in ALL_SYSINFO_OPTIONS:
 		if (opt.longOption == "i-vcgencmd") and not jk_sysinfo.has_local_vcgencmd():
 			continue
@@ -101,14 +98,14 @@ def onOptionAllAutoDetect(argOption, argOptionArguments, parsedArgs):
 		parsedArgs.optionData.set(opt.longOption, True)
 #
 
-def onOptionAllStd(argOption, argOptionArguments, parsedArgs):
+def _onOptionAllStd(argOption, argOptionArguments, parsedArgs):
 	for opt in ALL_SYSINFO_OPTIONS:
 		if opt.longOption in [ "i-vcgencmd" ]:
 			continue
 		parsedArgs.optionData.set(opt.longOption, True)
 #
 
-def onOptionAllVM(argOption, argOptionArguments, parsedArgs):
+def _onOptionAllVM(argOption, argOptionArguments, parsedArgs):
 	for opt in ALL_SYSINFO_OPTIONS:
 		if opt.longOption in [ "i-vcgencmd" ]:
 			continue
@@ -117,7 +114,7 @@ def onOptionAllVM(argOption, argOptionArguments, parsedArgs):
 		parsedArgs.optionData.set(opt.longOption, True)
 #
 
-def onOptionAllRPi(argOption, argOptionArguments, parsedArgs):
+def _onOptionAllRPi(argOption, argOptionArguments, parsedArgs):
 	for opt in ALL_SYSINFO_OPTIONS:
 		if opt.longOption in []:
 			continue
@@ -128,76 +125,83 @@ def onOptionAllRPi(argOption, argOptionArguments, parsedArgs):
 
 
 
-ap = jk_argparsing.ArgsParser(os.path.basename(__file__), "Display system information.")
 
-ap.optionDataDefaults.set("help", False)
-ap.optionDataDefaults.set("color", True)
+def _createArgsParser() -> jk_argparsing.ArgsParser:
+	ap = jk_argparsing.ArgsParser(os.path.basename(__file__), "Display system information in JSON format.")
 
-ap.createOption('h', 'help', "Display this help text.").onOption = \
-	lambda argOption, argOptionArguments, parsedArgs: \
-		parsedArgs.optionData.set("help", True)
-ap.createOption(None, 'no-color', "Dont' use colors in output.").onOption = \
-	lambda argOption, argOptionArguments, parsedArgs: \
-		parsedArgs.optionData.set("colors", False)
-for opt in ALL_SYSINFO_OPTIONS:
-	opt.register(ap)
-ap.createOption(None, 'i-all', "Use all system information modules (with autodetect).").onOption = onOptionAllAutoDetect
-ap.createOption(None, 'i-all-std', "Use all system information modules (Regular *nix Machines).").onOption = onOptionAllStd
-ap.createOption(None, 'i-all-rpi', "Use all system information modules (Raspberry Pi).").onOption = onOptionAllRPi
-ap.createOption(None, 'i-all-vm', "Use all system information modules (Virtual Machines).").onOption = onOptionAllVM
+	ap.optionDataDefaults.set("help", False)
+	ap.optionDataDefaults.set("color", True)
 
-ap.createAuthor("Jürgen Knauth", "jk@binary-overflow.de")
-ap.setLicense("Apache", YEAR = 2021, COPYRIGHTHOLDER = "Jürgen Knauth")
+	ap.createOption('h', 'help', "Display this help text.").onOption = \
+		lambda argOption, argOptionArguments, parsedArgs: \
+			parsedArgs.optionData.set("help", True)
+	ap.createOption(None, 'no-color', "Dont' use colors in output.").onOption = \
+		lambda argOption, argOptionArguments, parsedArgs: \
+			parsedArgs.optionData.set("colors", False)
+	for opt in ALL_SYSINFO_OPTIONS:
+		opt.register(ap)
+	ap.createOption(None, 'i-all', "Use all system information modules (with autodetect).").onOption = _onOptionAllAutoDetect
+	ap.createOption(None, 'i-all-std', "Use all system information modules (Regular *nix Machines).").onOption = _onOptionAllStd
+	ap.createOption(None, 'i-all-rpi', "Use all system information modules (Raspberry Pi).").onOption = _onOptionAllRPi
+	ap.createOption(None, 'i-all-vm', "Use all system information modules (Virtual Machines).").onOption = _onOptionAllVM
 
-ap.createReturnCode(0, "Everything is okay.")
-ap.createReturnCode(1, "An error occurred.")
+	ap.createAuthor("Jürgen Knauth", "jk@binary-overflow.de")
+	ap.setLicense("Apache", YEAR = "2021-2023", COPYRIGHTHOLDER = "Jürgen Knauth")
 
+	ap.createReturnCode(0, "Everything is okay.")
+	ap.createReturnCode(1, "An error occurred.")
 
-
-
-
-
-parsedArgs = ap.parse()
-#parsedArgs.dump()
-
-if parsedArgs.optionData["help"]:
-	ap.showHelp()
-	sys.exit(0)
-
-"""
-cmdName, cmdArgs = parsedArgs.parseNextCommand()
-if cmdName is None:
-	ap.showHelp()
-	sys.exit(0)
-"""
-
-if parsedArgs.optionData["color"]:
-	log = jk_logging.ConsoleLogger.create(logMsgFormatter = jk_logging.COLOR_LOG_MESSAGE_FORMATTER, printToStdErr = True)
-else:
-	log = jk_logging.ConsoleLogger.create(printToStdErr = True)
-
-bSuccess = True
-
-ret = {}
-for opt in ALL_SYSINFO_OPTIONS:
-	if parsedArgs.optionData[opt.longOption]:
-		try:
-			ret[opt.longOption] = opt.run(None)
-		except Exception as ee:
-			# there has been an error
-			ret[opt.longOption] = None
-			# log.error("Failed to retrieve data for: " + opt.longOption)
-			log.exception(ee)
-
-if not ret:
-	ap.showHelp()
-	sys.exit(0)
-
-jk_json.prettyPrint(ret)
-
-sys.exit(0 if bSuccess else 1)
+	return ap
+#
 
 
+
+
+
+
+
+with jk_logging.wrapMain() as log:
+
+	ap = _createArgsParser()
+	parsedArgs = ap.parse()
+	#parsedArgs.dump()
+
+	if parsedArgs.optionData["help"]:
+		ap.showHelp()
+		sys.exit(0)
+
+	if not parsedArgs.optionData["color"]:
+		log = jk_logging.ConsoleLogger.create(logMsgFormatter = jk_logging.DEFAULT_LOG_MESSAGE_FORMATTER, printToStdErr = True)
+
+	"""
+	cmdName, cmdArgs = parsedArgs.parseNextCommand()
+	if cmdName is None:
+		ap.showHelp()
+		sys.exit(0)
+	"""
+
+	bSuccess = True
+
+	ret = {}
+	for opt in ALL_SYSINFO_OPTIONS:
+		if parsedArgs.optionData[opt.longOption]:
+			try:
+				ret[opt.longOption] = opt.run(None)
+			except Exception as ee:
+				# there has been an error
+				ret[opt.longOption] = None
+				# log.error("Failed to retrieve data for: " + opt.longOption)
+				log.exception(ee)
+
+	if not ret:
+		ap.showHelp()
+		sys.exit(0)
+
+	jk_json.prettyPrint(ret)
+
+	sys.exit(0 if bSuccess else 1)
+
+#
 
 
 

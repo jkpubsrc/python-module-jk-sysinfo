@@ -15,3 +15,8 @@
 	* Improved: Parsing output of hdparm
 	* Added: Parsing output of dmidecode
 
+* 2023-02-10
+	* Refactored: sysinfo_json.py
+	* Redesigned: sysinfo.py
+	* Added: get_docker_stats
+

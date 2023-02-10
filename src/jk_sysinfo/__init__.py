@@ -1,7 +1,8 @@
-﻿
 
 
-__version__ = "0.2022.1.3"
+
+__author__ = "Jürgen Knauth"
+__version__ = "0.2023.2.10"
 
 
 
@@ -43,4 +44,6 @@ from	.get_hdparm_I				import	parse_hdparm_I,																		get_hdparm_I
 from	.get_dmi_decode				import	parse_dmi_decode,																	get_dmi_decode, DMIDecodeConstants
 
 from	.get_systemctl_units		import	parse_systemctl_units,																get_systemctl_units
+
+from	.get_docker_stats			import parse_docker_stats,																	get_docker_stats, has_local_docker
 
