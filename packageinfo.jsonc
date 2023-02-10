@@ -20,7 +20,7 @@
 		"license": "Apache2",
 		"name": "jk_sysinfo",
 		"packageClass": "python-module",
-		"version": "0.2023.2.10"
+		"version": "0.2023.2.10.1"
 	},
 	"requirements": {
 		"htmlcssjs_packages": [],

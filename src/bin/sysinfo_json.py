@@ -57,6 +57,7 @@ ALL_SYSINFO_OPTIONS = [
 	SysInfoOption("i-date", "Get date (local)", jk_sysinfo.get_date, utc=False),
 	SysInfoOption("i-date-utc", "Get date (UTC)", jk_sysinfo.get_date, utc=True),
 	SysInfoOption("i-df", "Get disk space information", jk_sysinfo.get_df),
+	SysInfoOption("i-docker-stats", "Retrieve information about running docker services", jk_sysinfo.get_docker_stats),
 	SysInfoOption("i-dpkg-list", "Get information about installed packages", jk_sysinfo.get_dpkg_list),
 	SysInfoOption("i-etc-hostname", "Get hostname information", jk_sysinfo.get_etc_hostname),
 	SysInfoOption("i-etc-os-release", "Get information about the OS as stored in /etc/os/release", jk_sysinfo.get_etc_os_release),
@@ -94,6 +95,8 @@ def _onOptionAllAutoDetect(argOption, argOptionArguments, parsedArgs):
 		if (opt.longOption == "i-vcgencmd") and not jk_sysinfo.has_local_vcgencmd():
 			continue
 		if (opt.longOption == "i-sensors") and not jk_sysinfo.has_local_sensors():
+			continue
+		if (opt.longOption == "i-docker-stats") and not jk_sysinfo.has_local_docker():
 			continue
 		parsedArgs.optionData.set(opt.longOption, True)
 #

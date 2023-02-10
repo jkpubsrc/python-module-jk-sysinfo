@@ -19,4 +19,5 @@
 	* Refactored: sysinfo_json.py
 	* Redesigned: sysinfo.py
 	* Added: get_docker_stats
+	* Extended: sysinfo_json.py
 
