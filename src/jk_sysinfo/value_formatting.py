@@ -72,50 +72,122 @@ def formatBitsPerSecondS(value:float, floatPrecision:bool = False) -> str:
 # @returns	float value			The scaled value.
 # @returns	str unit			The unit of the value, e.g. "Gbyte".
 #
-def formatBytes(value:float, floatPrecision:bool = True) -> tuple:
+def formatBytes(value:typing.Union[float,int], floatPrecision:bool = True, magOverride:str = None) -> typing.Tuple[float,str]:
 	m = 1024
-	if floatPrecision:
-		if value >= m:
-			if value >= m*m:
-				if value >= m*m*m:
-					if value >= m*m*m*m:
-						value = int(value / (m*m*m*m) * 10 + 0.5) / 10
-						unit = "TByte"
-					else:
-						value = int(value / (m*m*m) * 10 + 0.5) / 10
-						unit = "GByte"
-				else:
-					value = int(value / (m*m) * 10 + 0.5) / 10
-					unit = "MByte"
-			else:
+	value = float(value)
+
+	if magOverride:
+		_magOverr = magOverride.lower()
+
+		if floatPrecision:
+			if _magOverr in ( "tbyte", "tb", ):
+				value = int(value / (m*m*m*m) * 10 + 0.5) / 10
+				unit = "TByte"
+			elif _magOverr in ( "gbyte", "gb", ):
+				value = int(value / (m*m*m) * 10 + 0.5) / 10
+				unit = "GByte"
+			elif _magOverr in ( "mbyte", "mb", ):
+				value = int(value / (m*m) * 10 + 0.5) / 10
+				unit = "MByte"
+			elif _magOverr in ( "kbyte", "kb", ):
 				value = int(value / m * 10 + 0.5) / 10
 				unit = "KByte"
-		else:
-			unit = "Byte"
-	else:
-		if value >= m:
-			if value >= m*m:
-				if value >= m*m*m:
-					if value >= m*m*m*m:
-						value = value // m*m*m*m
-						unit = "TByte"
-					else:
-						value = value // m*m*m
-						unit = "GByte"
-				else:
-					value = value // m*m
-					unit = "MByte"
+			elif _magOverr in ( "byte", "b", ):
+				unit = "Byte"
 			else:
-				value = value // m
-				unit = "KByte"
+				raise Exception("Unsupported magnitude specified: " + repr(magOverride))
+
 		else:
-			value = int(value)
-			unit = "Byte"
+			if _magOverr in ( "tbyte", "tb", ):
+				value = int(value) // m*m*m*m
+				unit = "TByte"
+			elif _magOverr in ( "gbyte", "gb", ):
+				value = int(value) // m*m*m
+				unit = "GByte"
+			elif _magOverr in ( "mbyte", "mb", ):
+				value = int(value) // m*m
+				unit = "MByte"
+			elif _magOverr in ( "kbyte", "kb", ):
+				value = int(value) // m
+				unit = "KByte"
+			elif _magOverr in ( "byte", "b", ):
+				value = int(value)
+				unit = "Byte"
+			else:
+				raise Exception("Unsupported magnitude specified: " + repr(magOverride))
+
+	else:
+
+		if floatPrecision:
+			if value >= m:
+				if value >= m*m:
+					if value >= m*m*m:
+						if value >= m*m*m*m:
+							value = int(value / (m*m*m*m) * 10 + 0.5) / 10
+							unit = "TByte"
+						else:
+							value = int(value / (m*m*m) * 10 + 0.5) / 10
+							unit = "GByte"
+					else:
+						value = int(value / (m*m) * 10 + 0.5) / 10
+						unit = "MByte"
+				else:
+					value = int(value / m * 10 + 0.5) / 10
+					unit = "KByte"
+			else:
+				unit = "Byte"
+
+		else:
+			if value >= m:
+				if value >= m*m:
+					if value >= m*m*m:
+						if value >= m*m*m*m:
+							value = int(value) // m*m*m*m
+							unit = "TByte"
+						else:
+							value = int(value) // m*m*m
+							unit = "GByte"
+					else:
+						value = int(value) // m*m
+						unit = "MByte"
+				else:
+					value = int(value) // m
+					unit = "KByte"
+			else:
+				value = int(value)
+				unit = "Byte"
+
 	return value, unit
 #
 
-def formatBytesS(value:float, floatPrecision:bool = True) -> str:
-	value, unit = formatBytes(value, floatPrecision)
+#
+# Get the magnitude of the specified value or values.
+#
+def getBytesMagnitude(*values:typing.Iterable[typing.Union[float,int]]) -> str:
+	m = 1024
+
+	if len(values) == 0:
+		return "Byte"
+
+	value = max(*values)
+
+	if value >= m:
+		if value >= m*m:
+			if value >= m*m*m:
+				if value >= m*m*m*m:
+					return "TByte"
+				else:
+					return "GByte"
+			else:
+				return "MByte"
+		else:
+			return "KByte"
+	else:
+		return "Byte"
+#
+
+def formatBytesS(value:float, floatPrecision:bool = True, magOverride:str = None) -> str:
+	value, unit = formatBytes(value, floatPrecision, magOverride)
 	return str(value) + " " + unit
 #
 

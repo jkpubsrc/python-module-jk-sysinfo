@@ -1,6 +1,7 @@
 
 import os
 import subprocess
+import typing
 
 try:
 	from fabric import Connection
@@ -32,7 +33,7 @@ def enableDebugging():
 # @param		bool failOnNonZeroExitCode		(optional) Raises an exception if the last command executed returned with a non-zero exit code.
 #
 #
-def run(c, command:str, failOnNonZeroExitCode:bool = True):
+def run(c, command:str, failOnNonZeroExitCode:bool = True) -> typing.Union[str,str,int]:
 	global _debuggingEnabled
 
 	if c is None:
@@ -41,7 +42,7 @@ def run(c, command:str, failOnNonZeroExitCode:bool = True):
 			if _debuggingEnabled:
 				print("Using standard file reading for command: " + repr(command))
 			if os.path.isfile(filePath):
-				with open(filePath, "r") as f:
+				with open(filePath, "r", encoding="UTF-8", newline="\n") as f:
 					return f.read(), "", 0
 			else:
 				raise Exception("No such file: " + repr(filePath))

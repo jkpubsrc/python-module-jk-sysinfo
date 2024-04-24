@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>[0m
+<system identifier="selenium" claimed="True" description="Computer" width="64">
+	<capabilities vsyscall32="32-bit processes"/>
+	<bus identifier="core" claimed="True" description="Motherboard" physid="0">
+		<memory identifier="memory" size="32635535360" claimed="True" description="System memory" units="bytes" physid="0"/>
+		<processor identifier="cpu" claimed="True" vendor="Intel Corp." bitArch="64" units="Hz" physid="1" size="3849269000" product="Intel(R) Core(TM) i5-6600 CPU @ 3.30GHz" hyperthreading="True" width="64" virtualization="True" businfo="cpu@0" capacity="3900000000" encryption="True">
+			<capabilities xsaveopt="True" md_clear="True" ds_cpl="True" rtm="True" smx="True" aperfmperf="True" cpufreq="CPU Frequency scaling" mce="machine check exceptions" acpi="thermal control (ACPI)" sep="fast system calls" invpcid="True" tsc="time stamp counter" pln="True" adx="True" intel_pt="True" pdpe1gb="True" mtrr="memory type range registers" sse2="streaming SIMD extensions (SSE2)" hwp_notify="True" rdtscp="True" mca="machine check architecture" aes="True" pat="page attribute table" hle="True" invpcid_single="True" vmx="True" ssse3="True" ss="self-snoop" tm2="True" pni="True" xsavec="True" ibpb="True" flush_l1d="True" tm="thermal interrupt and status" vnmi="True" fxsr="fast floating point save/restore" dts="debug trace and EMON store MSRs" dtherm="True" xsave="True" constant_tsc="True" movbe="True" wp="True" cmov="conditional move instruction" sse="streaming SIMD extensions (SSE)" rdseed="True" rep_good="True" mpx="True" tsc_deadline_timer="True" hwp_epp="True" sse4_1="True" ida="True" popcnt="True" tpr_shadow="True" pge="page global enable" smep="True" vpid="True" smap="True" stibp="True" xtpr="True" pse="page size extensions" hwp="True" nx="no-execute bit (NX)" pbe="pending break event" ht="HyperThreading" pebs="True" x86-64="64bits extensions (x86-64)" pse36="36-bit page size extensions" rdrand="True" art="True" ibrs="True" fpu="mathematical co-processor" fsgsbase="True" ssbd="True" syscall="fast system calls" cx8="compare and exchange 8-byte" nonstop_tsc="True" est="True" mmx="multimedia extensions (MMX)" xgetbv1="True" hwp_act_window="True" monitor="True" bts="True" clflushopt="True" msr="model-specific registers" pae="4GB+ memory addressing (Physical Address Extension)" arch_perfmon="True" avx2="True" x2apic="True" 3dnowprefetch="True" cx16="True" kaiser="True" arat="True" bmi1="True" de="debugging extensions" pcid="True" vme="virtual mode extensions" xtopology="True" dtes64="True" ept="True" f16c="True" lahf_lm="True" sse4_2="True" flexpriority="True" erms="True" pclmulqdq="True" pdcm="True" avx="True" bmi2="True" abm="True" fpu_exception="FPU exceptions reporting" sdbg="True" tsc_adjust="True" nopl="True" fma="True" clflush="True" apic="on-chip advanced programmable interrupt controller (APIC)" pts="True"/>
+		</processor>
+		<bridge identifier="pci" claimed="True" vendor="Intel Corporation" clock="33000000" physid="100" product="Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers" handle="PCIBUS:0000:00" description="Host bridge" width="32" businfo="pci@0000:00:00.0" version="07">
+			<display identifier="display" claimed="True" vendor="Intel Corporation" clock="33000000" physid="2" product="HD Graphics 530" handle="PCI:0000:00:02.0" description="VGA compatible controller" width="64" businfo="pci@0000:00:02.0" version="06">
+				<configuration latency="0" driver="i915_bpo"/>
+				<capabilities vga_controller="True" cap_list="PCI capabilities listing" bus_master="bus mastering" rom="extension ROM"/>
+			</display>
+			<generic identifier="generic:0" businfo="pci@0000:00:08.0" vendor="Intel Corporation" physid="8" product="Xeon E3-1200 v5/v6 / E3-1500 v5 / 6th/7th Gen Core Processor Gaussian Mixture Model" handle="PCI:0000:00:08.0" description="System peripheral" width="64" clock="33000000" version="00">
+				<configuration latency="0"/>
+				<capabilities cap_list="PCI capabilities listing" bus_master="bus mastering"/>
+			</generic>
+			<bus identifier="usb" claimed="True" vendor="Intel Corporation" clock="33000000" physid="14" product="100 Series/C230 Series Chipset Family USB 3.0 xHCI Controller" handle="PCI:0000:00:14.0" description="USB controller" width="64" businfo="pci@0000:00:14.0" version="31">
+				<configuration latency="0" driver="xhci_hcd"/>
+				<capabilities cap_list="PCI capabilities listing" xhci="True" bus_master="bus mastering"/>
+			</bus>
+			<generic identifier="generic:1" businfo="pci@0000:00:14.2" vendor="Intel Corporation" physid="14.2" product="100 Series/C230 Series Chipset Family Thermal Subsystem" handle="PCI:0000:00:14.2" description="Signal processing controller" width="64" clock="33000000" version="31">
+				<configuration latency="0"/>
+				<capabilities cap_list="PCI capabilities listing" bus_master="bus mastering"/>
+			</generic>
+			<communication identifier="communication" claimed="True" vendor="Intel Corporation" clock="33000000" physid="16" product="100 Series/C230 Series Chipset Family MEI Controller #1" handle="PCI:0000:00:16.0" description="Communication controller" width="64" businfo="pci@0000:00:16.0" version="31">
+				<configuration latency="0" driver="mei_me"/>
+				<capabilities cap_list="PCI capabilities listing" bus_master="bus mastering"/>
+			</communication>
+			<storage identifier="storage" claimed="True" vendor="Intel Corporation" clock="66000000" physid="17" product="Q170/Q150/B150/H170/H110/Z170/CM236 Chipset SATA Controller [AHCI Mode]" handle="PCI:0000:00:17.0" description="SATA controller" width="32" businfo="pci@0000:00:17.0" version="31">
+				<configuration latency="0" driver="ahci"/>
+				<capabilities cap_list="PCI capabilities listing" storage="True" ahci_1.0="True" bus_master="bus mastering"/>
+			</storage>
+			<bridge identifier="isa" claimed="True" vendor="Intel Corporation" clock="33000000" physid="1f" product="B150 Chipset LPC/eSPI Controller" handle="PCI:0000:00:1f.0" description="ISA bridge" width="32" businfo="pci@0000:00:1f.0" version="31">
+				<configuration latency="0"/>
+				<capabilities isa="True" bus_master="bus mastering"/>
+			</bridge>
+			<memory identifier="memory" businfo="pci@0000:00:1f.2" vendor="Intel Corporation" physid="1f.2" product="100 Series/C230 Series Chipset Family Power Management Controller" handle="PCI:0000:00:1f.2" description="Memory controller" width="32" clock="33000000" version="31">
+				<configuration latency="0"/>
+				<capabilities bus_master="bus mastering"/>
+			</memory>
+			<multimedia identifier="multimedia" claimed="True" vendor="Intel Corporation" clock="33000000" physid="1f.3" product="100 Series/C230 Series Chipset Family HD Audio Controller" handle="PCI:0000:00:1f.3" description="Audio device" width="64" businfo="pci@0000:00:1f.3" version="31">
+				<configuration latency="32" driver="snd_hda_intel"/>
+				<capabilities cap_list="PCI capabilities listing" bus_master="bus mastering"/>
+			</multimedia>
+			<bus identifier="serial" businfo="pci@0000:00:1f.4" vendor="Intel Corporation" physid="1f.4" product="100 Series/C230 Series Chipset Family SMBus" handle="PCI:0000:00:1f.4" description="SMBus" width="64" clock="33000000" version="31">
+				<configuration latency="0"/>
+			</bus>
+			<network identifier="network" claimed="True" vendor="Intel Corporation" units="bit/s" physid="1f.6" capacity="1000000000" size="1000000000" product="Ethernet Connection (2) I219-V" handle="PCI:0000:00:1f.6" description="Ethernet interface" width="32" maxSpeedInBitsPerSecond="1000000000" businfo="pci@0000:00:1f.6" version="31" serial="d8:cb:8a:ec:5f:05" clock="33000000">
+				<configuration autonegotiation="on" duplex="full" driver="e1000e" port="twisted pair" link="yes" broadcast="yes" firmware="0.7-4" speed="1Gbit/s" multicast="yes" driverversion="3.2.6-k" latency="0"/>
+				<capabilities autonegotiation="Auto-negotiation" cap_list="PCI capabilities listing" ethernet="True" 10bt="10Mbit/s" 100bt-fd="100Mbit/s (full duplex)" bus_master="bus mastering" physical="Physical interface" 10bt-fd="10Mbit/s (full duplex)" 100bt="100Mbit/s" tp="twisted pair" 1000bt-fd="1Gbit/s (full duplex)"/>
+				<logicalnames>
+					<logicalname>enp0s31f6</logicalname>
+				</logicalnames>
+			</network>
+		</bridge>
+		<storage identifier="scsi" claimed="True" physid="2">
+			<capabilities emulated="Emulated device"/>
+			<logicalnames>
+				<logicalname>scsi3</logicalname>
+			</logicalnames>
+			<disk identifier="cdrom" claimed="True" vendor="TSSTcorp" dev="11:0" physid="0.0.0" product="CDDVDW SH-S203P" handle="SCSI:03:00:00:00" description="DVD-RAM writer" businfo="scsi@3:0.0.0" version="SB00">
+				<configuration state="mounted" ansiversion="5" mount.options="ro,nosuid,nodev,relatime,uid=1000,gid=1000,iocharset=utf8,mode=0400,dmode=0500" status="ready" mount.fstype="iso9660"/>
+				<capabilities removable="support is removable" dvd="DVD playback" cd-r="CD-R burning" dvd-r="DVD-R burning" dvd-ram="DVD-RAM burning" audio="Audio CD playback" cd-rw="CD-RW burning"/>
+				<logicalnames>
+					<logicalname>/dev/cdrom</logicalname>
+					<logicalname>/dev/cdrw</logicalname>
+					<logicalname>/dev/dvd</logicalname>
+					<logicalname>/dev/dvdrw</logicalname>
+					<logicalname>/dev/sr0</logicalname>
+					<logicalname>/media/woodoo/BROODWAR</logicalname>
+				</logicalnames>
+				<disk identifier="medium" claimed="True" dev="11:0" physid="0">
+					<configuration state="mounted" mount.options="ro,nosuid,nodev,relatime,uid=1000,gid=1000,iocharset=utf8,mode=0400,dmode=0500" mount.fstype="iso9660"/>
+					<logicalnames>
+						<logicalname>/dev/cdrom</logicalname>
+						<logicalname>/media/woodoo/BROODWAR</logicalname>
+					</logicalnames>
+				</disk>
+			</disk>
+		</storage>
+	</bus>
+</system>

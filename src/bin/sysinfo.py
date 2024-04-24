@@ -30,12 +30,15 @@ def _createArgsParser() -> jk_argparsing.ArgsParser:
 	ap.createOption('h', 'help', "Display this help text.").onOption = \
 		lambda argOption, argOptionArguments, parsedArgs: \
 			parsedArgs.optionData.set("help", True)
-	ap.createOption(None, 'no-color', "Dont' use colors in output.").onOption = \
+	ap.createOption(None, 'color', "Force using colors in output.").onOption = \
 		lambda argOption, argOptionArguments, parsedArgs: \
-			parsedArgs.optionData.set("colors", False)
+			parsedArgs.optionData.set("color", False)
+	ap.createOption(None, 'no-color', "Don't use colors in output.").onOption = \
+		lambda argOption, argOptionArguments, parsedArgs: \
+			parsedArgs.optionData.set("color", False)
 
 	ap.createAuthor("Jürgen Knauth", "jk@binary-overflow.de")
-	ap.setLicense("Apache", YEAR = 2021, COPYRIGHTHOLDER = "Jürgen Knauth")
+	ap.setLicense("Apache", YEAR = "2021-2024", COPYRIGHTHOLDER = "Jürgen Knauth")
 
 	ap.createReturnCode(0, "Everything is okay.")
 	ap.createReturnCode(1, "An error occurred.")
@@ -93,6 +96,35 @@ REMOTE_PASSWORD = jk_pwdinput.readpwd("Password for " + REMOTE_LOGIN + "@" + REM
 c = Connection(host=REMOTE_HOST, user=REMOTE_LOGIN, port=REMOTE_PORT, connect_kwargs={"password": REMOTE_PASSWORD})
 """
 c = None
+
+
+
+def printFlags(text:str, flags:typing.Iterable[str]):
+	_t = []
+	for _c in text:
+		if _c == "\t":
+			_t.append(_c)
+		else:
+			_t.append(' ')
+	textEmpty = "".join(_t)
+
+	print(text, end="")
+
+	i = 0
+	for flag in flags:
+		if i == 20:
+			# line break
+			print(",")
+			print(textEmpty, end="")
+			i = 0
+		else:
+			if i > 0:
+				# add comma
+				print(", ", end="")
+			i += 1
+		print(flag, end="")
+	print()
+#
 
 
 
@@ -253,11 +285,23 @@ def printCollectedSystemData(csd:CollectedSystemData) -> None:
 	print("\tmodel:", csd.data_proccpu[0].model_name)
 	print("\tspeed:", jk_sysinfo.formatFrequencyRangeS(csd.data_cpu.freq_min * 1000000, csd.data_cpu.freq_max * 1000000))
 	print("\tcpu family:", csd.data_proccpu[0].cpu_family)
-	print("\tcores:", len(csd.data_proccpu), "(hyperthreading)" if ("ht" in csd.data_proccpu[0].flags) else "")
+	print("\tcores:", len(csd.data_proccpu), "(hyperthreading)" if ("ht" in csd.data_proccpu[0].flags) else "(no hyperthreading)")
 	if "cache_size" in csd.data_proccpu[0]._keys():
 		print("\tcpu cache size:", csd.data_proccpu[0].cache_size)
+	if csd.data_proccpu[0].flags:
+		printFlags("\tflags: ", csd.data_proccpu[0].flags)
 	if csd.data_proccpu[0].bugs:
-		print("\tbugs:", ", ".join(csd.data_proccpu[0].bugs))
+		printFlags("\tbugs: ", csd.data_proccpu[0].bugs)
+
+	bHyperThreading = ("ht" in csd.data_proccpu[0].flags)
+	print("\thas hyperthreading:", "yes" if bHyperThreading else "no")
+
+	bHardwareVirtualization = ("vmx" in csd.data_proccpu[0].flags) or ("svm" in csd.data_proccpu[0].flags)
+	print("\thas hardware virtualization:", "yes" if bHardwareVirtualization else "no")
+
+	bCryptography = ("aes" in csd.data_proccpu[0].flags) or ("ace" in csd.data_proccpu[0].flags) or ("ace2" in csd.data_proccpu[0].flags)
+	print("\thas hardware cryptography:", "yes" if bCryptography else "no")
+
 	print("-")
 
 	################################################################
@@ -363,7 +407,8 @@ def printCollectedSystemData(csd:CollectedSystemData) -> None:
 	print("\n#### network (hardware) ####\n")
 	print("static")
 	for _network in list(csd.data_lshw._findAllR(id="network")) + list(csd.data_lshw._findAllR(id=re.compile("^network:"))):
-		#jk_json.prettyPrint(network._toDict())
+		# import jk_json
+		# jk_json.prettyPrint(_network._toDict())
 		print("\tvendor:", _network.vendor)
 		print("\tproduct:", _network.product)
 		print("\tdevice:", _network.logicalname)		# network device name
@@ -371,7 +416,7 @@ def printCollectedSystemData(csd:CollectedSystemData) -> None:
 			print("\thas_link:", _network.configuration.link == "yes")
 		else:
 			print("\thas_link:", "unknown")
-		if _network.capabilities.tp:
+		if _network.capabilities.tp or _network.capabilities.ethernet:
 			# regular twisted pair network
 
 			if _network.maxSpeedInBitsPerSecond:
@@ -516,7 +561,7 @@ def printCollectedSystemData(csd:CollectedSystemData) -> None:
 					)
 				#jk_json.prettyPrint(data_df_2._toDict())
 			else:
-				print("Not found: " + data_lsblk.mountpoint)
+				print(indent + "Not found: " + data_lsblk.mountpoint)
 
 		if data_lsblk.children:
 			for c in data_lsblk.children:

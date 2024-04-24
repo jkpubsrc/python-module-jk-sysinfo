@@ -21,3 +21,10 @@
 	* Added: get_docker_stats
 	* Extended: sysinfo_json.py
 
+* 2024-01-13
+	* Improved: sysinfo.py information output
+
+* 2024-04-024
+	* Added: getBytesMagnitude(..)
+	* Improved: formatBytes(..) and formatBytesS(..)
+
