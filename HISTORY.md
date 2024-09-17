@@ -1,30 +1,35 @@
-* 2021-06-06
+* 2021-06-06:
 	* BugFix: Improved parsing of `lshw` output
 	* Modified: Autodetect for `--i-all`
 	* Fixed: Parsing error in `get_ifconfig` for older Debian based systems
 	* Fixed: Dependencies
 
-* 2021-07-04
+* 2021-07-04:
 	* Improved: Parsing of ps output
 
-* 2021-12-06
+* 2021-12-06:
 	* Extended: user and group processing in get_ps.py
 	* Improved: OS version parsing
 
-* 2022-02-02
+* 2022-02-02:
 	* Improved: Parsing output of hdparm
 	* Added: Parsing output of dmidecode
 
-* 2023-02-10
+* 2023-02-10:
 	* Refactored: sysinfo_json.py
 	* Redesigned: sysinfo.py
 	* Added: get_docker_stats
 	* Extended: sysinfo_json.py
 
-* 2024-01-13
+* 2024-01-13:
 	* Improved: sysinfo.py information output
 
-* 2024-04-024
+* 2024-04-24:
 	* Added: getBytesMagnitude(..)
 	* Improved: formatBytes(..) and formatBytesS(..)
 
+* 2024-08-18:
+	* Upgraded to pyproject.toml
+
+* 2024-09-18:
+	* Improved: Minor improvements to parsing

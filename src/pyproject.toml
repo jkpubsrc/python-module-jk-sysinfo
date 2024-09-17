@@ -1,0 +1,72 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "jk_sysinfo"
+dynamic = [ "version" ]
+authors = [
+	{ name = "Jürgen Knauth", email = "pubsrc@binary-overflow.de" },
+]
+maintainers = [
+	{ name = "Jürgen Knauth", email = "pubsrc@binary-overflow.de" },
+]
+description = "This python module provides ways to retrieve and parse technical system data of Linux computer systems."
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = [
+	"monitoring",
+	"os",
+]
+license = { text = "Apache2" }
+classifiers = [
+	"Development Status :: 3 - Alpha",
+	"License :: OSI Approved :: Apache Software License",
+	"Programming Language :: Python :: 3",
+	"Topic :: System :: Monitoring",
+]
+dependencies = [
+	"python-dateutil",
+	"fabric",
+	"pytz",
+	"jk_console",
+	"jk_typing",
+	"jk_version",
+	"jk_cachefunccalls",
+	"jk_argparsing",
+	"jk_etcpasswd",
+	"jk_cmdoutputparsinghelper",
+	"jk_json",
+	"jk_flexdata",
+	"jk_utils",
+	"jk_logging",
+]
+
+#[project.urls]
+#Homepage = "https://example.com"
+#Documentation = "https://readthedocs.org"
+#Repository = "https://github.com/me/spam.git"
+#Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+
+#[project.scripts]
+#jkhexdump = "jk_hexdump.bin:main"
+
+[tool.flit.sdist]
+exclude = [
+	"bin/",
+	"build/",
+	"dist/",
+	"sdist/",
+	"*.egg-info",
+	"*.OLD",
+	"setup.cfg",
+]
+
+[project.scripts]
+sysinfo_json = "jk_sysinfo.bin.cli_sysinfo_json:main"
+jk_sysinfo_json = "jk_sysinfo.bin.cli_sysinfo_json:main"
+
+
+
+
+

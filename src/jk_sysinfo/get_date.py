@@ -39,6 +39,8 @@ def parse_date_as_datetime(stdout:str, stderr:str, exitcode:int, utc:bool = Fals
 # Get the date as reported by the (possibly remote) operating system.
 #
 def get_date(c = None, utc:bool = True) -> dict:
+	# NOTE: some systems will always return UTC.
+	# we need a way to identify if UTC is returned or not.
 	stdout, stderr, exitcode = run(c, "/bin/date " + ("-u" if utc else "") + " +'%Y-%m-%d-%H-%M-%S-%N'")
 	d = parse_date_as_datetime(stdout, stderr, exitcode, utc)
 	return {

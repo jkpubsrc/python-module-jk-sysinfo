@@ -30,7 +30,7 @@ def get_motherboard_info(c = None) -> dict:
 			return {
 				"vendor": "Raspberry Pi Foundation",
 				"name": "Raspberry Pi",
-				"version": model[len(PATTERN):].strip(),
+				"version": model[len(PATTERN):].strip().strip("\u0000"),
 			}
 		else:
 			print(repr(model))
@@ -42,9 +42,9 @@ def get_motherboard_info(c = None) -> dict:
 			version, _, _ = run(c, "cat /sys/devices/virtual/dmi/id/board_version")
 
 			return {
-				"vendor": vendor.strip(),
-				"name": name.strip(),
-				"version": version.strip(),
+				"vendor": vendor.strip().strip("\u0000"),
+				"name": name.strip().strip("\u0000"),
+				"version": version.strip().strip("\u0000"),
 			}
 		except:
 			bFail = True
