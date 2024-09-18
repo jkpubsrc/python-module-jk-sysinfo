@@ -87,8 +87,11 @@ def _parse_vcgencmd_get_config(stdout:str, stderr:str, exitcode:int, outData:dic
 #
 @cacheCalls(seconds=3, dependArgs=[0])
 def get_vcgencmd_get_config(c = None, outData:dict = None) -> dict:
-	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd get_config int")
-	return _parse_vcgencmd_get_config(stdout, stderr, exitcode, outData)
+	if has_local_vcgencmd():
+		stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd get_config int")
+		return _parse_vcgencmd_get_config(stdout, stderr, exitcode, outData)
+	else:
+		return {}
 #
 
 
@@ -116,11 +119,14 @@ def _parse_vcgencmd_measure_volts(stdout:str, stderr:str, exitcode:int, key:str,
 
 @cacheCalls(seconds=3, dependArgs=[0])
 def get_vcgencmd_measure_volts(c = None, outData:dict = None) -> dict:
-	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd measure_volts core")
-	outData = _parse_vcgencmd_measure_volts(stdout, stderr, exitcode, "cpu", outData)
-	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd measure_volts sdram_c")
-	outData = _parse_vcgencmd_measure_volts(stdout, stderr, exitcode, "ram", outData)
-	return outData
+	if has_local_vcgencmd():
+		stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd measure_volts core")
+		outData = _parse_vcgencmd_measure_volts(stdout, stderr, exitcode, "cpu", outData)
+		stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd measure_volts sdram_c")
+		outData = _parse_vcgencmd_measure_volts(stdout, stderr, exitcode, "ram", outData)
+		return outData
+	else:
+		return {}
 #
 
 
@@ -148,8 +154,11 @@ def _parse_vcgencmd_measure_temp(stdout:str, stderr:str, exitcode:int, outData:d
 
 @cacheCalls(seconds=3, dependArgs=[0])
 def get_vcgencmd_measure_temp(c = None, outData:dict = None) -> dict:
-	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd measure_temp")
-	return _parse_vcgencmd_measure_temp(stdout, stderr, exitcode, outData)
+	if has_local_vcgencmd():
+		stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd measure_temp")
+		return _parse_vcgencmd_measure_temp(stdout, stderr, exitcode, outData)
+	else:
+		return {}
 #
 
 
@@ -181,11 +190,14 @@ def _parse_vcgencmd_get_mem(stdout:str, stderr:str, exitcode:int, key:str, outDa
 
 @cacheCalls(seconds=3, dependArgs=[0])
 def get_vcgencmd_get_mem(c = None, outData:dict = None) -> dict:
-	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd get_mem arm")
-	outData = _parse_vcgencmd_get_mem(stdout, stderr, exitcode, "system_mbytes", outData)
-	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd get_mem gpu")
-	outData = _parse_vcgencmd_get_mem(stdout, stderr, exitcode, "gpu_mbytes", outData)
-	return outData
+	if has_local_vcgencmd():
+		stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd get_mem arm")
+		outData = _parse_vcgencmd_get_mem(stdout, stderr, exitcode, "system_mbytes", outData)
+		stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd get_mem gpu")
+		outData = _parse_vcgencmd_get_mem(stdout, stderr, exitcode, "gpu_mbytes", outData)
+		return outData
+	else:
+		return {}
 #
 
 
@@ -216,9 +228,12 @@ def _parse_vcgencmd_display_power(stdout:str, stderr:str, exitcode:int, outData:
 
 @cacheCalls(seconds=3, dependArgs=[0])
 def get_vcgencmd_display_power(c = None, outData:dict = None) -> dict:
-	stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd display_power")
-	outData = _parse_vcgencmd_display_power(stdout, stderr, exitcode, outData)
-	return outData
+	if has_local_vcgencmd():
+		stdout, stderr, exitcode = run(c, "/usr/bin/vcgencmd display_power")
+		outData = _parse_vcgencmd_display_power(stdout, stderr, exitcode, outData)
+		return outData
+	else:
+		return {}
 #
 
 

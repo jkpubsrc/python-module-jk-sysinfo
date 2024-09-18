@@ -737,7 +737,11 @@ def parse_lshw(stdout:str, stderr:str, exitcode:int) -> dict:
 #
 @cacheCalls(seconds=3, dependArgs=[0])
 def get_lshw(c = None) -> dict:
-	stdout, stderr, exitcode = run(c, "/usr/bin/lshw -json")
+	try:
+		stdout, stderr, exitcode = run(c, "/usr/bin/lshw -json")
+	except:
+		# lshw not installed!
+		return {}
 	return parse_lshw(stdout, stderr, exitcode)
 #
 
