@@ -34,4 +34,5 @@
 * 2024-09-18:
 	* Improved: Minor improvements to parsing
 	* Added: Connecting to remote hosts in jk_sysinfo_json
+	* Fixed: Typo
 
