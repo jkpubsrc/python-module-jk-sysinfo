@@ -38,8 +38,8 @@ dependencies = [
 	"jk_cmdoutputparsinghelper",
 	"jk_json",
 	"jk_flexdata",
-	"jk_utils",
 	"jk_logging",
+	"jk_pwdinput",
 ]
 
 #[project.urls]

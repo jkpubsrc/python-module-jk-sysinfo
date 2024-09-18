@@ -8,8 +8,6 @@ import time
 import json
 
 import jk_sysinfo
-#import jk_json
-#import jk_flexdata
 import jk_utils
 
 

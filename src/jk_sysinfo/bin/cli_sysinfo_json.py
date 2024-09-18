@@ -2,16 +2,15 @@
 
 import os
 import sys
+import fabric
 
 import jk_logging
-import jk_sysinfo
-
 import jk_sysinfo
 import jk_json
-import jk_logging
 import jk_argparsing
 import jk_typing
 
+from ..cli.ServerCfg import ServerCfg
 
 
 
@@ -199,6 +198,7 @@ class CLISysInfoJSON(object):
 		ap.optionDataDefaults.set("help", False)
 		ap.optionDataDefaults.set("color", True)
 		ap.optionDataDefaults.set("outDirPath", None)
+		ap.optionDataDefaults.set("promptPwdStdin", False)
 
 		ap.createOption('h', 'help', "Display this help text.").onOption = \
 			lambda argOption, argOptionArguments, parsedArgs: \
@@ -214,6 +214,13 @@ class CLISysInfoJSON(object):
 			.onOption = \
 				lambda argOption, argOptionArguments, parsedArgs: \
 					parsedArgs.optionData.set("outDirPath", argOptionArguments[0])
+		ap.createOption(None, 'remote', "The path of the configuration file for a remote host to connect to.") \
+			.expectFile("file", toAbsolutePath=True, mustExist=True) \
+			.onOption = lambda argOption, argOptionArguments, parsedArgs: \
+				parsedArgs.optionData.set("remote", argOptionArguments[0])
+		ap.createOption(None, 'prompt-pwd-stdin', "If connecting to a remote host prompt for password via STDIN.").onOption = \
+			lambda argOption, argOptionArguments, parsedArgs: \
+				parsedArgs.optionData.set("promptPwdStdin", True)
 		for opt in ALL_SYSINFO_OPTIONS:
 			opt.register(ap)
 
@@ -237,6 +244,8 @@ class CLISysInfoJSON(object):
 
 	def main(self) -> int:
 		ap = self._createArgsParser()
+
+		# TODO: create logger with color autodetect here, as parsing might fail here and we should already have good log messages here
 		parsedArgs = ap.parse()
 		#parsedArgs.dump()
 
@@ -255,18 +264,46 @@ class CLISysInfoJSON(object):
 				sys.exit(0)
 			"""
 
+			# ----
+
+			c = None
+			if "remote" in parsedArgs.optionData:
+				_serverCfgFilePath = parsedArgs.optionData["remote"]
+				serverCfg = ServerCfg.loadFromFile(_serverCfgFilePath)
+				if serverCfg.shouldConnectViaUserNamePwd:
+					if parsedArgs.optionData.get("promptPwdStdin"):
+						serverCfg.readPwdFromSTDINIfPwdMissing()
+					if serverCfg.pwd:
+						log.notice("Connecting via username and password to " + serverCfg.host + " ...")
+						c = fabric.Connection(host=serverCfg.host, user=serverCfg.user, port=serverCfg.port, connect_kwargs={"password": serverCfg.pwd})
+					else:
+						log.notice("Connecting via username to " + serverCfg.host + " ...")
+						c = fabric.Connection(host=serverCfg.host, user=serverCfg.user, port=serverCfg.port)
+				elif serverCfg.shouldConnectViaKeyFile:
+					_keyFilePath = serverCfg.keyFile
+					if not os.path.isabs(_keyFilePath):
+						_keyFilePath = os.path.normpath(os.path.join(os.path.dirname(_serverCfgFilePath), _keyFilePath))
+					log.notice("Connecting via keyfile to " + serverCfg.host + " ...")
+					log.notice("Using key file: " + _keyFilePath)
+					c = fabric.Connection(host=serverCfg.host, user=serverCfg.user, port=serverCfg.port, connect_kwargs={"key_filename": _keyFilePath})
+				else:
+					raise Exception()
+
+			# ----
+
 			bSuccess = True
 
 			ret = {}
 			for opt in ALL_SYSINFO_OPTIONS:
 				if parsedArgs.optionData[opt.longOption]:
 					try:
-						ret[opt.longOption] = opt.run(None)
+						ret[opt.longOption] = opt.run(c)
 					except Exception as ee:
 						# there has been an error
 						ret[opt.longOption] = None
 						# log.error("Failed to retrieve data for: " + opt.longOption)
 						log.exception(ee)
+						bSuccess = False
 
 			# ----
 

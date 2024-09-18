@@ -8,19 +8,13 @@ import time
 import json
 
 import jk_sysinfo
-#import jk_json
-#import jk_flexdata
-import jk_utils
-
-
-
-
-
-
-
+import jk_pwdinput
 
 from fabric import Connection
-import jk_pwdinput
+
+
+
+
 
 REMOTE_HOST = "127.0.0.1"
 REMOTE_PORT = 22
